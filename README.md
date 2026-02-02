@@ -1,10 +1,28 @@
 # Umbrella Project Template
 
 ## Quick Start
-This is a template to create the Umbrella Repo for your system. To use this template, create a new repo using this template, then clone down your new repo, and your system specifications repo, and use the ``make merge`` command as shown below. 
+This is a template to create the Umbrella Repo for your system. To use this template, first create a ~/temp/Specifications/product.yaml file, fill in the data below:
+```yaml
+info:
+  name: A Short Name for your Product
+  description: A paragraph length description of the idea.
+  slug: A version of the short name without any spaces
+
+organization:
+  name: The organization make
+  founded: now()
+  slug: Organization name without spaces
+  git_host: https://github.com 
+  git_org: typically the same as the slug
+  docker_host: ghcr.io
+  docker_org: typically the same as the slug
+
+```
+
+Then, create a new repo using this template and clone it down, and use the ``make merge`` command as shown below. 
 ```sh
 ## Merge your specifications with the template
-make merge ../SystemRepo/Specifications
+make merge ~/temp/Specifications
 ```
 
 ## Contributing

@@ -1,7 +1,7 @@
 # Agile Crafts People Creator Dashboard
 
 ## Big Idea
-A dashboard the help creators measure the impact of their efforts. 
+A dashboard the help creators measure the impact of their efforts.
 
 ## Development Team 
 - 

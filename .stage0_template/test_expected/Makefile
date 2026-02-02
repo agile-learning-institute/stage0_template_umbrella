@@ -55,4 +55,3 @@ container:
 	@echo "Building Creator Dashboard container..."
 	@docker build -t ghcr.io/agile-crafts-people/creator_dashboard:latest .
 	@echo "Container built successfully: ghcr.io/agile-crafts-people/creator_dashboard:latest"
-
