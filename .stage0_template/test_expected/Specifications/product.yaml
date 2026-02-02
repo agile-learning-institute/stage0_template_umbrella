@@ -1,0 +1,17 @@
+info:
+  name: Creator Dashboard
+  description: A dashboard the help creators measure the impact of their efforts. 
+  big_idea: Social media performance dashboards for creators and researchers. The MVP is a free YouTube "ratio" analysis page, that grows over time into full multi-platform engagement dashboard. To improve the accuracy of engagement metrics, advanced analytics will identify and classify bots. Can expose public facing "do your own research" portal to expose social engineering campaigns.
+  slug: CreatorDashboard
+  developer_cli: de
+  mongodb_name: engagement
+
+organization:
+  name: Agile Crafts People
+  founded: 2025
+  slug: agile-crafts-people
+  git_host: https://github.com
+  git_org: agile-crafts-people
+  docker_host: ghcr.io
+  docker_org: agile-crafts-people
+

@@ -1,0 +1,43 @@
+$schema: "https://stage0/schemas/process.schema.yaml"
+$id: "https://stage0/template-umbrella/process.yaml"
+title: Process file for a Umbrella Template
+version: "1.0"
+
+environment:
+
+context:
+  - key: info
+    type: path
+    path: specifications.product.info
+  - key: org
+    type: path
+    path: specifications.product.organization
+
+requires:
+  - info.name
+  - info.description
+  - info.slug
+  - org.name
+  - org.founded
+  - org.git_host
+  - org.git_org
+  - org.docker_host
+  - org.docker_org
+
+templates:
+  - path: "./.github/workflows/docker-push.yml"
+    merge: true
+  - path: "./DeveloperEdition/docker-compose.yaml"
+    merge: true
+  - path: "./Dockerfile"
+    merge: true
+  - path: "./LICENSE"
+    merge: true
+  - path: "./README.md.template"
+    output: "./README.md"
+    merge: true
+  - path: "./Makefile.template"
+    output: "./Makefile"
+    merge: true
+
+  
