@@ -1,7 +1,7 @@
-# Agile Crafts People Creator Dashboard
+# Agile Learning Institute Mentor Hub
 
 ## Big Idea
-A dashboard the help creators measure the impact of their efforts.
+A platform to connect mentors with engineers engaged in a life long learning journey.
 
 ## Development Team 
 - 
@@ -16,7 +16,7 @@ A dashboard the help creators measure the impact of their efforts.
 - [Architecture Data](./Specifications/architecture.yaml)
 
 ## Contributing Guides
-- [Developers Edition](./DeveloperEdition/README.md) - On-Boarding Process
+- [Developers Edition](./DeveloperEdition/README.md) CLI and On-Boarding Process
 - [Architecture Principles](./DeveloperEdition/standards/ArchitecturePrinciples.md)
 - [Data Standards](./DeveloperEdition/standards/data_standards.md)
 - [API Standards](./DeveloperEdition/standards/api_standards.md)

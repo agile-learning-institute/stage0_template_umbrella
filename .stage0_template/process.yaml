@@ -27,7 +27,15 @@ requires:
 templates:
   - path: "./.github/workflows/docker-push.yml"
     merge: true
+  - path: "./Specifications/product.yaml"
+    merge: true
+  - path: "./Specifications/architecture.yaml"
+    merge: true
+  - path: "./DeveloperEdition/README.md"
+    merge: true
   - path: "./DeveloperEdition/docker-compose.yaml"
+    merge: true
+  - path: "./DeveloperEdition/standards/sre_standards.md"
     merge: true
   - path: "./DeveloperEdition/de.template"
     output: "./DeveloperEdition/{{info.developer_cli}}"

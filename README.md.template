@@ -16,7 +16,7 @@
 - [Architecture Data](./Specifications/architecture.yaml)
 
 ## Contributing Guides
-- [Developers Edition](./DeveloperEdition/README.md) - On-Boarding Process
+- [Developers Edition](./DeveloperEdition/README.md) CLI and On-Boarding Process
 - [Architecture Principles](./DeveloperEdition/standards/ArchitecturePrinciples.md)
 - [Data Standards](./DeveloperEdition/standards/data_standards.md)
 - [API Standards](./DeveloperEdition/standards/api_standards.md)

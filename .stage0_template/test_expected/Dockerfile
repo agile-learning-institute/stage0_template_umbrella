@@ -1,6 +1,6 @@
 FROM nginx:stable-alpine
 
-LABEL org.opencontainers.image.source="https://github.com/agile-crafts-people/CreatorDashboard"
+LABEL org.opencontainers.image.source="https://github.com/agile-learning-institute/MentorHub"
 
 # Copy the welcome page
 COPY index.html /usr/share/nginx/html/index.html

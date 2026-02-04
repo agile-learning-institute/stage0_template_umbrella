@@ -14,7 +14,7 @@
 - Runbook Automation: [stage0 runbooks](https://github.com/agile-learning-institute/stage0_runbooks)
 
 ## Developer Experience
-The ``{{info.cli_command}}`` Developer Edition script is how the SRE's provide a strong developer experience. 
+The ``{{info.developer_cli}}`` Developer Edition script is how the SRE's provide a strong developer experience. 
 This script manages developer environment values (keys, secrets, etc.) and wraps the services configured in this [docker-compose](../docker-compose.yaml) file. Developers are always able to run services in isolation on local hardware, and the ``de`` command makes it easy.
 
 **Authentication Security**: The `de` script automatically generates a timestamp-based `JWT_SECRET` on each execution, ensuring authentication tokens are invalidated after server restarts. This security pattern is implemented for runbook services and will be extended to other services as they are refactored. 
@@ -109,4 +109,3 @@ Before deploying any API to production, ensure:
 - Template pattern: `proxy_pass http://${API_HOST}:${API_PORT}/api/;`
 - NGINX automatically substitutes environment variables from templates in `/etc/nginx/templates/`
 - Container exposes port 80 by default (or `SPA_PORT` if specified)
-

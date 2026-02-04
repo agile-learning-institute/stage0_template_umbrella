@@ -55,4 +55,3 @@ container:
 	@echo "Building Creator Dashboard container..."
 	@docker build -t {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest .
 	@echo "Container built successfully: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest"
-

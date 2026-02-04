@@ -1,7 +1,7 @@
 # Architecture Principles
 
 ## Microservice Architecture
-We use a Microservices Architecture with services that are designed within **Bounded Domains**, implemented as **API Driven** applications, using **Poly-Repo** Change Management automation. 
+We use a Microservices Architecture with services that are designed within **Bounded Domains**, implemented as **API Driven**, **Backend For Frontend** applications, using **Poly-Repo** Change Management automation. 
 
 ### Bounded Domains
 Bounded domains are defined based on a User Centered view of the data and experiences supported by the system. Data domains are defined in data dictionaries. Service domains Control, Create, or Consume data within data domains. Controlled data domains can be managed by only one service, but any service can consume data from any domain or create immutable data in any domain.
@@ -20,7 +20,7 @@ We maintain a 1-to-1 relationship between a git repository and a deployable unit
 Responsible for data quality, query performance, and analytics. See [data standards](./data_standards.md) for details. 
 
 ### API Engineering
-Responsible for Restful API Services within a Service Domain. This code packages Business logic and Bearer Token RBAC. See [API Standards](./api_standards.md) for details.
+Responsible for Restful API Services within a Service Domain. This code is responsible for Business logic and Bearer Token RBAC. See [API Standards](./api_standards.md) for details.
 
 ### UI Engineering
 Responsible Human Interaction, backed by a single API, secured by commercial Authentication and Authorization Services. See [SPA Standards](./spa_standards.md) for details.

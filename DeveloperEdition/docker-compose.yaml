@@ -1,4 +1,4 @@
-# docker-compose.yaml for Creator Dashboard developers edition
+# docker-compose.yaml for {{info.name}} developers edition
 services:
   ##################################
   # Welcome Service
@@ -35,14 +35,14 @@ services:
   # Mongo Database Configuration Utilities
   ##################################
   mongodb_api:
-    image: {{org.docker_host}}/{{org.docker_org}}/mongodb_api:latest
+    image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_mongodb_api:latest
     restart: no
     ports:
       - 8180:8081
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
-      MONGO_DB_NAME: engagement
+      MONGO_DB_NAME: {{info.mongodb_name}}
       AUTO_PROCESS: True
       LOAD_TEST_DATA: True
       API_PORT: 8180
@@ -82,7 +82,7 @@ services:
   # Custom Runbook API Service (Deployed Profile)
   ##################################
   runbook-api:
-    image: {{org.docker_host}}/{{org.docker_org}}/runbook_api:latest
+    image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_runbook_api:latest
     container_name: runbook_api
     working_dir: /opt/stage0/runner
     restart: unless-stopped
@@ -135,14 +135,14 @@ services:
   # Template Microservice 
   ##################################
   # template_api:
-  #   image: {{org.docker_host}}/{{org.docker_org}}/template_api:latest
+  #   image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_template_api:latest
   #   restart: no
   #   ports:
   #     - 8184:8184
   #   environment:
   #     MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
   #     MONGODB_REQUIRE_TLS: False
-  #     MONGO_DB_NAME: engagement
+  #     MONGO_DB_NAME: {{info.mongodb_name}}
   #     ENABLE_LOGIN: "true"
   #     LOGGING_LEVEL: "INFO"
   #     JWT_SECRET: ${JWT_SECRET}
@@ -157,7 +157,7 @@ services:
   #     - template
 
   # template_spa:
-  #   image: {{org.docker_host}}/{{org.docker_org}}/template_spa:latest
+  #   image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_template_spa:latest
   #   restart: no
   #   ports:
   #     - 8185:80

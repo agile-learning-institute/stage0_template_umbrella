@@ -1,10 +1,10 @@
-# docker-compose.yaml for Creator Dashboard developers edition
+# docker-compose.yaml for Mentor Hub developers edition
 services:
   ##################################
   # Welcome Service
   ##################################
   welcome:
-    image: ghcr.io/agile-crafts-people/CreatorDashboard:latest
+    image: ghcr.io/agile-learning-institute/MentorHub:latest
     ports:
       - 80:80
     profiles:
@@ -35,14 +35,14 @@ services:
   # Mongo Database Configuration Utilities
   ##################################
   mongodb_api:
-    image: ghcr.io/agile-crafts-people/mongodb_api:latest
+    image: ghcr.io/agile-learning-institute/MentorHub_mongodb_api:latest
     restart: no
     ports:
       - 8180:8081
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
-      MONGO_DB_NAME: engagement
+      MONGO_DB_NAME: mentor_hub
       AUTO_PROCESS: True
       LOAD_TEST_DATA: True
       API_PORT: 8180
@@ -82,7 +82,7 @@ services:
   # Custom Runbook API Service (Deployed Profile)
   ##################################
   runbook-api:
-    image: ghcr.io/agile-crafts-people/runbook_api:latest
+    image: ghcr.io/agile-learning-institute/MentorHub_runbook_api:latest
     container_name: runbook_api
     working_dir: /opt/stage0/runner
     restart: unless-stopped
@@ -135,14 +135,14 @@ services:
   # Template Microservice 
   ##################################
   # template_api:
-  #   image: ghcr.io/agile-crafts-people/template_api:latest
+  #   image: ghcr.io/agile-learning-institute/MentorHub_template_api:latest
   #   restart: no
   #   ports:
   #     - 8184:8184
   #   environment:
   #     MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
   #     MONGODB_REQUIRE_TLS: False
-  #     MONGO_DB_NAME: engagement
+  #     MONGO_DB_NAME: mentor_hub
   #     ENABLE_LOGIN: "true"
   #     LOGGING_LEVEL: "INFO"
   #     JWT_SECRET: ${JWT_SECRET}
@@ -157,7 +157,7 @@ services:
   #     - template
 
   # template_spa:
-  #   image: ghcr.io/agile-crafts-people/template_spa:latest
+  #   image: ghcr.io/agile-learning-institute/MentorHub_template_spa:latest
   #   restart: no
   #   ports:
   #     - 8185:80
