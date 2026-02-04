@@ -1,6 +1,6 @@
 architecture:
-  organization: {{org.name}}
-  product: {{info.name}}
+  organization: Agile Crafts People
+  product: Creator Dashboard
   environments:
     - name: local
     - name: development
@@ -30,7 +30,6 @@ architecture:
           port: TBD
         - name: configurator_spa
           description: MongoDB Configurator SPA (utility container, not a real repository)
-          template: N/A
           type: spa_ref 
           port: TBD
     - name: runbook
@@ -43,7 +42,6 @@ architecture:
           port: TBD
         - name: runbook_spa
           description: Runbook Automation Single Page Web Application (utility container, not a real repository)
-          template: N/A
           type: spa_ref
           port: TBD
     - name: templates

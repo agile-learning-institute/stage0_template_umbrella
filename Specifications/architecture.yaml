@@ -46,7 +46,7 @@ architecture:
           template: N/A
           type: spa_ref
           port: TBD
-    - name: templates
+    - name: template
       description: Template repos that support stage0_runbook_merge 
       data_domains:
         controls:

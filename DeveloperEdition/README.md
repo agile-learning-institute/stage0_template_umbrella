@@ -1,6 +1,6 @@
 # Creator Dashboard Developer Edition
 
-The Creator Dashboard Developer Edition ``de`` is a Command Line Interface that provides key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
+The Creator Dashboard Developer Edition ``{{info.developer_cli}}`` is a Command Line Interface that provides key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
 
 ## Prerequisites
 - **zsh shell** - Default on MacOS, https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH otherwise
@@ -10,30 +10,20 @@ The Creator Dashboard Developer Edition ``de`` is a Command Line Interface that 
 ## Quick Start
 Use these commands to install the Developer Edition ``de`` command line utility. 
 ```sh
-git clone git@github.com:agile-crafts-people/CreatorDashboard.git
-cd CreatorDashboard
+git clone git@{{org.git_host}}:{{org.git_org}}/{{info.slug}}.git
+cd {{info.slug}}
 make install
 
 ```
 
 ## Configure access tokens
-When local environment values are required (GitHub access tokens, etc.) they are stored in the hidden folder ``~/.DeveloperEdition`` instead of a being replicated across multiple repo level .env files. 
+When local environment values are required (GitHub access tokens, etc.) they are stored in the hidden folder ``~/.{{info.slug}}`` instead of a being replicated across multiple repo level .env files. 
 
 ## GITHUB_TOKEN
-We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. You should create a GitHub classic access token with `repo` and `write:packages` privileges. This token should be saved in ``~/.DeveloperEdition/GITHUB_TOKEN``. 
+We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. You should create a GitHub classic access token with `repo` and `write:packages` privileges. This token should be saved in ``~/.{{info.slug}}/GITHUB_TOKEN``. 
 
 To create a token, login to GitHub and click your Profile Pic -> Settings -> Developer Settings -> Personal access tokens -> Tokens(classic) -> Create New -> ✅ repo, ✅ write:packages. For reference: [ghcr and github tokens](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
-
-## Add your compute device(s) to our VPN 
-The VPN Name is flatballflyer@gmail.com - use one of the following links to install
-- MacOS - https://apps.apple.com/ca/app/tailscale/id1475387142?mt=12
-- Linux - curl -fsSL https://tailscale.com/install.sh | sh
-- Windows - https://tailscale.com/download/windows
-
-## Add your Mobile devices to our VPN (optional)
-- iOS - https://apps.apple.com/us/app/tailscale/id1470499037?ls=1
-- Android - https://play.google.com/store/apps/details?id=com.tailscale.ipn
-   
+  
 ## Finally
 After you have everything setup, run update to finalize the install.
 ```sh
@@ -45,7 +35,6 @@ make update
 
 ## Development Standards
 - Understand a few simple [Architecture Principles](./ArchitecturePrinciples.md)
-- Review the [Architecture Diagram](../Specifications/ArchitectureDiagram.md) and [Architecture Specifications](../Specifications/architecture.yaml)
 - Review the [Data Standards](./standards/data_standards.md) and install prerequisites.
 - Review the [SRE Standards](./standards/sre_standards.md) and install prerequisites.
 - Review the [API Standards](./standards/api_standards.md) and install prerequisites.

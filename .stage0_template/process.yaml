@@ -29,6 +29,9 @@ templates:
     merge: true
   - path: "./DeveloperEdition/docker-compose.yaml"
     merge: true
+  - path: "./DeveloperEdition/de.template"
+    output: "./DeveloperEdition/{{info.developer_cli}}"
+    merge: true
   - path: "./Dockerfile"
     merge: true
   - path: "./LICENSE"

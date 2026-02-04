@@ -7,7 +7,7 @@
  - Vuetify v3.11
  - Vue Router v4
  - Pinia v3
- - TanStack Query (Vue Query) v5 - https://tanstack.com/query/latest
+ - TanStack Query (Vue Query) v5
  - Cypress E2E v15.8
 
 ## Standard Developer Commands
@@ -26,13 +26,6 @@
 - /api/config will return runtime configuration values
 - Use runtime configuration values for enumerator values not OpenAPI Spec
 - Container uses NGINX template substitution for API proxy configuration
-
-## Container Configuration
-- Dockerfile must define `API_HOST` and `API_PORT` environment variables
-- NGINX configuration template (`nginx.conf.template` or `default.conf.template`) must use `${API_HOST}` and `${API_PORT}` in proxy_pass directive
-- Template pattern: `proxy_pass http://${API_HOST}:${API_PORT}/api/;`
-- NGINX automatically substitutes environment variables from templates in `/etc/nginx/templates/`
-- Container exposes port 80 by default (or `SPA_PORT` if specified)
 
 ## Dependency Management
 - Always verify peer dependency compatibility when adding or updating packages
@@ -238,71 +231,10 @@ The `@agile-crafts-people/spa_utils` npm package provides reusable Vue 3 + Vueti
 - `validationRules` - Common validation rules (required, namePattern, descriptionPattern)
 
 ### Usage Patterns
-
+See spa_utils for examples of how to implement these patterns.
 **List Pages with Search:**
-```typescript
-import { useResourceList, formatDate } from '@agile-crafts-people/spa_utils'
-
-const {
-  items,
-  isLoading,
-  showError,
-  errorMessage,
-  searchQuery,
-  debouncedSearch,
-  navigateToItem,
-} = useResourceList<Create>({
-  queryKey: ['creates'],
-  queryFn: () => api.getCreates(),
-  getItemId: (item) => item._id,
-  navigatePath: '/creates',
-  searchable: true,
-  searchQueryFn: (query) => api.getCreates(query),
-})
-```
-
 **Auto-Save Components:**
-```vue
-<template>
-  <AutoSaveField
-    v-model="control.name"
-    label="Name"
-    :on-save="(value) => api.updateControl(controlId, { name: value })"
-    :rules="[validationRules.required, validationRules.namePattern]"
-  />
-  <AutoSaveSelect
-    v-model="control.status"
-    label="Status"
-    :items="['active', 'archived']"
-    :on-save="(value) => api.updateControl(controlId, { status: value })"
-  />
-</template>
-
-<script setup>
-import { AutoSaveField, AutoSaveSelect, validationRules } from '@agile-crafts-people/spa_utils'
-</script>
-```
-
 **Role-Based Access Control:**
-```typescript
-// Create wrapper in your app
-import { useRoles as useRolesBase, type AuthProvider, type ConfigProvider } from '@agile-crafts-people/spa_utils'
-import { useAuth } from './useAuth'
-import { useConfig } from './useConfig'
-import { computed } from 'vue'
-
-export function useRoles() {
-  const { roles: authRoles } = useAuth()
-  const { config } = useConfig()
-  
-  const authProvider: AuthProvider = { roles: authRoles }
-  const configProvider: ConfigProvider = { 
-    token: computed(() => config.value?.token || null) 
-  }
-  
-  return useRolesBase(authProvider, configProvider)
-}
-```
 
 ### Best Practices
 
