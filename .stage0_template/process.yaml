@@ -27,9 +27,17 @@ requires:
 templates:
   - path: "./.github/workflows/docker-push.yml"
     merge: true
+  - path: "./Specifications/architecture.yaml"
+    merge: true
+  - path: "./Specifications/catalog.yaml"
+    merge: true
+  - path: "./Specifications/journeys.yaml"
+    merge: true
   - path: "./Specifications/product.yaml"
     merge: true
-  - path: "./Specifications/architecture.yaml"
+  - path: "./Specifications/roadmap.yaml"
+    merge: true
+  - path: "./Specifications/stakeholders.yaml"
     merge: true
   - path: "./DeveloperEdition/README.md"
     merge: true

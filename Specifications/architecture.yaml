@@ -1,3 +1,7 @@
+$schema: "https://github.com/agile-learning-institute/stage0/blob/main/Schemas/architecture.schema.yaml"
+$id: "https://github.com/{{org.git_org}}/{{info.slug}}/blob/main/Specifications/architecture.yaml"
+title: Architecture Specification for {{info.name}}
+
 architecture:
   organization: {{org.name}}
   product: {{info.name}}
