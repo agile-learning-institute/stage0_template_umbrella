@@ -7,7 +7,7 @@ info:
   description: {{info.description}}
   slug: {{info.slug}}
   developer_cli: {{info.developer_cli}}
-  mongodb_name: {{info.mongodb_name}}
+  db_name: {{info.db_name}}
 
 organization:
   name: {{org.name}}

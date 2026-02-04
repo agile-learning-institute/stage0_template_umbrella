@@ -42,7 +42,7 @@ services:
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
-      MONGO_DB_NAME: {{info.mongodb_name}}
+      MONGO_DB_NAME: {{info.db_name}}
       AUTO_PROCESS: True
       LOAD_TEST_DATA: True
       API_PORT: 8180
@@ -142,7 +142,7 @@ services:
   #   environment:
   #     MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
   #     MONGODB_REQUIRE_TLS: False
-  #     MONGO_DB_NAME: {{info.mongodb_name}}
+  #     MONGO_DB_NAME: {{info.db_name}}
   #     ENABLE_LOGIN: "true"
   #     LOGGING_LEVEL: "INFO"
   #     JWT_SECRET: ${JWT_SECRET}
