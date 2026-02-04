@@ -3,36 +3,36 @@
 help:
 	@echo "Mentor Hub Developer CLI - Available commands:"
 	@echo ""
-	@echo "  make install        - Install MentorHub CLI tools to ~/.MentorHub"
-	@echo "  make update         - Update MentorHub CLI tools and configure Docker/Git"
+	@echo "  make install        - Install mentorhub CLI tools to ~/.mentorhub"
+	@echo "  make update         - Update mentorhub CLI tools and configure Docker/Git"
 	@echo "  make schemas        - Fetch JSON schemas for all data dictionaries, assumes mongodb_api is running"
 	@echo "  make container      - Build the Mentor Hub welcome page Docker container locally"
 	@echo ""
 	@echo "For more information, see ./DeveloperEdition/README.md"
 
 install:
-	@echo "Installing MentorHub CLI..."
-	@mkdir -p ~/.MentorHub
-	@if ! grep -q "Added by MentorHub CLI install" ~/.zshrc 2>/dev/null; then \
-		echo "\n# Added by MentorHub CLI install" >> ~/.zshrc; \
-		echo "export PATH=\$$PATH:~/.MentorHub" >> ~/.zshrc; \
-		echo "export GITHUB_TOKEN=\$$(cat ~/.MentorHub/GITHUB_TOKEN)" >> ~/.zshrc; \
-		echo "Added ~/.MentorHub to PATH in ~/.zshrc"; \
+	@echo "Installing mentorhub CLI..."
+	@mkdir -p ~/.mentorhub
+	@if ! grep -q "Added by mentorhub CLI install" ~/.zshrc 2>/dev/null; then \
+		echo "\n# Added by mentorhub CLI install" >> ~/.zshrc; \
+		echo "export PATH=\$$PATH:~/.mentorhub" >> ~/.zshrc; \
+		echo "export GITHUB_TOKEN=\$$(cat ~/.mentorhub/GITHUB_TOKEN)" >> ~/.zshrc; \
+		echo "Added ~/.mentorhub to PATH in ~/.zshrc"; \
 	else \
-		echo "~/.MentorHub already in PATH"; \
+		echo "~/.mentorhub already in PATH"; \
 	fi
 	@echo "Installation complete. Run 'source ~/.zshrc' or restart your terminal."
 
 update:
-	@echo "Updating MentorHub CLI..."
-	@if [ ! -f ~/.MentorHub/GITHUB_TOKEN ]; then \
+	@echo "Updating mentorhub CLI..."
+	@if [ ! -f ~/.mentorhub/GITHUB_TOKEN ]; then \
 		echo "Error: GITHUB_TOKEN not found! - See ./DeveloperEdition/README.md"; \
 		exit 1; \
 	fi
-	@cp ./DeveloperEdition/mh ~/.MentorHub/mh && \
-	chmod +x ~/.MentorHub/mh && \
-	cp ./DeveloperEdition/docker-compose.yaml ~/.MentorHub/docker-compose.yaml && \
-	GITHUB_TOKEN=$$(cat ~/.MentorHub/GITHUB_TOKEN) && \
+	@cp ./DeveloperEdition/mh ~/.mentorhub/mh && \
+	chmod +x ~/.mentorhub/mh && \
+	cp ./DeveloperEdition/docker-compose.yaml ~/.mentorhub/docker-compose.yaml && \
+	GITHUB_TOKEN=$$(cat ~/.mentorhub/GITHUB_TOKEN) && \
 	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u agile-crafts-people --password-stdin && \
 	echo "Docker login completed" && \
 	git config --global --unset-all url."https://@github.com/".insteadOf 2>/dev/null || true && \
@@ -53,5 +53,5 @@ schemas:
 
 container:
 	@echo "Building Creator Dashboard container..."
-	@docker build -t ghcr.io/agile-learning-institute/MentorHub:latest .
-	@echo "Container built successfully: ghcr.io/agile-learning-institute/MentorHub:latest"
+	@docker build -t ghcr.io/agile-learning-institute/mentorhub:latest .
+	@echo "Container built successfully: ghcr.io/agile-learning-institute/mentorhub:latest"

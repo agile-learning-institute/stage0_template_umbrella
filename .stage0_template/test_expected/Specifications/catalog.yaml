@@ -1,5 +1,5 @@
 $schema: "https://github.com/agile-learning-institute/stage0/blob/main/Schemas/catalog.schema.yaml"
-$id: "https://github.com/agile-learning-institute/MentorHub/blob/main/Specifications/catalog.yaml"
+$id: "https://github.com/agile-learning-institute/mentorhub/blob/main/Specifications/catalog.yaml"
 title: Data Dictionary Catalog Specification for Mentor Hub
 
 data_dictionaries:

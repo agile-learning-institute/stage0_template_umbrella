@@ -1,5 +1,5 @@
 $schema: "https://github.com/agile-learning-institute/stage0/blob/main/Schemas/architecture.schema.yaml"
-$id: "https://github.com/agile-learning-institute/MentorHub/blob/main/Specifications/architecture.yaml"
+$id: "https://github.com/agile-learning-institute/mentorhub/blob/main/Specifications/architecture.yaml"
 title: Architecture Specification for Mentor Hub
 
 architecture:

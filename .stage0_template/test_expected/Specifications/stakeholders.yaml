@@ -1,5 +1,5 @@
 $schema: "https://github.com/agile-learning-institute/stage0/blob/main/Schemas/stakeholders.schema.yaml"
-$id: "https://github.com/agile-learning-institute/MentorHub/blob/main/Specifications/stakeholders.yaml"
+$id: "https://github.com/agile-learning-institute/mentorhub/blob/main/Specifications/stakeholders.yaml"
 title: Stakeholders for Mentor Hub
 
 stakeholders:

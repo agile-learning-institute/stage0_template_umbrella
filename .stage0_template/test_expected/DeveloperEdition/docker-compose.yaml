@@ -4,7 +4,7 @@ services:
   # Welcome Service
   ##################################
   welcome:
-    image: ghcr.io/agile-learning-institute/MentorHub:latest
+    image: ghcr.io/agile-learning-institute/mentorhub:latest
     ports:
       - 80:80
     profiles:
@@ -35,7 +35,7 @@ services:
   # Mongo Database Configuration Utilities
   ##################################
   mongodb_api:
-    image: ghcr.io/agile-learning-institute/MentorHub_mongodb_api:latest
+    image: ghcr.io/agile-learning-institute/mentorhub_mongodb_api:latest
     restart: no
     ports:
       - 8180:8081
@@ -82,7 +82,7 @@ services:
   # Custom Runbook API Service (Deployed Profile)
   ##################################
   runbook-api:
-    image: ghcr.io/agile-learning-institute/MentorHub_runbook_api:latest
+    image: ghcr.io/agile-learning-institute/mentorhub_runbook_api:latest
     container_name: runbook_api
     working_dir: /opt/stage0/runner
     restart: unless-stopped
@@ -135,7 +135,7 @@ services:
   # Template Microservice 
   ##################################
   # template_api:
-  #   image: ghcr.io/agile-learning-institute/MentorHub_template_api:latest
+  #   image: ghcr.io/agile-learning-institute/mentorhub_template_api:latest
   #   restart: no
   #   ports:
   #     - 8184:8184
@@ -157,7 +157,7 @@ services:
   #     - template
 
   # template_spa:
-  #   image: ghcr.io/agile-learning-institute/MentorHub_template_spa:latest
+  #   image: ghcr.io/agile-learning-institute/mentorhub_template_spa:latest
   #   restart: no
   #   ports:
   #     - 8185:80

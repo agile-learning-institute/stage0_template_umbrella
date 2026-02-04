@@ -10,17 +10,17 @@ The Creator Dashboard Developer Edition ``mh`` is a Command Line Interface that 
 ## Quick Start
 Use these commands to install the Developer Edition ``de`` command line utility. 
 ```sh
-git clone git@https://github.com:agile-learning-institute/MentorHub.git
-cd MentorHub
+git clone git@https://github.com:agile-learning-institute/mentorhub.git
+cd mentorhub
 make install
 
 ```
 
 ## Configure access tokens
-When local environment values are required (GitHub access tokens, etc.) they are stored in the hidden folder ``~/.MentorHub`` instead of a being replicated across multiple repo level .env files. 
+When local environment values are required (GitHub access tokens, etc.) they are stored in the hidden folder ``~/.mentorhub`` instead of a being replicated across multiple repo level .env files. 
 
 ## GITHUB_TOKEN
-We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. You should create a GitHub classic access token with `repo` and `write:packages` privileges. This token should be saved in ``~/.MentorHub/GITHUB_TOKEN``. 
+We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. You should create a GitHub classic access token with `repo` and `write:packages` privileges. This token should be saved in ``~/.mentorhub/GITHUB_TOKEN``. 
 
 To create a token, login to GitHub and click your Profile Pic -> Settings -> Developer Settings -> Personal access tokens -> Tokens(classic) -> Create New -> ✅ repo, ✅ write:packages. For reference: [ghcr and github tokens](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
   
