@@ -1,7 +1,6 @@
-$schema: "https://stage0/schemas/process.schema.yaml"
-$id: "https://stage0/template-umbrella/process.yaml"
+$schema: "https://github.com/agile-learning-institute/stage0/blob/main/Schemas/process.schema.yaml"
+$id: "https://github.com/agile-learning-institute/stage0_template_umbrella/blob/main/.stage0_template/process.yaml"
 title: Process file for a Umbrella Template
-version: "1.0"
 
 environment:
 
