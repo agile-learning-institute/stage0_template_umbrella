@@ -1,4 +1,4 @@
-#! /bin/zsh
+{% raw %}#! /bin/zsh
 
 export COMMAND="$1"
 export NEW_PROFILE="$2"
@@ -394,3 +394,4 @@ case $COMMAND in
 exit 0
 # End Main 
 ##########################################################################
+{% endraw %}
