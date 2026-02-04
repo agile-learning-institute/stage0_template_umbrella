@@ -4,6 +4,7 @@ info:
   slug: MentorHub
   developer_cli: mh
   mongodb_name: mentor_hub
+  base_port: 8383
 
 organization:
   name: Agile Learning Institute
