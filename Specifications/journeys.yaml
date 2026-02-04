@@ -3,5 +3,16 @@ $id: "https://github.com/{{org.git_org}}/{{info.slug}}/blob/main/Specifications/
 title: User Journeys for {{info.name}}
 
 journeys:
-  - name: 
-    description: 
+  - name: User Journey Name
+    description: User Journey Description
+    actor: Stakeholder Name
+    events:
+      - name: Event Name
+        description: 
+          - Event description text
+        intent:
+          - Intent Description
+        inputs: 
+          - Input Dictionary
+        outputs:
+          - Output Dictionary

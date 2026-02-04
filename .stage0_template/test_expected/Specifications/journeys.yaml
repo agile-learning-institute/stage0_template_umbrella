@@ -3,5 +3,16 @@ $id: "https://github.com/agile-learning-institute/MentorHub/blob/main/Specificat
 title: User Journeys for Mentor Hub
 
 journeys:
-  - name: 
-    description: 
+  - name: User Journey Name
+    description: User Journey Description
+    actor: Stakeholder Name
+    events:
+      - name: Event Name
+        description: 
+          - Event description text
+        intent:
+          - Intent Description
+        inputs: 
+          - Input Dictionary
+        outputs:
+          - Output Dictionary
