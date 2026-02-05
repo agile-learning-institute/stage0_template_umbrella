@@ -17,7 +17,7 @@ services:
     image: ghcr.io/agile-learning-institute/mentorhub_runbook_api:latest
     container_name: runbook_api
     working_dir: /opt/stage0/runner
-    restart: unless-stopped
+    restart: no
     ports:
       - "8383:8383"
     environment:
@@ -30,12 +30,6 @@ services:
       SSH_KEY: ${SSH_KEY}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    healthcheck:
-      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8182/metrics')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
     profiles:
       - all
       - runbook
@@ -43,7 +37,7 @@ services:
   runbook-spa:
     image: ghcr.io/agile-learning-institute/stage0_runbook_spa:latest
     container_name: runbook_spa
-    restart: unless-stopped
+    restart: no
     ports:
       - "8384:80"
     environment:
@@ -52,13 +46,7 @@ services:
       IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8384/login}
     depends_on:
       runbook-api:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+        condition: service_started
     profiles:
       - all
       - runbook

@@ -1,9 +1,9 @@
-{% raw %}#! /bin/zsh
+#! /bin/zsh
 
 export COMMAND="$1"
 export NEW_PROFILE="$2"
 export INSTALL_PATH=$(dirname "$0")
-export GITHUB_TOKEN=$(cat ~/.DeveloperEdition/GITHUB_TOKEN)
+export GITHUB_TOKEN=$(cat ~/.{{info.slug}}/GITHUB_TOKEN)
 export JWT_SECRET=$(date +%s)
 export SSH_KEY=$(cat ~/.ssh/id_ed25519)
 
@@ -13,13 +13,13 @@ export SSH_KEY=$(cat ~/.ssh/id_ed25519)
 function manual {
 cat <<END
 NAME
-       de - Creator Dashboard Developers Edition
+       {{info.developer_cli}} - {{info.name}} Developers Edition
 
 SYNOPSIS
-       de COMMAND
+       {{info.developer_cli}} COMMAND
 
 DESCRIPTION
-       de is a simple utility to run the Creator Dashboard developers edition, or portions 
+       {{info.developer_cli}} is a simple utility to run the {{info.name}} system, or portions 
        of it, in local docker containers. You must have docker desktop 
        installed
 
@@ -48,16 +48,16 @@ COMMANDS
         Pull latest images for the specified profile(s).
 
     clean
-        Delete all Creator Dashboard specific containers, volumes, and images
+        Delete all {{info.name}} specific containers, volumes, and images
 
     version
-        print the Creator Dashboard Developers Edition version
+        print the {{info.name}} Developers Edition version
     
     list-profiles
-        List all available profiles related to Creator Dashboard Developers Edition
+        List all available profiles related to {{info.name}} Developers Edition
 
     list-services
-        List all available services related to Creator Dashboard Developers Edition
+        List all available services related to {{info.name}} Developers Edition
 
 END
 }
@@ -68,7 +68,7 @@ END
 usage() {
   cat <<END
 
-Usage: de COMMAND
+Usage: {{info.developer_cli}}COMMAND
 
 Commands:
   up             Launch containers from a profile
@@ -78,8 +78,8 @@ Commands:
   tail           Tail a service log
   prune          Prune all orphaned images and volumes
   pull           Pull latest images for a profile
-  clean          Delete all Creator Dashboard specific containers, volumes, and images
-  version        Print the Creator Dashboard Developers Edition version
+  clean          Delete all {{info.name}} specific containers, volumes, and images
+  version        Print the {{info.name}} Developers Edition version
   list-profiles  List all available profiles
   list-services  List all available services
   manual         Show the manual
@@ -144,7 +144,7 @@ function getCurrentProfile {
 ################################################################################
 function downCurrent {
     getCurrentProfile
-    if [[ ${#CURRENT_PROFILES[@]} -gt 0 ]]; then
+    if [[ ${{ "{" }}#CURRENT_PROFILES[@]} -gt 0 ]]; then
         docker_compose_args=("-f" "$INSTALL_PATH/docker-compose.yaml")
         for profile in "${CURRENT_PROFILES[@]}"; do
             docker_compose_args+=("--profile" "$profile")
@@ -162,7 +162,7 @@ function downCurrent {
 ################################################################################
 function upProfile {
     if [[ -z $NEW_PROFILE ]]; then
-        echo "Error: No profile specified. Use 'de up [profile1,profile2,...]'"
+        echo "Error: No profile specified. Use '{{info.developer_cli}} up [profile1,profile2,...]'"
         listProfiles
         return 1
     fi
@@ -193,7 +193,7 @@ function upProfile {
 ################################################################################
 function stopCurrent {
     getCurrentProfile
-    if [[ ${#CURRENT_PROFILES[@]} -gt 0 ]]; then
+    if [[ ${{ "{" }}#CURRENT_PROFILES[@]} -gt 0 ]]; then
         docker_compose_args=("-f" "$INSTALL_PATH/docker-compose.yaml")
         for profile in "${CURRENT_PROFILES[@]}"; do
             docker_compose_args+=("--profile" "$profile")
@@ -209,14 +209,14 @@ function stopCurrent {
 ################################################################################
 function startCurrent {
     getCurrentProfile
-    if [[ ${#CURRENT_PROFILES[@]} -gt 0 ]]; then
+    if [[ ${{ "{" }}#CURRENT_PROFILES[@]} -gt 0 ]]; then
         docker_compose_args=("-f" "$INSTALL_PATH/docker-compose.yaml")
         for profile in "${CURRENT_PROFILES[@]}"; do
             docker_compose_args+=("--profile" "$profile")
         done
         docker compose "${docker_compose_args[@]}" start 
     else
-        echo "No profiles found to start. Use 'de up [profile]' first."
+        echo "No profiles found to start. Use '{{info.developer_cli}} up [profile]' first."
     fi
 }
 
@@ -244,7 +244,7 @@ function tailServiceLogs {
 ################################################################################
 function pull {
     if [[ -z $NEW_PROFILE ]]; then
-        echo "Error: No profile specified. Use 'de pull [profile1,profile2,...]'"
+        echo "Error: No profile specified. Use '{{info.developer_cli}} pull [profile1,profile2,...]'"
         listProfiles
         return 1
     fi
@@ -277,13 +277,12 @@ function prune {
 # force rm all containers
 ################################################################################
 function deleteContainers {
-    docker compose -f $INSTALL_PATH/docker-compose.yaml ps -a --format '{{ .Names }}' | while read -r container; do
+    docker compose -f $INSTALL_PATH/docker-compose.yaml ps -a --format {% raw %}'{{ .Names }}'{% endraw %} | while read -r container; do
         echo "- removing container $container" 
         docker container rm -f "$container" > /dev/null 2>&1
     done
     echo > "$INSTALL_PATH/CURRENT"
 }
-
 ################################################################################
 # force rm all images
 ################################################################################
@@ -314,7 +313,7 @@ function clean {
 
 ##########################################################################
 # Main 
-echo "$(date) de start $COMMAND $NEW_PROFILE"
+echo "$(date) {{info.developer_cli}} start $COMMAND $NEW_PROFILE"
 checkAndStartDocker
 
 case $COMMAND in
@@ -394,4 +393,3 @@ case $COMMAND in
 exit 0
 # End Main 
 ##########################################################################
-{% endraw %}

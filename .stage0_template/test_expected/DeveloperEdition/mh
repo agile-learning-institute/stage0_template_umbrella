@@ -3,7 +3,7 @@
 export COMMAND="$1"
 export NEW_PROFILE="$2"
 export INSTALL_PATH=$(dirname "$0")
-export GITHUB_TOKEN=$(cat ~/.DeveloperEdition/GITHUB_TOKEN)
+export GITHUB_TOKEN=$(cat ~/.mentorhub/GITHUB_TOKEN)
 export JWT_SECRET=$(date +%s)
 export SSH_KEY=$(cat ~/.ssh/id_ed25519)
 
@@ -13,13 +13,13 @@ export SSH_KEY=$(cat ~/.ssh/id_ed25519)
 function manual {
 cat <<END
 NAME
-       de - Creator Dashboard Developers Edition
+       mh - Mentor Hub Developers Edition
 
 SYNOPSIS
-       de COMMAND
+       mh COMMAND
 
 DESCRIPTION
-       de is a simple utility to run the Creator Dashboard developers edition, or portions 
+       mh is a simple utility to run the Mentor Hub system, or portions 
        of it, in local docker containers. You must have docker desktop 
        installed
 
@@ -48,16 +48,16 @@ COMMANDS
         Pull latest images for the specified profile(s).
 
     clean
-        Delete all Creator Dashboard specific containers, volumes, and images
+        Delete all Mentor Hub specific containers, volumes, and images
 
     version
-        print the Creator Dashboard Developers Edition version
+        print the Mentor Hub Developers Edition version
     
     list-profiles
-        List all available profiles related to Creator Dashboard Developers Edition
+        List all available profiles related to Mentor Hub Developers Edition
 
     list-services
-        List all available services related to Creator Dashboard Developers Edition
+        List all available services related to Mentor Hub Developers Edition
 
 END
 }
@@ -68,7 +68,7 @@ END
 usage() {
   cat <<END
 
-Usage: de COMMAND
+Usage: mhCOMMAND
 
 Commands:
   up             Launch containers from a profile
@@ -78,8 +78,8 @@ Commands:
   tail           Tail a service log
   prune          Prune all orphaned images and volumes
   pull           Pull latest images for a profile
-  clean          Delete all Creator Dashboard specific containers, volumes, and images
-  version        Print the Creator Dashboard Developers Edition version
+  clean          Delete all Mentor Hub specific containers, volumes, and images
+  version        Print the Mentor Hub Developers Edition version
   list-profiles  List all available profiles
   list-services  List all available services
   manual         Show the manual
@@ -162,7 +162,7 @@ function downCurrent {
 ################################################################################
 function upProfile {
     if [[ -z $NEW_PROFILE ]]; then
-        echo "Error: No profile specified. Use 'de up [profile1,profile2,...]'"
+        echo "Error: No profile specified. Use 'mh up [profile1,profile2,...]'"
         listProfiles
         return 1
     fi
@@ -216,7 +216,7 @@ function startCurrent {
         done
         docker compose "${docker_compose_args[@]}" start 
     else
-        echo "No profiles found to start. Use 'de up [profile]' first."
+        echo "No profiles found to start. Use 'mh up [profile]' first."
     fi
 }
 
@@ -244,7 +244,7 @@ function tailServiceLogs {
 ################################################################################
 function pull {
     if [[ -z $NEW_PROFILE ]]; then
-        echo "Error: No profile specified. Use 'de pull [profile1,profile2,...]'"
+        echo "Error: No profile specified. Use 'mh pull [profile1,profile2,...]'"
         listProfiles
         return 1
     fi
@@ -283,7 +283,6 @@ function deleteContainers {
     done
     echo > "$INSTALL_PATH/CURRENT"
 }
-
 ################################################################################
 # force rm all images
 ################################################################################
@@ -314,7 +313,7 @@ function clean {
 
 ##########################################################################
 # Main 
-echo "$(date) de start $COMMAND $NEW_PROFILE"
+echo "$(date) mh start $COMMAND $NEW_PROFILE"
 checkAndStartDocker
 
 case $COMMAND in
