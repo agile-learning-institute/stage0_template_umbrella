@@ -22,7 +22,6 @@ services:
       - "{{info.base_port + 0}}:{{info.base_port + 0}}"
     environment:
       API_PORT: {{info.base_port + 0}}
-      RUNBOOKS_DIR: ./runbooks
       ENABLE_LOGIN: "true"
       LOGGING_LEVEL: "INFO"
       JWT_SECRET: ${JWT_SECRET}
