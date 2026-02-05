@@ -67,7 +67,7 @@ schemas:
 
 container:
 	@echo "Building Creator Dashboard container..."
-	@docker build -t {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest .
+	@docker build -t {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest $${BUILD_CONTEXT_HOST:-.}
 	@echo "Container built successfully: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest"
 
 push:

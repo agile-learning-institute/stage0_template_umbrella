@@ -67,7 +67,7 @@ schemas:
 
 container:
 	@echo "Building Creator Dashboard container..."
-	@docker build -t ghcr.io/agile-learning-institute/mentorhub:latest .
+	@docker build -t ghcr.io/agile-learning-institute/mentorhub:latest $${BUILD_CONTEXT_HOST:-.}
 	@echo "Container built successfully: ghcr.io/agile-learning-institute/mentorhub:latest"
 
 push:
