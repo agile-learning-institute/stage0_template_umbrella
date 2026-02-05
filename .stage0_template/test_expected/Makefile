@@ -1,4 +1,4 @@
-.PHONY: help install update spark-runbook schemas container
+.PHONY: help install update spark-runbook schemas container push
 
 help:
 	@echo "Mentor Hub Developer CLI - Available commands:"
