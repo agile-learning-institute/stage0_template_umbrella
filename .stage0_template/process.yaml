@@ -47,6 +47,8 @@ templates:
   - path: "./DeveloperEdition/de.template"
     output: "./DeveloperEdition/{{info.developer_cli}}"
     merge: true
+  - path: "./index.html"
+    merge: true
   - path: "./Dockerfile"
     merge: true
   - path: "./LICENSE"

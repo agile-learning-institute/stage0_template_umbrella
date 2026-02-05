@@ -22,7 +22,6 @@ services:
       - "8383:8383"
     environment:
       API_PORT: 8383
-      RUNBOOKS_DIR: ./runbooks
       ENABLE_LOGIN: "true"
       LOGGING_LEVEL: "INFO"
       JWT_SECRET: ${JWT_SECRET}
