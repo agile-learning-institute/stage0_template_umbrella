@@ -23,6 +23,20 @@ install:
 	fi
 	@echo "Installation complete. Run 'source ~/.zshrc' or restart your terminal."
 
+uninstall:
+	@echo "Uninstalling mentorhub CLI..."
+	@if [ -f ~/.zshrc ]; then \
+		grep -v -e 'Added by mentorhub CLI install' \
+			-e 'export PATH=.*~/.mentorhub' \
+			-e 'export GITHUB_TOKEN=.*mentorhub/GITHUB_TOKEN' \
+			~/.zshrc > ~/.zshrc.tmp && mv ~/.zshrc.tmp ~/.zshrc && \
+		echo "Removed mentorhub lines from ~/.zshrc"; \
+	else \
+		echo "~/.zshrc not found, skipping"; \
+	fi
+	@rm -rf ~/.mentorhub && echo "Removed ~/.mentorhub"
+	@echo "Uninstall complete. Run 'source ~/.zshrc' or restart your terminal."
+
 update:
 	@echo "Updating mentorhub CLI..."
 	@if [ ! -f ~/.mentorhub/GITHUB_TOKEN ]; then \

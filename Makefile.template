@@ -23,6 +23,20 @@ install:
 	fi
 	@echo "Installation complete. Run 'source ~/.zshrc' or restart your terminal."
 
+uninstall:
+	@echo "Uninstalling {{info.slug}} CLI..."
+	@if [ -f ~/.zshrc ]; then \
+		grep -v -e 'Added by {{info.slug}} CLI install' \
+			-e 'export PATH=.*~/.{{info.slug}}' \
+			-e 'export GITHUB_TOKEN=.*{{info.slug}}/GITHUB_TOKEN' \
+			~/.zshrc > ~/.zshrc.tmp && mv ~/.zshrc.tmp ~/.zshrc && \
+		echo "Removed {{info.slug}} lines from ~/.zshrc"; \
+	else \
+		echo "~/.zshrc not found, skipping"; \
+	fi
+	@rm -rf ~/.{{info.slug}} && echo "Removed ~/.{{info.slug}}"
+	@echo "Uninstall complete. Run 'source ~/.zshrc' or restart your terminal."
+
 update:
 	@echo "Updating {{info.slug}} CLI..."
 	@if [ ! -f ~/.{{info.slug}}/GITHUB_TOKEN ]; then \
