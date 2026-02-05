@@ -72,5 +72,5 @@ container:
 
 push:
 	@echo "Pushing Creator Dashboard container..."
-	@docker push {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest .
+	@docker push {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest
 	@echo "Container Pushed successfully: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest"
