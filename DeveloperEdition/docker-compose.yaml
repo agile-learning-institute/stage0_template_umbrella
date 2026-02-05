@@ -11,6 +11,59 @@ services:
       - all
 
   ##################################
+  # Custom Runbook API Service (Deployed Profile)
+  ##################################
+  runbook-api:
+    image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_runbook_api:latest
+    container_name: runbook_api
+    working_dir: /opt/stage0/runner
+    restart: unless-stopped
+    ports:
+      - "{{info.base_port + 0}}:{{info.base_port + 0}}"
+    environment:
+      API_PORT: {{info.base_port + 0}}
+      RUNBOOKS_DIR: ./runbooks
+      ENABLE_LOGIN: "true"
+      LOGGING_LEVEL: "INFO"
+      JWT_SECRET: ${JWT_SECRET}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      SSH_KEY: ${SSH_KEY}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8182/metrics')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    profiles:
+      - all
+      - runbook
+
+  runbook-spa:
+    image: ghcr.io/agile-learning-institute/stage0_runbook_spa:latest
+    container_name: runbook_spa
+    restart: unless-stopped
+    ports:
+      - "{{info.base_port + 1}}:80"
+    environment:
+      API_HOST: runbook-api
+      API_PORT: {{info.base_port + 0}}
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:{{info.base_port + 1}}/login}
+    depends_on:
+      runbook-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    profiles:
+      - all
+      - runbook
+
+  ##################################
   # Backing Services 
   ##################################
   # MongoDB backing service 
@@ -38,15 +91,15 @@ services:
     image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_mongodb_api:latest
     restart: no
     ports:
-      - 8180:8081
+      - {{info.base_port + 2}}:{{info.base_port + 2}}
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
       MONGO_DB_NAME: {{info.db_name}}
       AUTO_PROCESS: True
       LOAD_TEST_DATA: True
-      API_PORT: 8180
-      SPA_PORT: 8181
+      API_PORT: {{info.base_port + 2}}
+      SPA_PORT: {{info.base_port + 3}}
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8081/api/config/').read()\" || exit 1"]
       interval: 5s
@@ -66,70 +119,17 @@ services:
     image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
     restart: no
     ports:
-      - 8181:8181
+      - {{info.base_port + 3}}:{{info.base_port + 3}}
     environment:
       API_HOST: mongodb_api
-      API_PORT: 8081
-      SPA_PORT: 8181
+      API_PORT: {{info.base_port + 2}}
+      SPA_PORT: {{info.base_port + 3}}
     depends_on:
       mongodb_api:
         condition: service_started
     profiles:
       - all
       - mongodb
-
-  ##################################
-  # Custom Runbook API Service (Deployed Profile)
-  ##################################
-  runbook-api:
-    image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_runbook_api:latest
-    container_name: runbook_api
-    working_dir: /opt/stage0/runner
-    restart: unless-stopped
-    ports:
-      - "8182:8182"
-    environment:
-      API_PORT: 8182
-      RUNBOOKS_DIR: ./runbooks
-      ENABLE_LOGIN: "true"
-      LOGGING_LEVEL: "INFO"
-      JWT_SECRET: ${JWT_SECRET}
-      GITHUB_TOKEN: ${GITHUB_TOKEN}
-      SSH_KEY: ${SSH_KEY}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    healthcheck:
-      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8182/metrics')"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    profiles:
-      - all
-      - runbook
-
-  runbook-spa:
-    image: ghcr.io/agile-learning-institute/stage0_runbook_spa:latest
-    container_name: runbook_spa
-    restart: unless-stopped
-    ports:
-      - "8183:80"
-    environment:
-      API_HOST: runbook-api
-      API_PORT: 8182
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8183/login}
-    depends_on:
-      runbook-api:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    profiles:
-      - all
-      - runbook
 
   ##################################
   # Template Microservice 
