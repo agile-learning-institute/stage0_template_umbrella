@@ -69,3 +69,8 @@ container:
 	@echo "Building Creator Dashboard container..."
 	@docker build -t {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest .
 	@echo "Container built successfully: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest"
+
+push:
+	@echo "Pushing Creator Dashboard container..."
+	@docker push {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest .
+	@echo "Container Pushed successfully: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest"
