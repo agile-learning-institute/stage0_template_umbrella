@@ -8,6 +8,7 @@ info:
   slug: {{info.slug}}
   developer_cli: {{info.developer_cli}}
   db_name: {{info.db_name}}
+  base_port: {{info.base_port}}
 
 organization:
   name: {{org.name}}
