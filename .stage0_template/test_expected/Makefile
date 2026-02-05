@@ -72,5 +72,5 @@ container:
 
 push:
 	@echo "Pushing Creator Dashboard container..."
-	@docker push ghcr.io/agile-learning-institute/mentorhub:latest 
+	@docker push ghcr.io/agile-learning-institute/mentorhub:latest
 	@echo "Container Pushed successfully: ghcr.io/agile-learning-institute/mentorhub:latest"
