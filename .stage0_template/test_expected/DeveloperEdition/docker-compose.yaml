@@ -9,6 +9,10 @@ services:
       - 80:80
     profiles:
       - all
+      - runbook
+      - mongodb
+      - template
+      - template-api
 
   ##################################
   # Custom Runbook API Service (Deployed Profile)
@@ -99,8 +103,8 @@ services:
     profiles:
       - all
       - mongodb
-      - dashboard
-      - dashboard-api
+      - template
+      - template-api
 
   mongodb_spa:
     image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
