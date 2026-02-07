@@ -34,11 +34,11 @@ make update
 ---
 
 ## Development Standards
-- Understand a few simple [Architecture Principles](./ArchitecturePrinciples.md)
-- Review the [Data Standards](./standards/data_standards.md) and install prerequisites.
-- Review the [SRE Standards](./standards/sre_standards.md) and install prerequisites.
-- Review the [API Standards](./standards/api_standards.md) and install prerequisites.
-- Review the [SPA Standards](./standards/spa_standards.md) and install prerequisites.
+- Understand a few simple [Architecture Principles](./DeveloperEdition/standards/ArchitecturePrinciples.md)
+- Review the [Data Standards](./DeveloperEdition/standards/data_standards.md) and install prerequisites.
+- Review the [SRE Standards](./DeveloperEdition/standards/sre_standards.md) and install prerequisites.
+- Review the [API Standards](./DeveloperEdition/standards/api_standards.md) and install prerequisites.
+- Review the [SPA Standards](./DeveloperEdition/standards/spa_standards.md) and install prerequisites.
 
 ## Developer Workflow
 We utilize an Issue–Feature–Branch pattern for the developer workflow:

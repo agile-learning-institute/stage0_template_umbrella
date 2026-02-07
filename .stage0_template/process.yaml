@@ -38,8 +38,6 @@ templates:
     merge: true
   - path: "./Specifications/stakeholders.yaml"
     merge: true
-  - path: "./DeveloperEdition/README.md"
-    merge: true
   - path: "./DeveloperEdition/docker-compose.yaml"
     merge: true
   - path: "./DeveloperEdition/standards/sre_standards.md"
@@ -52,6 +50,8 @@ templates:
   - path: "./Dockerfile"
     merge: true
   - path: "./LICENSE"
+    merge: true
+  - path: "./CONTRIBUTING.md"
     merge: true
   - path: "./README.md.template"
     output: "./README.md"
