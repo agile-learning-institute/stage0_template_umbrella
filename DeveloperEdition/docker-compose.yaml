@@ -31,8 +31,11 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       GITHUB_TOKEN: ${GITHUB_TOKEN}
       SSH_KEY: ${SSH_KEY}
+      MOUNT_DIR: ${MOUNT_DIR}
+      UI_HEADER: "Mentor Hub Packaged Runbooks"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ${MOUNT_DIR}:/execution 
     profiles:
       - all
       - runbook

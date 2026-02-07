@@ -6,6 +6,7 @@ export INSTALL_PATH=$(dirname "$0")
 export GITHUB_TOKEN=$(cat ~/.mentorhub/GITHUB_TOKEN)
 export JWT_SECRET=$(date +%s)
 export SSH_KEY=$(cat ~/.ssh/id_ed25519)
+export MOUNT_DIR=~/.mentorhub/
 
 ################################################################################
 # Print Manual Page
