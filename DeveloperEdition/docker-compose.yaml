@@ -6,7 +6,7 @@ services:
   welcome:
     image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest
     ports:
-      - 80:80
+      - "127.0.0.1:80:80"
     profiles:
       - all
       - runbook
@@ -23,7 +23,7 @@ services:
     working_dir: /opt/stage0/runner
     restart: no
     ports:
-      - "{{info.base_port + 0}}:{{info.base_port + 0}}"
+      - "127.0.0.1:{{info.base_port + 0}}:{{info.base_port + 0}}"
     environment:
       API_PORT: {{info.base_port + 0}}
       ENABLE_LOGIN: "true"
@@ -45,7 +45,7 @@ services:
     container_name: runbook_spa
     restart: no
     ports:
-      - "{{info.base_port + 1}}:80"
+      - "127.0.0.1:{{info.base_port + 1}}:80"
     environment:
       API_HOST: runbook-api
       API_PORT: {{info.base_port + 0}}
@@ -64,7 +64,7 @@ services:
   mongodb:
     image: mongo:7.0.5
     ports:
-      - 27017:27017
+      - "127.0.0.1:27017:27017"
     extra_hosts:
       - "mongodb:127.0.0.1"
     healthcheck:
@@ -85,7 +85,7 @@ services:
     image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_mongodb_api:latest
     restart: no
     ports:
-      - {{info.base_port + 2}}:{{info.base_port + 2}}
+      - "127.0.0.1:{{info.base_port + 2}}:{{info.base_port + 2}}"
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
@@ -94,6 +94,7 @@ services:
       LOAD_TEST_DATA: True
       API_PORT: {{info.base_port + 2}}
       SPA_PORT: {{info.base_port + 3}}
+      UI_HEADER: "{{info.name}} MongoDB Configurations"
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8081/api/config/').read()\" || exit 1"]
       interval: 5s
@@ -113,7 +114,7 @@ services:
     image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
     restart: no
     ports:
-      - {{info.base_port + 3}}:{{info.base_port + 3}}
+      - "127.0.0.1:{{info.base_port + 3}}:{{info.base_port + 3}}"
     environment:
       API_HOST: mongodb_api
       API_PORT: {{info.base_port + 2}}
@@ -132,7 +133,7 @@ services:
   #   image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_template_api:latest
   #   restart: no
   #   ports:
-  #     - 8184:8184
+  #     - "127.0.0.1:8184:8184"
   #   environment:
   #     MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
   #     MONGODB_REQUIRE_TLS: False
@@ -154,7 +155,7 @@ services:
   #   image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_template_spa:latest
   #   restart: no
   #   ports:
-  #     - 8185:80
+  #     - "127.0.0.1:8185:80"
   #   environment:
   #     API_HOST: template_api
   #     API_PORT: 8184
