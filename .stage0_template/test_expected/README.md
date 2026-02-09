@@ -16,7 +16,7 @@ A platform to connect mentors with engineers engaged in a life long learning jou
 - [Architecture Data](./Specifications/architecture.yaml)
 
 ## Contributing Guides
-- [Developers Edition](./DeveloperEdition/README.md) CLI and On-Boarding Process
+- [Developer Onboarding](./CONTRIBUTING.md) On-Boarding Process and CLI install
 - [Architecture Principles](./DeveloperEdition/standards/ArchitecturePrinciples.md)
 - [Data Standards](./DeveloperEdition/standards/data_standards.md)
 - [API Standards](./DeveloperEdition/standards/api_standards.md)
