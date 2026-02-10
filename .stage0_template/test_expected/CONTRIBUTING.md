@@ -13,6 +13,8 @@ Use these commands to install the Developer Edition ``de`` command line utility.
 git clone git@https://github.com:agile-learning-institute/mentorhub.git
 cd mentorhub
 make install
+cp <YOUR_TOKEN> ~/.mentorhub/GITHUB_TOKEN
+make update
 
 ```
 
