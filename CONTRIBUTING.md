@@ -13,6 +13,8 @@ Use these commands to install the Developer Edition ``de`` command line utility.
 git clone git@{{org.git_host}}:{{org.git_org}}/{{info.slug}}.git
 cd {{info.slug}}
 make install
+cp <YOUR_TOKEN> ~/.{{info.slug}}/GITHUB_TOKEN
+make update
 
 ```
 
