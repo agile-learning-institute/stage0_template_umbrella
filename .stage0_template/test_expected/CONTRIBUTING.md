@@ -1,6 +1,6 @@
-# Creator Dashboard Developer Edition
+# Mentor Hub Developer Edition
 
-The Creator Dashboard Developer Edition ``mh`` is a Command Line Interface that provides key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
+The Mentor Hub Developer Edition ``mh`` is a Command Line Interface that provides key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
 
 ## Prerequisites
 - **zsh shell** - Default on MacOS, https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH otherwise

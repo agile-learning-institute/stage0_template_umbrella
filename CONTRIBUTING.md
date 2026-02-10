@@ -1,6 +1,6 @@
-# Creator Dashboard Developer Edition
+# {{info.name}} Developer Edition
 
-The Creator Dashboard Developer Edition ``{{info.developer_cli}}`` is a Command Line Interface that provides key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
+The {{info.name}} Developer Edition ``{{info.developer_cli}}`` is a Command Line Interface that provides key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
 
 ## Prerequisites
 - **zsh shell** - Default on MacOS, https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH otherwise
