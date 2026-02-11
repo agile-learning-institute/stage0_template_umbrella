@@ -186,7 +186,7 @@ Treat automation ID changes as **breaking changes to the UI API**:
 
 ## spa_utils Package
 
-The `@agile-crafts-people/spa_utils` npm package provides reusable Vue 3 + Vuetify components, composables, and utilities for all Creator Dashboard SPAs.
+The `@agile-crafts-people/spa_utils` npm package provides reusable Vue 3 + Vuetify components, composables, and utilities for all SPAs.
 
 ### Installation
 

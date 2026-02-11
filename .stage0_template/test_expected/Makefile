@@ -66,11 +66,11 @@ schemas:
 	@echo "Schema fetching complete."
 
 container:
-	@echo "Building Creator Dashboard container..."
+	@echo "Building Mentor Hub container..."
 	@docker build -t ghcr.io/agile-learning-institute/mentorhub:latest .
 	@echo "Container built successfully: ghcr.io/agile-learning-institute/mentorhub:latest"
 
 push:
-	@echo "Pushing Creator Dashboard container..."
+	@echo "Pushing Mentor Hub container..."
 	@docker push ghcr.io/agile-learning-institute/mentorhub:latest
 	@echo "Container Pushed successfully: ghcr.io/agile-learning-institute/mentorhub:latest"
