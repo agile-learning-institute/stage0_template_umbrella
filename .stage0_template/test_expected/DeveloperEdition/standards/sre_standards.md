@@ -20,22 +20,12 @@ This script manages developer environment values (keys, secrets, etc.) and wraps
 **Authentication Security**: The `de` script automatically generates a timestamp-based `JWT_SECRET` on each execution, ensuring authentication tokens are invalidated after server restarts. This security pattern is implemented for runbook services and will be extended to other services as they are refactored. 
 
 ## SRE Automation 
-SRE Automation is done using the [stage0 runbooks](https://github.com/agile-learning-institute/stage0_runbooks) system. Our custom runbook is [runbook_api](https://github.com/agile-crafts-people/runbook_api) which is available for use with ``de up runbook`` and accessing http://localhost:8084/runbooks. The spark server hosts a runbook instance at http://spark-478a.tailb0d293.ts.net:8084 
-
-### Runbook Authentication
-The runbook system shows how to implements secure authentication with the following patterns:
-
-- **JWT Secret Management**: The `de` script automatically generates a timestamp-based `JWT_SECRET` on each execution, ensuring tokens are invalidated after server restarts. This provides security by requiring re-authentication after deployments.
-
-- **IdP Login Configuration**: The `IDP_LOGIN_URI` environment variable configures where unauthenticated users are redirected for login:
-  - **Local Development**: Defaults to `http://localhost:8084/login` 
-  - **Remote Deployment**: Can be set to external IdP (e.g., `http://spark-478a.tailb0d293.ts.net:8084/login`)
-  - The SPA redirects protected routes to `/auth/login`, which nginx then redirects to the configured `IDP_LOGIN_URI`
+SRE Automation is done using the [stage0 runbooks](https://github.com/agile-learning-institute/stage0_runbooks) system. Our custom runbook is [runbook_api](https://github.com/agile-learning-institute/mentorhub_runbook_api) which is available for use with ``de up runbook`` and accessing http://localhost and following the runbooks link. 
 
 ## Continuous Integration
 The developer workflow follows the feature branch pattern. A developer creates a branch to work on a feature, and submit a pull request (PR) when the feature is ready to be deployed. When a PR is approved by a reviewer and merged to the main branch, the CI automation will build and push a new container with a :latest tag to the system's container registry. These containers are deployed to a cloud DEV environment, and available for developers to use for local development.
 
-NOTE: We are using ``ghcr`` as our container registry at this time. We will shift to an AWS container registry when we are ready to start cloud based deployments. This is a [GitHub Actions Automation](../sre_resources/docker_push.yml) to build and push the container to ``ghcr``. See notes above to provision a ghcr package.
+NOTE: We are using ``ghcr`` as our container registry at this time. We will shift to an AWS container registry when we are ready to start cloud based deployments. 
 
 ## Continuous Deployment
 Infrastructure provisioning is automated using ?Terraform?. Deployment of code through different environments is managed using container tagging. TBD Run book automation implements continuous deployment actions such as "Provision a Training Environment", "Run Regression Testing in the TEST environment", "Promote all containers from TEST to STAGING" or "Restore Production Database backups to Staging Database"
@@ -68,7 +58,7 @@ Protected routes in the SPA redirect unauthenticated users to `/auth/login`, whi
 This pattern ensures consistent authentication flow across all deployment environments while maintaining security boundaries. 
 
 ## Service Configurability
-All API's are configured using a shared [Config singleton](https://github.com/agile-crafts-people/api_utils/blob/main/py_utils/config/config.py). The Config object manages all configuration items for all API and SPA code. Configuration values are read from the first of: Config File, Environment Var, Default Value. The configuration items and non-secret values are exposed through the Config API endpoint, which is used by the SPA to get runtime configuration values.
+All API's are configured using a shared [Config singleton](https://github.com/agile-learning-institute/api_utils/blob/main/py_utils/config/config.py). The Config object manages all configuration items for all API and SPA code. Configuration values are read from the first of: Config File, Environment Var, Default Value. The configuration items and non-secret values are exposed through the Config API endpoint, which is used by the SPA to get runtime configuration values.
 
 ## Service Observability
 All API's expose a /metrics endpoint which exposes a text-based exposition format that Prometheus understands. This endpoint exposes detailed, real-time metrics about the API's performance, latency, error rates, and internal health.

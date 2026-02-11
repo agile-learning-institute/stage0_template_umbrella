@@ -186,7 +186,7 @@ Treat automation ID changes as **breaking changes to the UI API**:
 
 ## spa_utils Package
 
-The `@agile-crafts-people/spa_utils` npm package provides reusable Vue 3 + Vuetify components, composables, and utilities for all SPAs.
+The `@{{org.git_org}}/spa_utils` npm package provides reusable Vue 3 + Vuetify components, composables, and utilities for all SPAs.
 
 ### Installation
 
@@ -194,7 +194,7 @@ The `@agile-crafts-people/spa_utils` npm package provides reusable Vue 3 + Vueti
 ```json
 {
   "dependencies": {
-    "@agile-crafts-people/spa_utils": "file:../spa_utils"
+    "@{{org.git_org}}/spa_utils": "file:../spa_utils"
   }
 }
 ```
@@ -203,14 +203,14 @@ The `@agile-crafts-people/spa_utils` npm package provides reusable Vue 3 + Vueti
 ```json
 {
   "dependencies": {
-    "@agile-crafts-people/spa_utils": "github:agile-crafts-people/spa_utils#v0.1.0"
+    "@{{org.git_org}}/spa_utils": "github:{{org.git_org}}/spa_utils#v0.1.0"
   }
 }
 ```
 
 **Configure .npmrc:**
 ```
-@agile-crafts-people:registry=https://npm.pkg.github.com
+@{{org.git_org}}:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 ```
 
@@ -240,7 +240,7 @@ See spa_utils for examples of how to implement these patterns.
 
 1. **Always enable search for list pages** - Use `searchable: true` and provide `searchQueryFn` for all list pages
 2. **Use dependency injection for useRoles** - Create app-specific wrapper that provides auth/config providers
-3. **Import from main package** - Use `import { ... } from '@agile-crafts-people/spa_utils'` for all utilities
+3. **Import from main package** - Use `import { ... } from '@{{org.git_org}}/spa_utils'` for all utilities
 4. **Follow automation ID patterns** - Use `{domain}-{page}-{element}` pattern for all interactive elements
 5. **Reuse validation rules** - Use `validationRules` from spa_utils instead of creating custom rules
 6. **Consistent date formatting** - Always use `formatDate` from spa_utils for date display

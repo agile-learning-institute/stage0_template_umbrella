@@ -47,7 +47,7 @@ update:
 	chmod +x ~/.mentorhub/mh && \
 	cp ./DeveloperEdition/docker-compose.yaml ~/.mentorhub/docker-compose.yaml && \
 	GITHUB_TOKEN=$$(cat ~/.mentorhub/GITHUB_TOKEN) && \
-	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u agile-crafts-people --password-stdin && \
+	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u agile-learning-institute --password-stdin && \
 	echo "Docker login completed" && \
 	git config --global --unset-all url."https://@github.com/".insteadOf 2>/dev/null || true && \
 	git config --global url."https://$$GITHUB_TOKEN@github.com/".insteadOf "https://github.com/" && \
