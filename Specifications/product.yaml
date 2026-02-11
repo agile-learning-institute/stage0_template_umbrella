@@ -12,6 +12,7 @@ info:
 
 organization:
   name: {{org.name}}
+  email: {{org.email}}
   founded: {{org.founded}}
   slug: {{org.slug}}
   git_host: {{org.git_host}}
