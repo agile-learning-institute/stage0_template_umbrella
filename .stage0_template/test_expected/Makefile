@@ -1,4 +1,4 @@
-.PHONY: help install update spark-runbook schemas container push
+.PHONY: help install update spark-runbook schemas container push build-publish
 
 help:
 	@echo "Mentor Hub Developer CLI - Available commands:"
@@ -67,10 +67,12 @@ schemas:
 
 container:
 	@echo "Building Mentor Hub container..."
-	@docker build -t ghcr.io/agile-learning-institute/mentorhub:latest .
+	@DOCKER_BUILDKIT=0 docker build -t ghcr.io/agile-learning-institute/mentorhub:latest .
 	@echo "Container built successfully: ghcr.io/agile-learning-institute/mentorhub:latest"
 
 push:
 	@echo "Pushing Mentor Hub container..."
 	@docker push ghcr.io/agile-learning-institute/mentorhub:latest
 	@echo "Container Pushed successfully: ghcr.io/agile-learning-institute/mentorhub:latest"
+
+build-publish: container push

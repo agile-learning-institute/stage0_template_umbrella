@@ -1,4 +1,4 @@
-.PHONY: help install update spark-runbook schemas container push
+.PHONY: help install update spark-runbook schemas container push build-publish
 
 help:
 	@echo "{{info.name}} Developer CLI - Available commands:"
@@ -67,10 +67,12 @@ schemas:
 
 container:
 	@echo "Building {{info.name}} container..."
-	@docker build -t {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest .
+	@DOCKER_BUILDKIT=0 docker build -t {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest .
 	@echo "Container built successfully: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest"
 
 push:
 	@echo "Pushing {{info.name}} container..."
 	@docker push {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest
 	@echo "Container Pushed successfully: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}:latest"
+
+build-publish: container push
