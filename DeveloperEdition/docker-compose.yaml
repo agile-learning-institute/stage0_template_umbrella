@@ -12,7 +12,7 @@ services:
       - runbook
       - mongodb
       - sample
-      - sample-api
+      - sample_api
 
   ##################################
   # Custom Runbook API Service (Deployed Profile)
@@ -78,7 +78,7 @@ services:
       - all
       - mongodb
       - sample
-      - sample-api
+      - sample_api
 
   ##################################
   # Mongo Database Configuration Utilities
@@ -104,7 +104,7 @@ services:
       - all
       - mongodb
       - sample
-      - sample-api
+      - sample_api
 
   mongodb_spa:
     image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
@@ -122,7 +122,7 @@ services:
       - all
       - mongodb
       - sample
-      - sample-api
+      - sample_api
 
   ##################################
   # Sample Microservice 
@@ -147,7 +147,7 @@ services:
     profiles:
       - all
       - sample
-      - sample-api
+      - sample_api
 
   sample_spa:
     image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_sample_spa:latest
