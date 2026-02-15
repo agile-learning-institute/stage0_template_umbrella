@@ -11,8 +11,8 @@ services:
       - all
       - runbook
       - mongodb
-      - template
-      - template-api
+      - sample
+      - sample-api
 
   ##################################
   # Custom Runbook API Service (Deployed Profile)
@@ -77,6 +77,8 @@ services:
     profiles:
       - all
       - mongodb
+      - sample
+      - sample-api
 
   ##################################
   # Mongo Database Configuration Utilities
@@ -95,20 +97,14 @@ services:
       API_PORT: 8385
       SPA_PORT: 8386
       UI_HEADER: "Mentor Hub MongoDB Configurations"
-    healthcheck:
-      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8081/api/config/').read()\" || exit 1"]
-      interval: 5s
-      timeout: 30s
-      start_period: 0s
-      retries: 3
     depends_on:
       mongodb:
         condition: service_healthy
     profiles:
       - all
       - mongodb
-      - template
-      - template-api
+      - sample
+      - sample-api
 
   mongodb_spa:
     image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
@@ -125,44 +121,46 @@ services:
     profiles:
       - all
       - mongodb
+      - sample
+      - sample-api
 
   ##################################
-  # Template Microservice 
+  # Sample Microservice 
   ##################################
-  # template_api:
-  #   image: ghcr.io/agile-learning-institute/mentorhub_template_api:latest
-  #   restart: no
-  #   ports:
-  #     - "127.0.0.1:8184:8184"
-  #   environment:
-  #     MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
-  #     MONGODB_REQUIRE_TLS: False
-  #     MONGO_DB_NAME: mentor_hub
-  #     ENABLE_LOGIN: "true"
-  #     LOGGING_LEVEL: "INFO"
-  #     JWT_SECRET: ${JWT_SECRET}
-  #     TEMPLATE_API_PORT: 8184
-  #     TEMPLATE_SPA_PORT: 8185
-  #   depends_on:
-  #     mongodb_api:
-  #       condition: service_healthy
-  #   profiles:
-  #     - all
-  #     - template-api
-  #     - template
+  sample_api:
+    image: ghcr.io/agile-learning-institute/mentorhub_sample_api:latest
+    restart: no
+    ports:
+      - "127.0.0.1:8389:8389"
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
+      MONGODB_REQUIRE_TLS: False
+      MONGO_DB_NAME: mentor_hub
+      ENABLE_LOGIN: "true"
+      LOGGING_LEVEL: "INFO"
+      JWT_SECRET: ${JWT_SECRET}
+      SAMPLE_API_PORT: 8389
+      SAMPLE_SPA_PORT: 8390
+    depends_on:
+      mongodb_api:
+        condition: service_started
+    profiles:
+      - all
+      - sample
+      - sample-api
 
-  # template_spa:
-  #   image: ghcr.io/agile-learning-institute/mentorhub_template_spa:latest
-  #   restart: no
-  #   ports:
-  #     - "127.0.0.1:8185:80"
-  #   environment:
-  #     API_HOST: template_api
-  #     API_PORT: 8184
-  #     SPA_PORT: 8185
-  #   depends_on:
-  #     template_api:
-  #       condition: service_started
-  #   profiles:
-  #     - all
-  #     - template
+  sample_spa:
+    image: ghcr.io/agile-learning-institute/mentorhub_sample_spa:latest
+    restart: no
+    ports:
+      - "127.0.0.1:8390:80"
+    environment:
+      API_HOST: sample_api
+      API_PORT: 8389
+      SPA_PORT: 8390
+    depends_on:
+      sample_api:
+        condition: service_started
+    profiles:
+      - all
+      - sample
