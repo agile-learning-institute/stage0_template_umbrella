@@ -25,12 +25,12 @@ make update
 When local environment values are required (GitHub access tokens, etc.) they are stored in the hidden folder ``~/.mentorhub`` instead of a being replicated across multiple repo level .env files. 
 
 ## GITHUB_TOKEN
-We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. You should create a GitHub classic access token with `repo` and `write:packages` privileges. This token should be saved in ``~/.mentorhub/GITHUB_TOKEN``. 
+We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. You should create a GitHub classic access token with `repo` `workflow`, and `write:packages` privileges. This token should be saved in ``~/.mentorhub/GITHUB_TOKEN``. 
 
-To create a token, login to GitHub and click your Profile Pic -> Settings -> Developer Settings -> Personal access tokens -> Tokens(classic) -> Create New -> ✅ repo, ✅ write:packages. For reference: [ghcr and github tokens](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+To create a token, login to GitHub and click your Profile Pic -> Settings -> Developer Settings -> Personal access tokens -> Tokens(classic) -> Create New -> ✅ repo, ✅ workflow, ✅ write:packages. For reference: [ghcr and github tokens](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
   
 ## Finally
-After you have everything setup, run update to finalize the install.
+After you have everything setup, run update to finish the install.
 ```sh
 ## Update Developer Edition configurations
 make update
