@@ -5,7 +5,10 @@ The Mentor Hub Developer Edition ``mh`` is a Command Line Interface that provide
 ## Prerequisites
 - **zsh shell** - Default on MacOS, https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH otherwise
 - **yq** - Yaml Parser, ``brew install yq`` on Mac or https://mikefarah.gitbook.io/yq
-- **Docker Compass** - https://www.mongodb.com/docs/compass/install/
+- **Mongo Compass** - https://www.mongodb.com/docs/compass/install/
+- **Python 3.12^** - https://www.python.org/downloads/
+- **Pipenv** - https://pipenv.pypa.io/en/latest/
+- **Node npm 11.5^** - https://nodejs.org/en/download 
 
 ## Quick Start
 Use these commands to install the Developer Edition ``de`` command line utility. 

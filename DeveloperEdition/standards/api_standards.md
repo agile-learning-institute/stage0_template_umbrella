@@ -1,7 +1,7 @@
 # API Standards
 
 ## Technology Stack
-- Python v3.15
+- Python v3.12^
 - pipenv v2026.0.2
 - Flask v
 - pymongo v4.15.5
