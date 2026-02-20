@@ -58,9 +58,9 @@ schemas:
 	@echo "Fetching JSON schemas for all data dictionaries..."
 	@mkdir -p ./Specifications/schemas
 	@yq eval '.data_dictionaries[] | "\(.name)|\(.version)"' ./Specifications/catalog.yaml | \
-	while IFS='|' read -r name version; do \
-		echo "Fetching schema for $${name} (version $${version})..."; \
-		curl -s "localhost:8180/api/configurations/json_schema/$${name}.yaml/$${version}" > "./Specifications/schemas/$${name}.schema.json" \
+	while IFS='|' read -r name; do \
+		echo "Fetching schema for $${name}"; \
+		curl -s "localhost:8180/api/configurations/json_schema/$${name}.yaml/0.1.0.0" > "./Specifications/schemas/$${name}.schema.json" \
 		|| echo "Warning: Failed to fetch schema for $${name}"; \
 	done
 	@echo "Schema fetching complete."
