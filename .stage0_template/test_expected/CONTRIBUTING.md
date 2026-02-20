@@ -3,12 +3,14 @@
 The Mentor Hub Developer Edition ``mh`` is a Command Line Interface that provides key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
 
 ## Prerequisites
+- **Docker Desktop** - https://www.docker.com/get-started/
 - **zsh shell** - Default on MacOS, https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH otherwise
 - **yq** - Yaml Parser, ``brew install yq`` on Mac or https://mikefarah.gitbook.io/yq
 - **Mongo Compass** - https://www.mongodb.com/docs/compass/install/
 - **Python 3.12^** - https://www.python.org/downloads/
 - **Pipenv** - https://pipenv.pypa.io/en/latest/
 - **Node npm 11.5^** - https://nodejs.org/en/download 
+- **WSL** - For windows users - https://learn.microsoft.com/en-us/windows/wsl/install
 
 ## Quick Start
 Use these commands to install the Developer Edition ``de`` command line utility. 
