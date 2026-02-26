@@ -24,7 +24,8 @@ organization:
   docker_org: <same as org slug>
 ```
 
-Once you have saved those changes use the ``make merge`` command as shown below, and then re-load the README to continue.
+Once you have saved those changes use the ``make merge`` command as shown below, and then re-load the README to continue. You will need to have the ``make`` utility and [Docker Desktop](https://www.docker.com/get-started/) installed to merge this template. 
+
 ```sh
 ## Merge your specifications with the template
 make merge .stage0_template/Specifications
