@@ -1,28 +1,33 @@
 # Umbrella Project Template
 
 ## Quick Start
-This is a template to create the Umbrella Repo for your system. To use this template, first create a ~/temp/Specifications/product.yaml file, fill in the data below:
+This is a template to create the Umbrella Repo for your system. Create a new repo using this template and clone it down to your computer. We suggest cloning it into a ``source`` folder, many repo's will be cloned to this location. 
+
+Now, update the template [product.yaml](./.stage0_template/Specifications/product.yaml) to reflect your use case. See below for pointers on what values to use.
 ```yaml
 info:
-  name: A Short Name for your Product
-  description: A paragraph length description of the idea.
-  slug: A version of the short name without any spaces
+  name: <Your Product Name>
+  description: <Your Product Description>
+  slug: <slug> - A short one-word name for your product
+  developer_cli: <cli> - A very short 2-character CLI command for your product
+  db_name: <db_name> Any database name
+  base_port: 8383 - A dozen or so port numbers will be assigned starting with this number. 
 
 organization:
-  name: The organization make
-  founded: now()
-  slug: Organization name without spaces
-  git_host: https://github.com 
-  git_org: typically the same as the slug
+  name: <Organization Name>
+  email: <info@your-organization.com>
+  founded: 2024
+  slug: <Github Org Name> i.e. agile-learning-institute
+  git_host: https://github.com
+  git_org: <same as org slug>
   docker_host: ghcr.io
-  docker_org: typically the same as the slug
-
+  docker_org: <same as org slug>
 ```
 
-Then, create a new repo using this template and clone it down, and use the ``make merge`` command as shown below. 
+Once you have saved those changes use the ``make merge`` command as shown below, and then re-load the README to continue.
 ```sh
 ## Merge your specifications with the template
-make merge ~/temp/Specifications
+make merge .stage0_template/Specifications
 ```
 
 ## Contributing
@@ -39,6 +44,12 @@ Checking output...
 Only in /Users/you/tmp/testRepo: .git
 Only in /Users/you/tmp/testRepo/configurator: .DS_Store
 Done.
+
+## Look at one file diff from testing
+make diff README.md
+
+## Copy a generated file to the test_expected folder
+make take somefile.json
 
 ## Clean up temp files from testing
 ## Removes tmp folders
