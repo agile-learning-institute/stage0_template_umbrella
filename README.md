@@ -3,7 +3,7 @@
 ## Quick Start
 This is a template to create the Umbrella Repo for your system. Create a new repo using this template and clone it down to your computer. We suggest cloning it into a ``source`` folder, many repo's will be cloned to this location. 
 
-Now, update the template [product.yaml](./.stage0_template/Specifications/product.yaml) to reflect your use case. See below for pointers on what values to use.
+Now, update the template [.stage0_template/Specifications/product.yaml](./.stage0_template/Specifications/product.yaml) to reflect your use case. See below for pointers on what values to use.
 ```yaml
 info:
   name: <Your Product Name>
