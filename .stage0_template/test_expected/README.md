@@ -1,5 +1,186 @@
 # Agile Learning Institute Mentor Hub
 
+## Stage0 Demo Quickstart
+Use the instructions below to 
+- Familiarize yourself with project [Standards](#familiarize-yourself-with-standards)
+- Update your [product Specifications](#update-your-specifications) 
+- [Run an AI Task](#use-ai-task-to-propagate-changes) to propagate changes.
+- Install the [Developer CLI](#install-the-developer-cli) and prerequisites
+- [Launch](#launch-your-product) 🚀 your product!
+
+--- 
+
+### Familiarize yourself with standards. 
+- Review [Architecture Principles](./DeveloperEdition/standards/ArchitecturePrinciples.md) to understand the architecture supported by the current templates.
+- Review the various [Coding Standards](./DeveloperEdition/standards/) implemented in the API, UI, DB, and SRE domains.
+- Review the [Specifications](./Specifications/) to understand the starting point.
+
+Note: Now is the time for your team to review and approve or modify these standards. The tooling will work with alternative technologies or architectures. Any updates will likely require template refactors, but the effort to do so is minimal for most changes.
+
+---
+
+### Update your Specifications
+Design specifications are documented as ``yaml`` files in the Specifications folder. The three key files used by the templates are:
+- [product.yaml](./Specifications/product.yaml) that you created when you merged the template.
+- [catalog.yaml](./Specifications/catalog.yaml) that will define the top-level data domains within your system. 
+- [architecture.yaml](./Specifications/architecture.yaml) that describes the micro-service domains of your system. 
+
+Start by updating your [catalog.yaml](./Specifications/catalog.yaml) to list the data domains of your system. These will align with MongoDB Collections in the generated code.This is an example used by the Mentor Hub testing project.
+```yaml
+data_dictionaries:
+  - name: Identity
+    description: The IdP Identity of a person who is a user of the system. 
+  - name: Profile
+    description: User Preferences associated with one **Identity**.
+  - name: Organization  
+    description: An organization that a member belongs to.
+  - name: Event
+    description: A meaningful event for a user.
+  - name: Resource
+    description: A learning resource (link)
+  - name: Path
+    description: A learning path through resources
+  - name: Plan
+    description: A learning plan for a encounter.
+  - name: Encounter
+    description: A learning encounter between a mentor and a member.
+  - name: Curriculum
+    description: A learning curriculum for a encounter.
+  - name: Rating
+    description: A rating of a resource.
+  - name: Review
+    description: A review of a resource.
+```
+
+Now update your architecture.yaml file to describe the micro-services in your system. The current file contains a sample microservice 
+```yaml
+    - name: sample
+      description: Sample Service Domain - use for each User Journey domain.
+      data_domains:
+        controls:
+          - Control 
+        creates:
+          - Create 
+        consumes:
+          - Consume
+      repos:
+        - name: sample_api
+          description: Flask API with MongoDB Database
+          template: agile-learning-institute/stage0_template_flask_mongo
+          publish: pipenv
+          type: api
+          port: 8389
+        - name: sample_spa
+          description: Vue Vuetify SPA
+          template: agile-learning-institute/stage0_template_vue_vuetify
+          publish: npm
+          type: spa
+          port: 8390
+```
+Replace this service with your own. This is an example of the Mentor Hub testing data:
+```yaml
+    - name: profile
+      description: A User Profile
+      data_domains:
+        controls:
+          - Profile 
+          - Organization
+        creates:
+          - Event
+        consumes:
+          - Identity
+      repos:
+        - name: profile_api
+          description: Profile API
+          template: agile-learning-institute/stage0_template_flask_mongo
+          publish: pipenv
+          type: api
+          port: 8389
+        - name: profile_spa
+          description: Profile SPA
+          template: agile-learning-institute/stage0_template_vue_vuetify
+          publish: npm
+          type: spa
+          port: 8390
+    - name: mentor
+      description: Mentor User Journey Domain
+      data_domains:
+        controls:
+          - Resource
+          - Path
+          - Plan
+          - Encounter
+        creates:
+          - Event
+        consumes:
+          - Profile
+      repos:
+        - name: mentor_api
+          description: Mentor API
+          template: agile-learning-institute/stage0_template_flask_mongo
+          publish: pipenv
+          type: api
+          port: 8391
+        - name: mentor_spa
+          description: Mentor SPA
+          template: agile-learning-institute/stage0_template_vue_vuetify
+          publish: npm
+          type: spa
+          port: 8392
+    - name: member
+      description: Member User Journey Domain
+      data_domains:
+        controls:
+          - Curriculum
+          - Rating
+          - Review
+        creates:
+          - Event
+        consumes:
+          - Resource
+          - Path 
+      repos:
+        - name: member_api
+          description: Member API
+          template: agile-learning-institute/stage0_template_flask_mongo
+          publish: pipenv
+          type: api
+          port: 8393 
+        - name: member_spa
+          description: Member SPA
+          template: agile-learning-institute/stage0_template_vue_vuetify
+          publish: npm
+          type: spa
+          port: 8394                  
+```
+
+### Use AI Task to propagate changes. 
+
+Copy - paste this prompt to your AI Code Assistant:
+
+---
+
+Review this [README](./Tasks/README.md) for context and execute [this task](./Tasks/AS_NEEDED.R100.after_specs_update.md).
+
+---
+
+### Install the Developer CLI
+Install the developer CLI and all of the developer pre-req's so that the Launch scripts can run successfully. Follow all of the instructions in [CONTRIBUTING.md](./CONTRIBUTING.md)
+
+### Launch your product.
+Use these commands to generate, clone, merge, and build all of your repo's and then start the containers in your local dev environment.
+```sh
+make launch-all
+mh up all
+```
+
+The ``launch-all`` command may take a while to run. After using the ``mh up all`` command visit the [welcome page](localhost:8080) in your browser.
+
+Now is a good time to add all of the generated repo's to your IDE workspace (And delete this part of the README). At some point the SRE's may want to remove some of the scripts in the Makefile. Commands like ``delete-all``, ``clean-clone-build``, and ``launch-all`` should have a limited lifetime in the repo. Keep them around until you are sure that the architecture has settled and no more code generation is needed. 
+
+
+---
+
 ## Big Idea
 A platform to connect mentors with engineers engaged in a life long learning journey.
 

@@ -25,16 +25,17 @@ Update `DeveloperEdition/docker-compose.yaml` and the welcome page `index.html` 
 
 ### docker-compose.yaml
 
-- Add or update service definitions for each domain in the architecture (runbook, schema/mongodb, profile, mentor, member, etc.).
-- **For each microservice domain, define two profiles:**
+- Add or update service definitions for each new domain in the architecture.
+- Do not change the existing welcome, runbook, or schema/mongodb services. 
+- **For each new microservice domain, define two profiles:**
   - `{domain}-api` – API service only (e.g. `profile-api` → profile_api)
   - `{domain}` – API + SPA (e.g. `profile` → profile_api + profile_spa)
-- Ensure backing services (e.g. mongodb) are included in the profiles of any service that depends on them.
+- Ensure backing services (e.g. mongodb) are included in the profiles of any new services.
 
 ### index.html
 
 - Add links for each service SPA (with correct ports from the architecture).
-- Add an API Explorer link for each backing API (e.g. `/docs/index.html` or `/docs/explorer.html` as appropriate for each service type).
+- Add an API Explorer link for each backing API - e.g. `/docs/index.html` for the mongodb_spa or `/docs/explorer.html` for all other API's.
 
 ## Testing expectations
 

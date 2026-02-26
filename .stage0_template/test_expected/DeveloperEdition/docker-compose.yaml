@@ -6,13 +6,12 @@ services:
   welcome:
     image: ghcr.io/agile-learning-institute/mentorhub:latest
     ports:
-      - "127.0.0.1:80:80"
+      - "127.0.0.1:8080:80"
     profiles:
       - all
       - runbook
       - mongodb
       - sample
-      - sample_api
 
   ##################################
   # Custom Runbook API Service (Deployed Profile)

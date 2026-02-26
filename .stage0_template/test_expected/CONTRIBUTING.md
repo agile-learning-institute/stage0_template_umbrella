@@ -2,37 +2,66 @@
 
 The Mentor Hub Developer Edition ``mh`` is a Command Line Interface that provides key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
 
-## Prerequisites
-- **Docker Desktop** - https://www.docker.com/get-started/
-- **zsh shell** - Default on MacOS, https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH otherwise
-- **yq** - Yaml Parser, ``brew install yq`` on Mac or https://mikefarah.gitbook.io/yq
-- **Mongo Compass** - https://www.mongodb.com/docs/compass/install/
-- **Python 3.12^** - https://www.python.org/downloads/
-- **Pipenv** - https://pipenv.pypa.io/en/latest/
-- **Node npm 11.5^** - https://nodejs.org/en/download 
-- **WSL** - For windows users - https://learn.microsoft.com/en-us/windows/wsl/install
+## Step 1 of 4 - Install Prerequisites
 
-## Quick Start
-Use these commands to install the Developer Edition ``de`` command line utility. 
+Run `make verify` to check that all prerequisites are installed. If any fail, install them using the links below.
+
+### Build tools
+- **make** - Usually pre-installed. macOS: Xcode Command Line Tools (`xcode-select --install`). Linux: `apt install build-essential` or equivalent. https://www.gnu.org/software/make/
+- **Node.js** (v18+) - https://nodejs.org/en/download
+- **npm** (v11.5+) - Bundled with Node.js
+- **Vite** - `npm install -g vite` or use via `npx vite`. https://vitejs.dev/guide/
+
+### Python tools
+- **Python 3.12+** - https://www.python.org/downloads/
+- **Pipenv** - https://pipenv.pypa.io/en/latest/ (`pip install pipenv`)
+
+### Container tools
+- **Docker Desktop** - https://www.docker.com/get-started/
+- **Docker Buildx** - Bundled with Docker Desktop. Standalone: https://docs.docker.com/buildx/working-with-buildx/
+
+### GitHub & Git
+- **GITHUB_TOKEN** - See [Configuring AccessToken](#configure-access-tokens) 
+- **gh** (GitHub CLI) - https://cli.github.com/
+- **git** - https://git-scm.com/downloads
+
+### Utilities
+- **jq** - https://jqlang.github.io/jq/download/ (macOS: `brew install jq`)
+- **yq** - https://mikefarah.gitbook.io/yq (macOS: `brew install yq`)
+- **curl** - Usually pre-installed. https://curl.se/download.html
+- **ssh** - Usually pre-installed. https://www.openssh.com/
+
+### Other
+- **zsh shell** - Default on macOS. Linux: https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
+- **Mongo Compass** - https://www.mongodb.com/docs/compass/install/
+- **WSL** - For Windows users: https://learn.microsoft.com/en-us/windows/wsl/install
+
+## Step 2 of 4 - Install the CLI
+Use these commands to install the Developer Edition ``mh`` command line utility. 
 ```sh
-git clone git@https://github.com:agile-learning-institute/mentorhub.git
+git clone git@github.com:agile-learning-institute/mentorhub.git
 cd mentorhub
 make install
-cp <YOUR_TOKEN> ~/.mentorhub/GITHUB_TOKEN
-make update
-
 ```
 
-## Configure access tokens
+## Step 3 of 4 - Configure access tokens
 When local environment values are required (GitHub access tokens, etc.) they are stored in the hidden folder ``~/.mentorhub`` instead of a being replicated across multiple repo level .env files. 
 
-## GITHUB_TOKEN
-We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. You should create a GitHub classic access token with `repo` `workflow`, and `write:packages` privileges. This token should be saved in ``~/.mentorhub/GITHUB_TOKEN``. 
+### GITHUB_TOKEN
+We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. Create a GitHub classic access token with `repo` `workflow`, and `write:packages` privileges. Export it as `GITHUB_TOKEN` before running launch scripts (e.g. `export GITHUB_TOKEN=ghp_xxx`).
 
-To create a token, login to GitHub and click your Profile Pic -> Settings -> Developer Settings -> Personal access tokens -> Tokens(classic) -> Create New -> ✅ repo, ✅ workflow, ✅ write:packages. For reference: [ghcr and github tokens](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+To create a token, login to GitHub and click your Profile Pic -> Settings -> Developer Settings -> Personal access tokens -> Tokens(classic) -> Create New -> ✅ repo, ✅ workflow, ✅ write:packages. Users wanting to use Stage0 Delete commands will also need ✅ delete:packages and ✅ delete_repo permissions. For reference: [ghcr and github tokens](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+
+### Git HTTPS auth (for launch scripts)
+The launch scripts clone and push via HTTPS using your token. If you normally use SSH and run git steps manually, configure HTTPS auth once:
+```sh
+export GITHUB_TOKEN=ghp_your_token
+git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+```
+Or clone with the token in the URL: `git clone https://x-access-token:${GITHUB_TOKEN}@github.com/org/repo.git`
   
-## Finally
-After you have everything setup, run update to finish the install.
+## Step 4 or 4 - Finally
+After you have everything installed and your token in place, run update to finish the install.
 ```sh
 ## Update Developer Edition configurations
 make update
