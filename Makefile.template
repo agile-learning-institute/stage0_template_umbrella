@@ -167,11 +167,11 @@ launch-services:
 			echo "  Merging $$REPO_FULL"; \
 			cd "$(SOURCE)/$$REPO_FULL" && SERVICE_NAME=$$svc make merge "$(SPECS_DIR)" || { echo "Failed merge: $$REPO_FULL"; exit 1; }; \
 			if [ -n "$$publish" ]; then \
-				echo "  Build-publish $$REPO_FULL ($$publish)"; \
+				echo "  Build-package & publish-package $$REPO_FULL ($$publish)"; \
 				case "$$publish" in \
-					make)   make build-publish ;; \
-					npm)    npm run build-publish ;; \
-					pipenv) pipenv run build-publish ;; \
+					make)   make build-package && make publish-package ;; \
+					npm)    npm run build-package && npm run publish-package ;; \
+					pipenv) pipenv run build-package && pipenv run publish-package ;; \
 					*)      echo "Unknown publish: $$publish"; exit 1 ;; \
 				esac || { echo "Failed build: $$REPO_FULL"; exit 1; }; \
 			fi; \
@@ -201,9 +201,9 @@ clean-clone-build:
 			echo "  Build $$REPO_FULL ($$publish)"; \
 			cd "$(SOURCE)/$$REPO_FULL" && ( \
 				case "$$publish" in \
-					make)   make build-package 2>/dev/null || make container 2>/dev/null || true ;; \
-					npm)    npm run build-package 2>/dev/null || npm run container 2>/dev/null || true ;; \
-					pipenv) pipenv run build-package 2>/dev/null || pipenv run container 2>/dev/null || true ;; \
+					make)   make build-package ;; \
+					npm)    npm run build-package ;; \
+					pipenv) pipenv run build-package ;; \
 					*)      echo "Skipped (no publish): $$REPO_FULL" ;; \
 				esac \
 			) || true; \
@@ -226,17 +226,32 @@ delete-services:
 	read -p "Proceed? (y/n) " confirm && [ "$$confirm" = "y" ] || { echo "Aborted."; exit 1; }; \
 	for svc in $(SERVICES); do \
 		[ -z "$$svc" ] && continue; \
-		REPO_LINES=$$(yq '.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | .name' $(ARCH_FILE) 2>/dev/null) || true; \
+		REPO_LINES=$$(yq '.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
 		[ -z "$$REPO_LINES" ] && continue; \
 		echo "--- Domain: $$svc ---"; \
-		for repo_name in $$REPO_LINES; do \
+		echo "$$REPO_LINES" | while IFS='|' read -r repo_name publish; do \
 			[ -z "$$repo_name" ] && continue; \
 			REPO_FULL="$(SLUG)_$$repo_name"; \
 			REPO="$(ORG)/$$REPO_FULL"; \
 			echo "  Clean $$REPO_FULL"; \
 			rm -rf "$(SOURCE)/$$REPO_FULL"; \
+			echo "  Clone $$REPO (for delete-package)"; \
+			cd "$(SOURCE)" && gh repo clone "$$REPO" "$$REPO_FULL" 2>/dev/null || { echo "  (repo may not exist, skipping delete-package)"; }; \
+			if [ -d "$(SOURCE)/$$REPO_FULL" ] && [ -n "$$publish" ]; then \
+				echo "  Delete-package $$REPO_FULL ($$publish)"; \
+				cd "$(SOURCE)/$$REPO_FULL" && ( \
+					case "$$publish" in \
+						make)   make delete-package ;; \
+						npm)    npm run delete-package ;; \
+						pipenv) pipenv run delete-package ;; \
+						*)      ;; \
+					esac \
+				) 2>/dev/null || true; \
+			fi; \
 			echo "  Delete repo $$REPO"; \
 			gh repo delete "$$REPO" --yes 2>/dev/null || echo "  (repo may not exist)"; \
+			rm -rf "$(SOURCE)/$$REPO_FULL"; \
+			cd "$(MAKEFILE_DIR)" || true; \
 		done; \
 	done; \
 	echo "Delete complete."
