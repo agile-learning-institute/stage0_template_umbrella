@@ -30,9 +30,12 @@ Update `DeveloperEdition/docker-compose.yaml` and the welcome page `index.html` 
 - Do not create services or links for the common_code domain.
 - **Remove** the sample profile and any sample_api/sample_spa services (they are legacy placeholders).
 - **Welcome service** must be included in ALL profiles (every profile in the file). When adding new domains, add their profiles (e.g. `{domain}`, `{domain}-api`) to the welcome service profiles list so the welcome page always starts with any profile.
+- **Use ports from architecture.yaml exactly** – The template merge process configures APIs to listen on the port specified in the architecture. Docker-compose ports and API_PORT env must match (e.g. profile_api: 9096, profile_spa: 9097).
 - **For each new microservice domain, define two profiles:**
   - `{domain}-api` – API service only (e.g. `profile-api` → profile_api)
   - `{domain}` – API + SPA (e.g. `profile` → profile_api + profile_spa)
+- **Add API_PORT** to each API service environment so the app binds correctly.
+- **Add IDP_LOGIN_URI** to each SPA with its own port (e.g. `http://localhost:9097/login` for profile_spa) for dev-login flow.
 - Ensure backing services (e.g. mongodb) are included in the profiles of any new services.
 - Ensure all new services are included in the all profile.
 
