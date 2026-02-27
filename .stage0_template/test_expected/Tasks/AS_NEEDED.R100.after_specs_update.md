@@ -32,6 +32,7 @@ Update `DeveloperEdition/docker-compose.yaml` and the welcome page `index.html` 
   - `{domain}-api` – API service only (e.g. `profile-api` → profile_api)
   - `{domain}` – API + SPA (e.g. `profile` → profile_api + profile_spa)
 - Ensure backing services (e.g. mongodb) are included in the profiles of any new services.
+- Ensure all new services are included in the all profile.
 
 ### index.html
 
