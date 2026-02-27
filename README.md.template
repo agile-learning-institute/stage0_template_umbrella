@@ -29,28 +29,29 @@ Start by updating your [catalog.yaml](./Specifications/catalog.yaml) to list the
 ```yaml
 data_dictionaries:
   - name: Identity
-    description: The IdP Identity of a person who is a user of the system. 
+    description: The Identity of a person who is a user of the CreatorDashboard system. 
   - name: Profile
-    description: User Preferences associated with one **Identity**.
-  - name: Organization  
-    description: An organization that a member belongs to.
-  - name: Event
-    description: A meaningful event for a user.
-  - name: Resource
-    description: A learning resource (link)
-  - name: Path
-    description: A learning path through resources
-  - name: Plan
-    description: A learning plan for a encounter.
-  - name: Encounter
-    description: A learning encounter between a mentor and a member.
-  - name: Curriculum
-    description: A learning curriculum for a encounter.
-  - name: Rating
-    description: A rating of a resource.
-  - name: Review
-    description: A review of a resource.
-```
+    description: User Profile associated with one or more **Users**, and optionally with an **Identity**.
+  - name: Platform
+    description: A social media platform which hosts **Users** and **Posts**.
+  - name: User
+    description: A User of a social media platform. Some **Users** are **Creators**.
+  - name: Dashboard
+    description: A Dashboard Configuration for a **Profile**
+  - name: Post
+    description: The content published by a **Creator** on a **Platform**. Post types can be Video, Image, or Text.
+  - name: Comment
+    description: A comment, created by a **User**, on a **Post**. A Comment can have **Comments**
+  - name: Sentiment
+    description: A sentiment of a **Post** or **Comment**.
+  - name: Classification
+    description: A classification of a **Post** or **Comment**.
+  - name: TestRun
+    description: A LLM Model/Prompt test run - generates **Grades** from **TestData**
+  - name: TestData
+    description: A collection of data used to test a **TestRun**.
+  - name: Grade
+    description: A LLM Model/Prompt test run - generates **Grades** from **TestData**```
 
 Now update your architecture.yaml file to describe the micro-services in your system. The current file contains a sample microservice 
 ```yaml
@@ -77,83 +78,104 @@ Now update your architecture.yaml file to describe the micro-services in your sy
           type: spa
           port: 8390
 ```
-Replace this service with your own. This is an example of the {{info.name}} testing data, 
+Replace this service with your own. This is an example of the Creator Dashboard testing data, 
 note that all of the data_domains listed are present in the catalog.yaml file. 
 This is critical and misalignment will result in non-functional code.
 ```yaml
     - name: profile
-      description: A User Profile
+      description: User Profile Management.
       data_domains:
         controls:
-          - Profile 
-          - Organization
-        creates:
-          - Event
+          - Profile
+          - Platform
+          - User
+        creates: []
         consumes:
           - Identity
       repos:
         - name: profile_api
-          description: Profile API
+          description: Consumes Identity Service Bus events and manages Profile data.
           template: agile-learning-institute/stage0_template_flask_mongo
           publish: pipenv
           type: api
-          port: 8389
+          port: 9096
         - name: profile_spa
-          description: Profile SPA
+          description: Profile API Status Single Page Web Application
           template: agile-learning-institute/stage0_template_vue_vuetify
           publish: npm
           type: spa
-          port: 8390
-    - name: mentor
-      description: Mentor User Journey Domain
+          port: 9097
+    - name: evaluator
+      description: Sentiment Analysis Prompt and Model evaluation tool
       data_domains:
         controls:
-          - Resource
-          - Path
-          - Plan
-          - Encounter
+          - TestRun
+          - TestData
         creates:
-          - Event
+          - Grade
         consumes:
           - Profile
       repos:
-        - name: mentor_api
-          description: Mentor API
+        - name: evaluator_api
+          description: Evaluator API Server
           template: agile-learning-institute/stage0_template_flask_mongo
           publish: pipenv
           type: api
-          port: 8391
-        - name: mentor_spa
-          description: Mentor SPA
+          port: 9098
+        - name: evaluator_spa
+          description: Evaluator Single Page Web Application - setup/schedule/run/view test results
           template: agile-learning-institute/stage0_template_vue_vuetify
           publish: npm
           type: spa
-          port: 8392
-    - name: member
-      description: Member User Journey Domain
+          port: 9099
+    - name: dashboard
+      description: YouTube Ratio Reporting - Product MVP.
       data_domains:
         controls:
-          - Curriculum
-          - Rating
-          - Review
+          - Dashboard
         creates:
-          - Event
+          - Post
+          - Comment
         consumes:
-          - Resource
-          - Path 
+          - Classification
+          - Profile
       repos:
-        - name: member_api
-          description: Member API
+        - name: dashboard_api
+          description: Dashboard API Server
           template: agile-learning-institute/stage0_template_flask_mongo
           publish: pipenv
           type: api
-          port: 8393 
-        - name: member_spa
-          description: Member SPA
+          port: 9100
+        - name: dashboard_spa
+          description: Dashboard Single Page Web Application
           template: agile-learning-institute/stage0_template_vue_vuetify
           publish: npm
           type: spa
-          port: 8394                  
+          port: 9101
+    - name: classifier
+      description: Comment Sentiment Analysis and Classifier 
+      data_domains:
+        controls:
+          - sentiment
+          - ratios
+        creates: []
+        consumes:
+          - post
+          - comment
+          - user
+      repos:
+        - name: classifier_api
+          description: Sentiment Analysis Classifier API Server
+          template: agile-learning-institute/stage0_template_flask_mongo
+          publish: pipenv
+          type: api
+          port: 9102
+        - name: classifier_spa
+          description: Sentiment Analysis Classifier Single Page Web Application
+          template: agile-learning-institute/stage0_template_vue_vuetify
+          publish: npm
+          type: spa
+          port: 9103
 ```
 
 ### Use AI Task to propagate changes. 
