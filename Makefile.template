@@ -137,8 +137,11 @@ build-package: container
 publish-package: push
 delete-package: gh api -X DELETE /orgs/{{info.git_org}}/packages/container/{{info.slug}}'
 
-launch-all: build-package publish-package
-	@$(MAKE) launch-services SERVICES="$(ALL_SERVICES)"
+launch-all:
+	@START=$$(date +%s); \
+	$(MAKE) build-package publish-package && $(MAKE) launch-services SERVICES="$(ALL_SERVICES)"; \
+	END=$$(date +%s); \
+	echo "Launch Completed - Started at $$START To $$END Duration: $$((END - START)) Seconds"
 
 launch-services:
 	@if [ -z "$(SERVICES)" ]; then echo "Error: SERVICES required. e.g. make launch-services SERVICES=profile"; exit 1; fi; \
@@ -212,8 +215,10 @@ clean-clone-build:
 
 # --- Delete commands (DESTRUCTIVE - do not run automated tests) ---
 delete-all:
-	@$(MAKE) delete-services SERVICES="$(ALL_SERVICES)"
-	echo "Delete-all complete."
+	@START=$$(date +%s); \
+	$(MAKE) delete-services SERVICES="$(ALL_SERVICES)"; \
+	END=$$(date +%s); \
+	echo "Delete Completed - Started at $$START To $$END Duration: $$((END - START)) Seconds"
 
 delete-services:
 	@echo "WARNING: This will DELETE repos and packages. This action is NOT reversible."; \
