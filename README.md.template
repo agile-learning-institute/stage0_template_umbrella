@@ -158,6 +158,7 @@ This is critical and misalignment will result in non-functional code.
 
 ### Use AI Task to propagate changes. 
 
+Now is a good time to make a commit! 
 Copy - paste this prompt to your AI Code Assistant:
 
 ---
