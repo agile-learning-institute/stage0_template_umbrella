@@ -48,11 +48,11 @@ make install
 When local environment values are required (GitHub access tokens, etc.) they are stored in the hidden folder ``~/.mentorhub`` instead of a being replicated across multiple repo level .env files. 
 
 ### GITHUB_TOKEN
-We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. Create a GitHub classic access token with `repo` `workflow`, and `write:packages` privileges. Export it as `GITHUB_TOKEN` before running launch scripts (e.g. `export GITHUB_TOKEN=ghp_xxx`).
+We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. Create a GitHub classic access token with `repo` `workflow`, and `write:packages` privileges. Save it as `GITHUB_TOKEN` in the ``~/.mentorhub/`` folder.
 
 To create a token, login to GitHub and click your Profile Pic -> Settings -> Developer Settings -> Personal access tokens -> Tokens(classic) -> Create New -> ✅ repo, ✅ workflow, ✅ write:packages. Users wanting to use Stage0 Delete commands will also need ✅ delete:packages and ✅ delete_repo permissions. For reference: [ghcr and github tokens](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
 
-### Git HTTPS auth (for launch scripts)
+### Git HTTPS auth (used by launch scripts)
 The launch scripts clone and push via HTTPS using your token. If you normally use SSH and run git steps manually, configure HTTPS auth once:
 ```sh
 export GITHUB_TOKEN=ghp_your_token
@@ -60,7 +60,7 @@ git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".ins
 ```
 Or clone with the token in the URL: `git clone https://x-access-token:${GITHUB_TOKEN}@github.com/org/repo.git`
   
-## Step 4 or 4 - Finally
+## Step 4 of 4 - Finally
 After you have everything installed and your token in place, run update to finish the install.
 ```sh
 ## Update Developer Edition configurations
@@ -86,3 +86,45 @@ We utilize an Issue–Feature–Branch pattern for the developer workflow:
 These pull requests must be peer reviewed before being merged back into the main branch of the repository. This review process may require additional updates before it is approved. This "merge to main" event is what drives CI automation. If you are asked to review a PR, do your best to accommodate a prompt review.
 
 If you have questions about implementing a feature, create your feature branch and open a draft PR with detailed questions and request a review of that PR, and then post a link to the PR in the General channel on Discord.
+
+## Umbrella Repo Developer Commands
+```sh
+# Verify you have all the developer pre-req's installed
+make verify
+
+## Install the developer CLI in your search path
+make install
+
+## Update the developer CLI with the latest compose file
+make update 
+
+## Generate data schemas for all collections in catalog.yaml
+make schemas
+
+## Build the welcome page container
+make container
+
+```
+## Umbrella Repo Stage0 Automation
+The command impact multiple repositories
+```sh
+## Launch all or some services
+make launch-all
+### or ###
+make launch-services "SERVICES=profile sales operations"
+
+## Setup an environment when the Launch is completed
+## Will rm -rf any existing repo's (other than the umbrella)
+make clean-clone-build
+
+######################################################
+######### WARNING - REAL DELETE WITHOUT UNDO #########
+######################################################
+## Deletes all or some repo's and packages from GitHub and local disk
+## NOTE: Does not affect the umbrella repo itself
+make delete-all
+make delete-services "SERVICES=profile sales operations"
+######################################################
+######### WARNING - REAL DELETE WITHOUT UNDO #########
+######################################################
+```

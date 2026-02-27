@@ -10,8 +10,8 @@ SPECS_DIR := $(CURDIR)/Specifications
 MERGE_IMAGE := ghcr.io/agile-learning-institute/stage0_runbook_merge:latest
 ALL_SERVICES := $(shell yq '.architecture.domains[].name' $(ARCH_FILE))
 
-.PHONY: help install update verify schemas container push build-publish
-.PHONY: build-package publish-package clean-clone-build launch-all launch-services delete-all delete-services
+.PHONY: help install update verify schemas container push build-package publish-package 
+.PHONY: clean-clone-build launch-all launch-services delete-all delete-services
 
 help:
 	@echo "Mentor Hub Developer CLI - Available commands:"
@@ -215,10 +215,6 @@ clean-clone-build:
 # --- Delete commands (DESTRUCTIVE - do not run automated tests) ---
 delete-all:
 	@$(MAKE) delete-services SERVICES="$(ALL_SERVICES)"
-	@echo "  Umbrella: delete package $(SLUG)"; \
-	gh api -X DELETE "/orgs/$(ORG)/packages/container/$(SLUG)" 2>/dev/null || true; \
-	echo "  Umbrella: delete repo $(ORG)/$(SLUG)"; \
-	gh repo delete "$(ORG)/$(SLUG)" --yes 2>/dev/null || true; \
 	echo "Delete-all complete."
 
 delete-services:
@@ -233,10 +229,6 @@ delete-services:
 			[ -z "$$repo_name" ] && continue; \
 			REPO_FULL="$(SLUG)_$$repo_name"; \
 			REPO="$(ORG)/$$REPO_FULL"; \
-			echo "  Clean $$REPO_FULL"; \
-			rm -rf "$(SOURCE)/$$REPO_FULL"; \
-			echo "  Clone $$REPO (for delete-package)"; \
-			cd "$(SOURCE)" && gh repo clone "$$REPO" "$$REPO_FULL" 2>/dev/null || { echo "  (repo may not exist, skipping delete-package)"; }; \
 			if [ -d "$(SOURCE)/$$REPO_FULL" ] && [ -n "$$publish" ]; then \
 				echo "  Delete-package $$REPO_FULL ($$publish)"; \
 				cd "$(SOURCE)/$$REPO_FULL" && ( \
@@ -250,6 +242,7 @@ delete-services:
 			fi; \
 			echo "  Delete repo $$REPO"; \
 			gh repo delete "$$REPO" --yes 2>/dev/null || echo "  (repo may not exist)"; \
+			echo "  Clean $$REPO_FULL"; \
 			rm -rf "$(SOURCE)/$$REPO_FULL"; \
 			cd "$(MAKEFILE_DIR)" || true; \
 		done; \

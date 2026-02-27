@@ -1,6 +1,6 @@
 # R100 – Update files after architecture.yaml changes
 
-**Status**: Planned  
+**Status**: Pending 
 **Task Type**: Updates
 **Run Mode**: Run as needed
 
@@ -27,6 +27,7 @@ Update `DeveloperEdition/docker-compose.yaml` and the welcome page `index.html` 
 
 - Add or update service definitions for each new domain in the architecture.
 - Do not change the existing welcome, runbook, or schema/mongodb services. 
+- Do not create services or links for the common_code domain.
 - **For each new microservice domain, define two profiles:**
   - `{domain}-api` – API service only (e.g. `profile-api` → profile_api)
   - `{domain}` – API + SPA (e.g. `profile` → profile_api + profile_spa)
@@ -35,7 +36,10 @@ Update `DeveloperEdition/docker-compose.yaml` and the welcome page `index.html` 
 ### index.html
 
 - Add links for each service SPA (with correct ports from the architecture).
-- Add an API Explorer link for each backing API - e.g. `/docs/index.html` for the mongodb_spa or `/docs/explorer.html` for all other API's.
+- Add new domains to the top of the list
+- Add an API Explorer link for each backing API at `/docs/explorer.html`.
+- Do not create services or links for the common_code domain.
+- There is no need to adjust the schema or runbook links
 
 ## Testing expectations
 
@@ -56,11 +60,3 @@ Before marking this task as completed:
 ## Implementation notes (to be updated by the agent)
 
 **Summary of changes**
-- Updated files: _high‑level summary of changes_
-
-**Testing results**
-- Packaging/build: _command(s) run, high‑level outcome_
-
-**Follow‑up tasks**
-- _e.g., "Publish updated container images."_
-

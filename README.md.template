@@ -77,7 +77,9 @@ Now update your architecture.yaml file to describe the micro-services in your sy
           type: spa
           port: 8390
 ```
-Replace this service with your own. This is an example of the {{info.name}} testing data:
+Replace this service with your own. This is an example of the {{info.name}} testing data, 
+note that all of the data_domains listed are present in the catalog.yaml file. 
+This is critical and misalignment will result in non-functional code.
 ```yaml
     - name: profile
       description: A User Profile
@@ -165,7 +167,15 @@ Review this [README](./Tasks/README.md) for context and execute [this task](./Ta
 ---
 
 ### Install the Developer CLI
-Install the developer CLI and all of the developer pre-req's so that the Launch scripts can run successfully. Follow all of the instructions in [CONTRIBUTING.md](./CONTRIBUTING.md)
+Now is a good time for a commit! 
+Install the developer CLI and all of the developer pre-req's so that the Launch scripts can run successfully. 
+Follow all of the instructions in [CONTRIBUTING.md](./CONTRIBUTING.md)
+```sh
+make install
+cp <your token> ~/.mentorhub/GITHUB_TOKEN
+make update
+source ~/.zshrc
+```
 
 ### Launch your product.
 Use these commands to generate, clone, merge, and build all of your repo's and then start the containers in your local dev environment.
@@ -174,7 +184,7 @@ make launch-all
 {{info.developer_cli}} up all
 ```
 
-The ``launch-all`` command may take a while to run. After using the ``{{info.developer_cli}} up all`` command visit the [welcome page](localhost:8080) in your browser.
+The ``launch-all`` command may take a while to run, more than 10 minutes. After using the ``{{info.developer_cli}} up all`` command visit the [welcome page](localhost:8080) in your browser.
 
 Now is a good time to add all of the generated repo's to your IDE workspace (And delete this part of the README). At some point the SRE's may want to remove some of the scripts in the Makefile. Commands like ``delete-all``, ``clean-clone-build``, and ``launch-all`` should have a limited lifetime in the repo. Keep them around until you are sure that the architecture has settled and no more code generation is needed. 
 

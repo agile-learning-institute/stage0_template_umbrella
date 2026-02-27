@@ -1,7 +1,7 @@
 # Umbrella Project Template
 
 ## Quick Start
-This is a template to create the Umbrella Repo for your system. First, create an GitHub organization to host the system. Then in that organization create a new repo using this template. Name your repo with a short one-word product name slug. To avoid complications, make the repo public, and both the organization name and the slug should be all lower case letters. Clone your new repo down to your computer. We suggest cloning it into a ``source`` folder (i.e. ~/source), this is a poly-repo solution, and many repo's will be cloned to this location. 
+This is a template to create the Umbrella Repo for your system. First, create a GitHub organization to host the system. Then in that organization create a new repo using this template. Name your repo with a short one-word product name slug. To avoid complications, make the repo public, and both the organization name and the slug should be all lower case letters. Clone your new repo down to your computer. We suggest cloning it into a ``source`` folder (i.e. ~/source), this is a poly-repo solution, and many repo's will be cloned to this location. 
 
 Now, update the template [.stage0_template/Specifications/product.yaml](./.stage0_template/Specifications/product.yaml) to reflect your use case. See below for pointers on what values to use.
 ```yaml
