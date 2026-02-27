@@ -16,7 +16,7 @@ architecture:
       repos:
         - name: runbook_api
           description: Runbook Automation API Server
-          template: agile-learning-institute/stage0_runbook_template
+          template: agile-learning-institute/stage0_template_runbook_api
           publish: make
           type: api
           port: 8383

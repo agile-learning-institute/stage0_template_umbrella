@@ -133,11 +133,9 @@ push:
 
 build-publish: container push
 
-# Phase 1: build-package/publish-package alias to container/push for umbrella
 build-package: container
 publish-package: push
-
-# --- Launch commands (DESTRUCTIVE - do not run automated tests) ---
+delete-package: gh api -X DELETE /orgs//packages/container/mentorhub'
 
 launch-all: build-package publish-package
 	@$(MAKE) launch-services SERVICES="$(ALL_SERVICES)"
@@ -161,7 +159,7 @@ launch-services:
 			echo "  Creating $$REPO from template $$template"; \
 			rm -rf "$(SOURCE)/$$REPO_FULL"; \
 			cd "$(SOURCE)" && gh repo create "$$REPO" --template "$$template" --public || { echo "Failed: $$REPO"; exit 1; }; \
-			echo "  Waiting for repo to be ready..."; sleep 3; \
+			echo "  Waiting for repo to be ready..."; sleep 5; \
 			echo "  Cloning $$REPO"; \
 			cd "$(SOURCE)" && git clone "https://x-access-token:$$GITHUB_TOKEN@github.com/$$REPO.git" "$$REPO_FULL" || { echo "Failed clone: $$REPO"; exit 1; }; \
 			echo "  Merging $$REPO_FULL"; \

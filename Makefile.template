@@ -159,7 +159,7 @@ launch-services:
 			echo "  Creating $$REPO from template $$template"; \
 			rm -rf "$(SOURCE)/$$REPO_FULL"; \
 			cd "$(SOURCE)" && gh repo create "$$REPO" --template "$$template" --public || { echo "Failed: $$REPO"; exit 1; }; \
-			echo "  Waiting for repo to be ready..."; sleep 3; \
+			echo "  Waiting for repo to be ready..."; sleep 5; \
 			echo "  Cloning $$REPO"; \
 			cd "$(SOURCE)" && git clone "https://x-access-token:$$GITHUB_TOKEN@github.com/$$REPO.git" "$$REPO_FULL" || { echo "Failed clone: $$REPO"; exit 1; }; \
 			echo "  Merging $$REPO_FULL"; \
