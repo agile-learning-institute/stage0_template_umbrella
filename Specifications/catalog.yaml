@@ -1,7 +1,3 @@
-$schema: "https://github.com/agile-learning-institute/stage0/blob/main/Schemas/catalog.schema.yaml"
-$id: "https://github.com/{{org.git_org}}/{{info.slug}}/blob/main/Specifications/catalog.yaml"
-title: Data Dictionary Catalog Specification for {{info.name}}
-
 data_dictionaries:
   - name: Identity
     description: The IdP Identity of a person who is a user of the system. 

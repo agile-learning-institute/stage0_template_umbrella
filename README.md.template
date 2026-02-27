@@ -173,7 +173,7 @@ Install the developer CLI and all of the developer pre-req's so that the Launch 
 Follow all of the instructions in [CONTRIBUTING.md](./CONTRIBUTING.md)
 ```sh
 make install
-cp <your token> ~/.mentorhub/GITHUB_TOKEN
+cp <your token> ~/.{{info.slug}}/GITHUB_TOKEN
 make update
 source ~/.zshrc
 ```

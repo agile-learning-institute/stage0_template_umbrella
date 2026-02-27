@@ -1,7 +1,3 @@
-$schema: "https://github.com/agile-learning-institute/stage0/blob/main/Schemas/roadmap.schema.yaml"
-$id: "https://github.com/{{org.git_org}}/{{info.slug}}/blob/main/Specifications/roadmap.yaml"
-title: Project Roadmap for {{info.name}} 
-
 Hills:
 - Who does What and then WOW!
 

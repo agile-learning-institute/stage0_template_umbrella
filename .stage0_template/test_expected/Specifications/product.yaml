@@ -1,7 +1,3 @@
-$schema: "https://github.com/agile-learning-institute/stage0/blob/main/Schemas/product.schema.yaml"
-$id: "https://github.com/agile-learning-institute/mentorhub/blob/main/Specifications/product.yaml"
-title: Product and Organization Specifications for Mentor Hub
-
 info:
   name: Mentor Hub
   description: A platform to connect mentors with engineers engaged in a life long learning journey.
