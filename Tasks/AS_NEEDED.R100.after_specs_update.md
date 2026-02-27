@@ -1,6 +1,6 @@
 # R100 – Update files after architecture.yaml changes
 
-**Status**: Pending 
+**Status**: Shipped 
 **Task Type**: Updates
 **Run Mode**: Run as needed
 
@@ -28,6 +28,8 @@ Update `DeveloperEdition/docker-compose.yaml` and the welcome page `index.html` 
 - Add or update service definitions for each new domain in the architecture.
 - Do not change the existing welcome, runbook, or schema/mongodb services. 
 - Do not create services or links for the common_code domain.
+- **Remove** the sample profile and any sample_api/sample_spa services (they are legacy placeholders).
+- **Welcome service** must be included in ALL profiles (every profile in the file). When adding new domains, add their profiles (e.g. `{domain}`, `{domain}-api`) to the welcome service profiles list so the welcome page always starts with any profile.
 - **For each new microservice domain, define two profiles:**
   - `{domain}-api` – API service only (e.g. `profile-api` → profile_api)
   - `{domain}` – API + SPA (e.g. `profile` → profile_api + profile_spa)
