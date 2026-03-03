@@ -95,7 +95,7 @@ services:
       LOAD_TEST_DATA: True
       API_PORT: 8385
       SPA_PORT: 8386
-      UI_HEADER: "Mentor Hub MongoDB Configurations"
+      UI_HEADER: "Mentor Hub Schemas"
     depends_on:
       mongodb:
         condition: service_healthy

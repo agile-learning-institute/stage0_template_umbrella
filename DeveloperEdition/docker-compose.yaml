@@ -95,7 +95,7 @@ services:
       LOAD_TEST_DATA: True
       API_PORT: {{info.base_port + 2}}
       SPA_PORT: {{info.base_port + 3}}
-      UI_HEADER: "{{info.name}} MongoDB Configurations"
+      UI_HEADER: "{{info.name}} Schemas"
     depends_on:
       mongodb:
         condition: service_healthy
