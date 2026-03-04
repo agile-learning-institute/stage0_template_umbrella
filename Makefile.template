@@ -3,12 +3,12 @@ MAKEFILE_DIR := .
 SOURCE := $(shell cd .. && pwd)
 ARCH_FILE ?= $(MAKEFILE_DIR)/Specifications/architecture.yaml
 PRODUCT_FILE ?= $(MAKEFILE_DIR)/Specifications/product.yaml
-SLUG := $(shell yq -r'.info.slug' $(PRODUCT_FILE))
-ORG := $(shell yq -r'.organization.git_org' $(PRODUCT_FILE))
+SLUG := $(shell yq -r '.info.slug' $(PRODUCT_FILE))
+ORG := $(shell yq -r '.organization.git_org' $(PRODUCT_FILE))
 LOG_FILE ?= .make.log
 SPECS_DIR := $(CURDIR)/Specifications
 MERGE_IMAGE := ghcr.io/agile-learning-institute/stage0_runbook_merge:latest
-ALL_SERVICES := $(shell yq -r'.architecture.domains[].name' $(ARCH_FILE))
+ALL_SERVICES := $(shell yq -r '.architecture.domains[].name' $(ARCH_FILE))
 
 .PHONY: help install update verify schemas container push build-package publish-package 
 .PHONY: clean-clone-build launch-all launch-services delete-all delete-services
@@ -112,7 +112,7 @@ update: verify
 schemas:
 	@echo "Fetching JSON schemas for all data dictionaries..."
 	@mkdir -p ./Specifications/schemas
-	@yq -r'.data_dictionaries[].name' ./Specifications/catalog.yaml | \
+	@yq -r '.data_dictionaries[].name' ./Specifications/catalog.yaml | \
 	while IFS= read -r name; do \
 		[ -z "$$name" ] && continue; \
 		echo "Fetching schema for $${name}"; \
@@ -152,7 +152,7 @@ launch-services:
 	git config --global url."https://x-access-token:$$GITHUB_TOKEN@github.com/".insteadOf "https://github.com/" && \
 	for svc in $(SERVICES); do \
 		[ -z "$$svc" ] && continue; \
-		REPO_LINES=$$(yq -r'.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + .template + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
+		REPO_LINES=$$(yq -r '.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + .template + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
 		[ -z "$$REPO_LINES" ] && continue; \
 		echo "--- Domain: $$svc ---"; \
 		echo "$$REPO_LINES" | while IFS='|' read -r repo_name template publish; do \
@@ -188,7 +188,7 @@ clean-clone-build:
 	@if [ -z "$(SERVICES)" ]; then echo "Error: SERVICES required. e.g. make clean-clone-build SERVICES=profile"; exit 1; fi; \
 	for svc in $(SERVICES); do \
 		[ -z "$$svc" ] && continue; \
-		REPO_LINES=$$(yq -r'.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
+		REPO_LINES=$$(yq -r '.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
 		[ -z "$$REPO_LINES" ] && continue; \
 		echo "--- Domain: $$svc ---"; \
 		echo "$$REPO_LINES" | while IFS='|' read -r repo_name publish; do \
@@ -225,7 +225,7 @@ delete-services:
 	read -p "Proceed? (y/n) " confirm && [ "$$confirm" = "y" ] || { echo "Aborted."; exit 1; }; \
 	for svc in $(SERVICES); do \
 		[ -z "$$svc" ] && continue; \
-		REPO_LINES=$$(yq -r'.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
+		REPO_LINES=$$(yq -r '.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
 		[ -z "$$REPO_LINES" ] && continue; \
 		echo "--- Domain: $$svc ---"; \
 		echo "$$REPO_LINES" | while IFS='|' read -r repo_name publish; do \
