@@ -52,6 +52,15 @@ verify:
 	[ -n "$${GITHUB_TOKEN:-}" ] && printf "GITHUB_TOKEN: set\n" || { echo "  FAIL: GITHUB_TOKEN (set env var)"; fail=1; }; \
 	command -v gh >/dev/null 2>&1 && printf "gh:      " && gh --version | head -1 || { echo "  FAIL: gh"; fail=1; }; \
 	command -v git >/dev/null 2>&1 && printf "git:     " && git --version || { echo "  FAIL: git"; fail=1; }; \
+	echo "Checking git global user.name and user.email..."; \
+	if ! git config --global user.name >/dev/null 2>&1; then \
+		echo "  FAIL: git config --global user.name (set a global name; see CONTRIBUTING.md)"; \
+		fail=1; \
+	fi; \
+	if ! git config --global user.email >/dev/null 2>&1; then \
+		echo "  FAIL: git config --global user.email (set a global email; see CONTRIBUTING.md)"; \
+		fail=1; \
+	fi; \
 	echo ""; \
 	echo "--- Utilities ---"; \
 	command -v jq >/dev/null 2>&1 && printf "jq:      " && jq --version || { echo "  FAIL: jq"; fail=1; }; \

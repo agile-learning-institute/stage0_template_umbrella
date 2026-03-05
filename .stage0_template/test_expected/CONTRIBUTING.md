@@ -22,8 +22,14 @@ Run `make verify` to check that all prerequisites are installed. If any fail, in
 
 ### GitHub & Git
 - **GITHUB_TOKEN** - See [Configuring AccessToken](#configure-access-tokens) 
+- **GitHub SSH** - See [Configuring GitHub SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 - **gh** (GitHub CLI) - https://cli.github.com/
 - **git** - https://git-scm.com/downloads
+- **git config --global** - 
+```sh
+git config --global user.name "Your Name"
+git config --global user.email yourname@example.com
+```
 
 ### Utilities
 - **jq** - https://jqlang.github.io/jq/download/ (macOS: `brew install jq`)
