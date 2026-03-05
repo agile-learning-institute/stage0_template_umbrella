@@ -41,13 +41,32 @@
             list-style: none;
         }
         .links li {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 4px;
+        }
+        .links li .service-row {
+            display: flex;
+            align-items: stretch;
             gap: 8px;
         }
-        .links a {
-            flex: 1;
+        .links li .spa-cell {
+            flex: 1 1 50%;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .links li .api-cell {
+            flex: 1 1 50%;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .service-row .cell-link {
             display: block;
             padding: 12px 20px;
             background: #f5f5f5;
@@ -57,17 +76,20 @@
             transition: all 0.2s;
             border-left: 4px solid #667eea;
         }
-        .links a:hover {
+        .spa-cell .cell-link {
+            flex: 1;
+        }
+        .service-row .cell-link:hover {
             background: #667eea;
             color: white;
             transform: translateX(4px);
         }
-        .links a.coming-soon {
+        .service-row .cell-link.coming-soon {
             opacity: 0.6;
             cursor: not-allowed;
             border-left-color: #ccc;
         }
-        .links a.coming-soon:hover {
+        .service-row .cell-link.coming-soon:hover {
             background: #f5f5f5;
             color: #333;
             transform: none;
@@ -77,37 +99,40 @@
             font-size: 0.9em;
             margin-left: 8px;
         }
-        .explorer-link {
-            flex: 0 0 auto;
+        .api-cell .cell-link.explorer-link {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
             padding: 12px 16px;
             background: #f5f5f5;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #667eea;
-            transition: all 0.2s;
             border: 2px solid #667eea;
+            border-left: 4px solid #667eea;
+            color: #667eea;
             font-size: 14px;
             white-space: nowrap;
         }
-        .explorer-link:hover {
+        .api-cell .cell-link.explorer-link:hover {
             background: #667eea;
             color: white;
-            transform: scale(1.1);
+            transform: scale(1.02);
         }
-        .explorer-link.coming-soon {
-            opacity: 0.3;
-            cursor: not-allowed;
-            border-color: #ccc;
-            color: #ccc;
+        .source-under {
+            font-size: 12px;
+            padding-left: 4px;
         }
-        .explorer-link.coming-soon:hover {
-            background: #f5f5f5;
-            color: #ccc;
-            transform: none;
+        .source-under a {
+            color: #3949ab;
+            text-decoration: none;
+            border-bottom: 1px solid #3949ab;
+        }
+        .source-under a:hover {
+            color: #1a237e;
+            border-bottom-color: #1a237e;
+        }
+        .source-under .utility-ref {
+            color: #666;
+            font-size: 11px;
         }
     </style>
 </head>
@@ -117,34 +142,63 @@
         <p class="subtitle">Welcome to the Development Environment</p>
         <ul class="links">
             <li>
-                <a href="#" class="coming-soon">
-                    <span class="coming-soon-text">- Add new Services Here</span>
-                </a>
+                <div class="service-row">
+                    <div class="spa-cell">
+                        <a href="http://HOST_NAME:8388" id="sample-spa-link" class="cell-link" target="_blank" rel="noopener">Sample SPA</a>
+                        <div class="source-under">
+                            <a href="https://github.com/agile-learning-institute/mentorhub_sample_spa" target="_blank" rel="noopener" title="Sample SPA source">mentorhub_sample_spa</a>
+                        </div>
+                    </div>
+                    <div class="api-cell">
+                        <a href="http://HOST_NAME:8387/docs/explorer.html" id="sample-explorer-link" class="cell-link explorer-link" target="_blank" rel="noopener" title="Open API Explorer">🔍 API Explorer</a>
+                        <div class="source-under">
+                            <a href="https://github.com/agile-learning-institute/mentorhub_sample_api" target="_blank" rel="noopener" title="Sample API source">mentorhub_sample_api</a>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li>
-                <a href="http://HOST_NAME:8386" id="database-link" target="_blank">
-                    Schema Configuration
-                </a>
-                <a href="http://HOST_NAME:8385/docs/index.html" id="database-explorer-link" class="explorer-link" target="_blank" title="Open API Explorer">
-                    🔍 API Explorer
-                </a>
+                <div class="service-row">
+                    <div class="spa-cell">
+                        <a href="http://HOST_NAME:8386" id="schema-link" class="cell-link" target="_blank" rel="noopener">Schema Configuration</a>
+                        <div class="source-under">
+                            <span class="utility-ref" title="Utility container, not a separate repo">mongodb_configurator_spa (utility)</span>
+                        </div>
+                    </div>
+                    <div class="api-cell">
+                        <a href="http://HOST_NAME:8385/docs/index.html" id="schema-explorer-link" class="cell-link explorer-link" target="_blank" rel="noopener" title="Open API Explorer">🔍 API Explorer</a>
+                        <div class="source-under">
+                            <a href="https://github.com/agile-learning-institute/mentorhub_mongodb_api" target="_blank" rel="noopener" title="Schema Configurations">mentorhub_mongodb_api</a>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li>
-                <a href="http://HOST_NAME:8384/" id="runbook-link" target="_blank">
-                    Runbook Automation
-                </a>
-                <a href="http://HOST_NAME:8383/docs/explorer.html" id="runbook-explorer-link" class="explorer-link" target="_blank" title="Open API Explorer">
-                    🔍 API Explorer
-                </a>
+                <div class="service-row">
+                    <div class="spa-cell">
+                        <a href="http://HOST_NAME:8384/" id="runbook-link" class="cell-link" target="_blank" rel="noopener">Runbook Automation</a>
+                        <div class="source-under">
+                            <span class="utility-ref" title="Stage0 utility container">stage0_runbook_spa (utility)</span>
+                        </div>
+                    </div>
+                    <div class="api-cell">
+                        <a href="http://HOST_NAME:8383/docs/explorer.html" id="runbook-explorer-link" class="cell-link explorer-link" target="_blank" rel="noopener" title="Open API Explorer">🔍 API Explorer</a>
+                        <div class="source-under">
+                            <a href="https://github.com/agile-learning-institute/mentorhub_runbook_api" target="_blank" rel="noopener" title="Runbook API source">mentorhub_runbook_api</a>
+                        </div>
+                    </div>
+                </div>
             </li>
         </ul>
     </div>
     <script>
         // Replace HOST_NAME with actual hostname or use window.location.hostname
         const hostname = window.location.hostname || 'localhost';
-        document.getElementById('database-link').href = `http://${hostname}:8386`;
-        document.getElementById('database-explorer-link').href = `http://${hostname}:8385/docs/index.html`;
-        document.getElementById('runbook-link').href = `http://${hostname}:8384/`;
+        document.getElementById('sample-spa-link').href = `http://${hostname}:8388`;
+        document.getElementById('sample-explorer-link').href = `http://${hostname}:8387/docs/explorer.html`;
+        document.getElementById('schema-link').href = `http://${hostname}:8386`;
+        document.getElementById('schema-explorer-link').href = `http://${hostname}:8385/docs/index.html`;
+        document.getElementById('runbook-link').href = `http://${hostname}:8384`;
         document.getElementById('runbook-explorer-link').href = `http://${hostname}:8383/docs/explorer.html`;
     </script>
 </body>

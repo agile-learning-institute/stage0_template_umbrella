@@ -1,6 +1,6 @@
 # R100 – Update files after architecture.yaml changes
 
-**Status**: Shipped 
+**Status**: As Needed 
 **Task Type**: Updates
 **Run Mode**: Run as needed
 
@@ -41,11 +41,21 @@ Update `DeveloperEdition/docker-compose.yaml` and the welcome page `index.html` 
 
 ### index.html
 
-- Add links for each service SPA (with correct ports from the architecture).
-- Add new domains to the top of the list
-- Add an API Explorer link for each backing API at `/docs/explorer.html`.
-- Do not create services or links for the common_code domain.
-- There is no need to adjust the schema or runbook links
+**Layout**
+
+- Each service is one row with **two equal-width columns (50/50)**:
+  - **Left column (spa-cell):** SPA/app button; directly **below** it, a small-text source link or label.
+  - **Right column (api-cell):** API Explorer button; directly **below** it, a small-text source link or label.
+- Use classes: `.service-row`, `.spa-cell`, `.api-cell`, `.cell-link`, `.source-under`.
+
+**Links**
+
+- Add a link for each service SPA (correct port from architecture) and an API Explorer link for each backing API at `/docs/explorer.html` (or `/docs/index.html` where applicable).
+- **Source code links:** Each SPA and API has a **repo link** in smaller font **under** its button:
+  - Under the SPA button: link text = repo name (e.g. `mentorhub_member_spa`), href = `https://github.com/{git_org}/{repo_name}`.
+  - Under the API Explorer button: link text = API repo name (e.g. `mentorhub_member_api`), href = same pattern.
+- **Utility SPAs** (mongodb_configurator_spa, stage0_runbook_spa): do **not** add a repo link; show a **reference label** only in `.source-under .utility-ref` (e.g. `mongodb_configurator_spa (utility)`, `stage0_runbook_spa (utility)`).
+- Add new domains to the top of the list. Do not create services or links for the common_code domain. Schema and runbook rows keep the same pattern (API repo link under Explorer; SPA side utility ref where applicable).
 
 ## Testing expectations
 
