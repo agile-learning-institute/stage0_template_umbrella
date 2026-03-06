@@ -40,9 +40,21 @@ verify:
 	command -v npm >/dev/null 2>&1 && printf "npm:     " && npm --version || { echo "  FAIL: npm"; fail=1; }; \
     (vite --version 2>/dev/null || npx vite --version 2>/dev/null) >/dev/null && printf "vite:    " && (vite --version 2>/dev/null || npx vite --version 2>/dev/null) || { echo "  FAIL: vite"; fail=1; }; \
 	echo ""; \
-	echo "--- Python tools ---"; \
-	command -v python3 >/dev/null 2>&1 && printf "python3: " && python3 --version || { echo "  FAIL: python3"; fail=1; }; \
+	echo "--- Python tools (3.12 required for projects) ---"; \
+	PY312=$$(command -v python3.12 2>/dev/null); \
+	if [ -n "$$PY312" ] && $$PY312 -c "import sys; exit(0 if sys.version_info[:2] == (3, 12) else 1)" 2>/dev/null; then \
+		printf "python3.12: " && $$PY312 --version; \
+	else \
+		echo "  python3.12: not in PATH (pipenv may use pyenv)"; \
+	fi; \
 	command -v pipenv >/dev/null 2>&1 && printf "pipenv:  " && pipenv --version || { echo "  FAIL: pipenv"; fail=1; }; \
+	PYTEST=$$(mktemp -d); \
+	if (cd "$$PYTEST" && pipenv --python 3.12 install >/dev/null 2>&1 && pipenv run python -c "import sys; exit(0 if sys.version_info[:2] == (3, 12) else 1)" >/dev/null 2>&1); then \
+		echo "  pipenv+3.12: OK (projects will use 3.12 venv)"; \
+	else \
+		echo "  FAIL: pipenv cannot use Python 3.12 (install pyenv + 3.12 or python3.12)"; fail=1; \
+	fi; \
+	rm -rf "$$PYTEST"; \
 	echo ""; \
 	echo "--- Container tools ---"; \
 	command -v docker >/dev/null 2>&1 && printf "docker:  " && docker --version || { echo "  FAIL: docker"; fail=1; }; \
@@ -67,6 +79,21 @@ verify:
 	command -v yq >/dev/null 2>&1 && printf "yq:      " && yq --version || { echo "  FAIL: yq"; fail=1; }; \
 	command -v curl >/dev/null 2>&1 && printf "curl:    " && curl --version | head -1 || { echo "  FAIL: curl"; fail=1; }; \
 	command -v ssh >/dev/null 2>&1 && printf "ssh:     " && ssh -V 2>&1 || { echo "  FAIL: ssh"; fail=1; }; \
+	echo ""; \
+	echo "--- Git SSH (clone + push) ---"; \
+	GIT_SSH_TEST=$$(mktemp -d); \
+	if (git clone git@github.com:agile-learning-institute/testing.git "$$GIT_SSH_TEST" >/dev/null 2>&1 && \
+		cd "$$GIT_SSH_TEST" && \
+		echo " " >> README.md && \
+		git add README.md && \
+		git commit -m "verify: SSH clone/push test" >/dev/null 2>&1 && \
+		git push >/dev/null 2>&1); then \
+		echo "  Git SSH: OK"; \
+	else \
+		echo "  FAIL: Git SSH clone or push (check SSH key, push access to agile-learning-institute/testing)"; \
+		fail=1; \
+	fi; \
+	rm -rf "$$GIT_SSH_TEST"; \
 	echo ""; \
 	if [ $$fail -eq 1 ]; then \
 		echo "Some prerequisites are missing. See CONTRIBUTING.md for install instructions."; \
