@@ -24,8 +24,6 @@ requires:
   - org.docker_org
 
 templates:
-  - path: "./.github/workflows/docker-push.yml"
-    merge: true
   - path: "./Specifications/architecture.yaml"
     merge: true
   - path: "./Specifications/catalog.yaml"
@@ -58,6 +56,9 @@ templates:
     merge: true
   - path: "./Makefile.template"
     output: "./Makefile"
+    merge: true
+  - path: "./.github/workflows/docker-push.yml.template"
+    output: "./.github/workflows/docker-push.yml"
     merge: true
 
   
