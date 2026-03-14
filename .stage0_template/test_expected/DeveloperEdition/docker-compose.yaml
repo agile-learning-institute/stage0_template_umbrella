@@ -1,4 +1,10 @@
 # docker-compose.yaml for Mentor Hub developers edition
+
+
+
+
+
+
 services:
   ##################################
   # Welcome Service
@@ -11,7 +17,10 @@ services:
       - all
       - runbook
       - mongodb
+
       - sample
+      - sample-api
+
 
   ##################################
   # Custom Runbook API Service (Deployed Profile)
@@ -34,7 +43,7 @@ services:
       UI_HEADER: "Mentor Hub Packaged Runbooks"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${MOUNT_DIR}:/execution 
+      - ${MOUNT_DIR}:/execution
     profiles:
       - all
       - runbook
@@ -57,9 +66,8 @@ services:
       - runbook
 
   ##################################
-  # Backing Services 
+  # Backing Services
   ##################################
-  # MongoDB backing service 
   mongodb:
     image: mongo:7.0.5
     ports:
@@ -76,8 +84,9 @@ services:
     profiles:
       - all
       - mongodb
-      - sample
+
       - sample_api
+
 
   ##################################
   # Mongo Database Configuration Utilities
@@ -102,8 +111,9 @@ services:
     profiles:
       - all
       - mongodb
-      - sample
+
       - sample_api
+
 
   mongodb_spa:
     image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
@@ -120,12 +130,24 @@ services:
     profiles:
       - all
       - mongodb
-      - sample
+
       - sample_api
 
+
   ##################################
-  # Sample Microservice 
+  # Microservice domains (from architecture)
   ##################################
+
+
+
+
+
+
+
+
+
+
+
   sample_api:
     image: ghcr.io/agile-learning-institute/mentorhub_sample_api:latest
     restart: no
@@ -138,6 +160,7 @@ services:
       ENABLE_LOGIN: "true"
       LOGGING_LEVEL: "INFO"
       JWT_SECRET: ${JWT_SECRET}
+      API_PORT: 8389
       SAMPLE_API_PORT: 8389
       SAMPLE_SPA_PORT: 8390
     depends_on:
@@ -146,7 +169,7 @@ services:
     profiles:
       - all
       - sample
-      - sample_api
+      - sample-api
 
   sample_spa:
     image: ghcr.io/agile-learning-institute/mentorhub_sample_spa:latest
@@ -156,10 +179,13 @@ services:
     environment:
       API_HOST: sample_api
       API_PORT: 8389
-      SPA_PORT: 8390
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8390/login}
     depends_on:
       sample_api:
         condition: service_started
     profiles:
       - all
       - sample
+
+
+

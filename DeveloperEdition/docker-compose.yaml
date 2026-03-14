@@ -1,4 +1,10 @@
 # docker-compose.yaml for {{info.name}} developers edition
+{% set runbook_domain = architecture.domains | selectattr('name', 'equalto', 'runbook') | first %}
+{% set runbook_api = runbook_domain.repos | selectattr('type', 'equalto', 'api') | first %}
+{% set runbook_spa = runbook_domain.repos | selectattr('type', 'equalto', 'spa_ref') | first %}
+{% set schema_domain = architecture.domains | selectattr('name', 'equalto', 'schema') | first %}
+{% set schema_api = schema_domain.repos | selectattr('type', 'equalto', 'api') | first %}
+{% set schema_spa = schema_domain.repos | selectattr('type', 'equalto', 'spa_ref') | first %}
 services:
   ##################################
   # Welcome Service
@@ -11,7 +17,10 @@ services:
       - all
       - runbook
       - mongodb
-      - sample
+{% for domain in architecture.domains %}{% if domain.name not in ['runbook', 'schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}{% if api_repo and spa_repo %}
+      - {{ domain.name }}
+      - {{ domain.name }}-api
+{% endif %}{% endif %}{% endfor %}
 
   ##################################
   # Custom Runbook API Service (Deployed Profile)
@@ -22,9 +31,9 @@ services:
     working_dir: /opt/stage0/runner
     restart: no
     ports:
-      - "127.0.0.1:{{info.base_port + 0}}:{{info.base_port + 0}}"
+      - "127.0.0.1:{{ runbook_api.port }}:{{ runbook_api.port }}"
     environment:
-      API_PORT: {{info.base_port + 0}}
+      API_PORT: {{ runbook_api.port }}
       ENABLE_LOGIN: "true"
       LOGGING_LEVEL: "INFO"
       JWT_SECRET: ${JWT_SECRET}
@@ -34,7 +43,7 @@ services:
       UI_HEADER: "{{info.name}} Packaged Runbooks"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${MOUNT_DIR}:/execution 
+      - ${MOUNT_DIR}:/execution
     profiles:
       - all
       - runbook
@@ -44,11 +53,11 @@ services:
     container_name: runbook_spa
     restart: no
     ports:
-      - "127.0.0.1:{{info.base_port + 1}}:80"
+      - "127.0.0.1:{{ runbook_spa.port }}:80"
     environment:
       API_HOST: runbook-api
-      API_PORT: {{info.base_port + 0}}
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:{{info.base_port + 1}}/login}
+      API_PORT: {{ runbook_api.port }}
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:{{ runbook_spa.port }}/login}
     depends_on:
       runbook-api:
         condition: service_started
@@ -57,9 +66,8 @@ services:
       - runbook
 
   ##################################
-  # Backing Services 
+  # Backing Services
   ##################################
-  # MongoDB backing service 
   mongodb:
     image: mongo:7.0.5
     ports:
@@ -76,8 +84,9 @@ services:
     profiles:
       - all
       - mongodb
-      - sample
-      - sample_api
+{% for domain in architecture.domains %}{% if domain.name not in ['runbook', 'schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% if api_repo %}
+      - {{ domain.name }}_api
+{% endif %}{% endif %}{% endfor %}
 
   ##################################
   # Mongo Database Configuration Utilities
@@ -86,15 +95,15 @@ services:
     image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_mongodb_api:latest
     restart: no
     ports:
-      - "127.0.0.1:{{info.base_port + 2}}:{{info.base_port + 2}}"
+      - "127.0.0.1:{{ schema_api.port }}:{{ schema_api.port }}"
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
       MONGO_DB_NAME: {{info.db_name}}
       AUTO_PROCESS: True
       LOAD_TEST_DATA: True
-      API_PORT: {{info.base_port + 2}}
-      SPA_PORT: {{info.base_port + 3}}
+      API_PORT: {{ schema_api.port }}
+      SPA_PORT: {{ schema_spa.port }}
       UI_HEADER: "{{info.name}} Schemas"
     depends_on:
       mongodb:
@@ -102,35 +111,42 @@ services:
     profiles:
       - all
       - mongodb
-      - sample
-      - sample_api
+{% for domain in architecture.domains %}{% if domain.name not in ['runbook', 'schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% if api_repo %}
+      - {{ domain.name }}_api
+{% endif %}{% endif %}{% endfor %}
 
   mongodb_spa:
     image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
     restart: no
     ports:
-      - "127.0.0.1:{{info.base_port + 3}}:{{info.base_port + 3}}"
+      - "127.0.0.1:{{ schema_spa.port }}:{{ schema_spa.port }}"
     environment:
       API_HOST: mongodb_api
-      API_PORT: {{info.base_port + 2}}
-      SPA_PORT: {{info.base_port + 3}}
+      API_PORT: {{ schema_api.port }}
+      SPA_PORT: {{ schema_spa.port }}
     depends_on:
       mongodb_api:
         condition: service_started
     profiles:
       - all
       - mongodb
-      - sample
-      - sample_api
+{% for domain in architecture.domains %}{% if domain.name not in ['runbook', 'schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% if api_repo %}
+      - {{ domain.name }}_api
+{% endif %}{% endif %}{% endfor %}
 
   ##################################
-  # Sample Microservice 
+  # Microservice domains (from architecture)
   ##################################
-  sample_api:
-    image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_sample_api:latest
+{% for domain in architecture.domains %}
+{% if domain.name not in ['runbook', 'schema', 'common_code'] %}
+{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
+{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
+{% if api_repo and spa_repo %}
+  {{ api_repo.name }}:
+    image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_{{ api_repo.name }}:latest
     restart: no
     ports:
-      - "127.0.0.1:{{info.base_port + 6}}:{{info.base_port + 6}}"
+      - "127.0.0.1:{{ api_repo.port }}:{{ api_repo.port }}"
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
@@ -138,28 +154,33 @@ services:
       ENABLE_LOGIN: "true"
       LOGGING_LEVEL: "INFO"
       JWT_SECRET: ${JWT_SECRET}
-      SAMPLE_API_PORT: {{info.base_port + 6}}
-      SAMPLE_SPA_PORT: {{info.base_port + 7}}
+      API_PORT: {{ api_repo.port }}
+      SAMPLE_API_PORT: {{ api_repo.port }}
+      SAMPLE_SPA_PORT: {{ spa_repo.port }}
     depends_on:
       mongodb_api:
         condition: service_started
     profiles:
       - all
-      - sample
-      - sample_api
+      - {{ domain.name }}
+      - {{ domain.name }}-api
 
-  sample_spa:
-    image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_sample_spa:latest
+  {{ spa_repo.name }}:
+    image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_{{ spa_repo.name }}:latest
     restart: no
     ports:
-      - "127.0.0.1:{{info.base_port + 7}}:80"
+      - "127.0.0.1:{{ spa_repo.port }}:80"
     environment:
-      API_HOST: sample_api
-      API_PORT: {{info.base_port + 6}}
-      SPA_PORT: {{info.base_port + 7}}
+      API_HOST: {{ api_repo.name }}
+      API_PORT: {{ api_repo.port }}
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:{{ spa_repo.port }}/login}
     depends_on:
-      sample_api:
+      {{ api_repo.name }}:
         condition: service_started
     profiles:
       - all
-      - sample
+      - {{ domain.name }}
+
+{% endif %}
+{% endif %}
+{% endfor %}

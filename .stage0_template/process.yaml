@@ -11,6 +11,9 @@ context:
   - key: org
     type: path
     path: specifications.product.organization
+  - key: architecture
+    type: path
+    path: specifications.architecture.architecture
 
 requires:
   - info.name
@@ -22,6 +25,7 @@ requires:
   - org.git_org
   - org.docker_host
   - org.docker_org
+  - architecture.domains
 
 templates:
   - path: "./Specifications/architecture.yaml"
@@ -42,6 +46,10 @@ templates:
     merge: true
   - path: "./DeveloperEdition/de.template"
     output: "./DeveloperEdition/{{info.developer_cli}}"
+    merge: true
+  - path: "./DeveloperEdition/stage0/Makefile"
+    merge: true
+  - path: "./DeveloperEdition/stage0/README.md"
     merge: true
   - path: "./index.html"
     merge: true

@@ -1,17 +1,13 @@
-# --- Configuration (Makefile dir == pwd; SOURCE = parent; SLUG/ORG from product.yaml) ---
+# --- Configuration (SLUG/ORG from product.yaml) ---
 MAKEFILE_DIR := .
-SOURCE := $(shell cd .. && pwd)
-ARCH_FILE ?= $(MAKEFILE_DIR)/Specifications/architecture.yaml
 PRODUCT_FILE ?= $(MAKEFILE_DIR)/Specifications/product.yaml
 SLUG := $(shell yq -r '.info.slug' $(PRODUCT_FILE))
 ORG := $(shell yq -r '.organization.git_org' $(PRODUCT_FILE))
 LOG_FILE ?= .make.log
 SPECS_DIR := $(CURDIR)/Specifications
 MERGE_IMAGE := ghcr.io/agile-learning-institute/stage0_runbook_merge:latest
-ALL_SERVICES := $(shell yq -r '.architecture.domains[].name' $(ARCH_FILE))
 
-.PHONY: help install update verify schemas container push build-package publish-package 
-.PHONY: clean-clone-build launch-all launch-services delete-all delete-services
+.PHONY: help install update verify schemas container push build-package publish-package
 
 help:
 	@echo "Mentor Hub Developer CLI - Available commands:"
@@ -21,12 +17,6 @@ help:
 	@echo "  make update        - Update mentorhub CLI tools and configure Docker/Git"
 	@echo "  make schemas       - Fetch JSON schemas for all data dictionaries, assumes mongodb_api is running"
 	@echo "  make build-package - Build the Mentor Hub welcome page Docker container locally"
-	@echo ""
-	@echo "  make launch-all    - Build umbrella, publish, launch all services (create/clone/merge/build/publish)"
-	@echo "  make launch-services SERVICES=\"schema common_code\" - Launch services (space-separated)"
-	@echo "  make clean-clone-build SERVICES=<list> - Clean, clone, build (no publish)"
-	@echo "  make delete-all    - Delete all services (packages + repos)"
-	@echo "  make delete-services SERVICES=<list> - Delete services for given domains"
 	@echo ""
 	@echo "For more information, see ./CONTRIBUTING.md"
 
@@ -58,42 +48,18 @@ verify:
 	echo ""; \
 	echo "--- Container tools ---"; \
 	command -v docker >/dev/null 2>&1 && printf "docker:  " && docker --version || { echo "  FAIL: docker"; fail=1; }; \
-	docker buildx version >/dev/null 2>&1 && printf "buildx:  " && docker buildx version || { echo "  FAIL: docker buildx"; fail=1; }; \
 	echo ""; \
 	echo "--- GitHub & Git ---"; \
 	[ -n "$${GITHUB_TOKEN:-}" ] && printf "GITHUB_TOKEN: set\n" || { echo "  FAIL: GITHUB_TOKEN (set env var)"; fail=1; }; \
-	command -v gh >/dev/null 2>&1 && printf "gh:      " && gh --version | head -1 || { echo "  FAIL: gh"; fail=1; }; \
 	command -v git >/dev/null 2>&1 && printf "git:     " && git --version || { echo "  FAIL: git"; fail=1; }; \
-	echo "Checking git global user.name and user.email..."; \
-	if ! git config --global user.name >/dev/null 2>&1; then \
-		echo "  FAIL: git config --global user.name (set a global name; see CONTRIBUTING.md)"; \
-		fail=1; \
-	fi; \
-	if ! git config --global user.email >/dev/null 2>&1; then \
-		echo "  FAIL: git config --global user.email (set a global email; see CONTRIBUTING.md)"; \
-		fail=1; \
-	fi; \
+	echo "Checking git global user.name and user.email (recommended)..."; \
+	git config --global user.name >/dev/null 2>&1 && echo "  user.name: set" || echo "  user.name: not set (recommended for commits)"; \
+	git config --global user.email >/dev/null 2>&1 && echo "  user.email: set" || echo "  user.email: not set (recommended for commits)"; \
 	echo ""; \
 	echo "--- Utilities ---"; \
 	command -v jq >/dev/null 2>&1 && printf "jq:      " && jq --version || { echo "  FAIL: jq"; fail=1; }; \
 	command -v yq >/dev/null 2>&1 && printf "yq:      " && yq --version || { echo "  FAIL: yq"; fail=1; }; \
 	command -v curl >/dev/null 2>&1 && printf "curl:    " && curl --version | head -1 || { echo "  FAIL: curl"; fail=1; }; \
-	command -v ssh >/dev/null 2>&1 && printf "ssh:     " && ssh -V 2>&1 || { echo "  FAIL: ssh"; fail=1; }; \
-	echo ""; \
-	echo "--- Git SSH (clone + push) ---"; \
-	GIT_SSH_TEST=$$(mktemp -d); \
-	if (git clone git@github.com:agile-learning-institute/testing.git "$$GIT_SSH_TEST" >/dev/null 2>&1 && \
-		cd "$$GIT_SSH_TEST" && \
-		echo " " >> README.md && \
-		git add README.md && \
-		git commit -m "verify: SSH clone/push test" >/dev/null 2>&1 && \
-		git push >/dev/null 2>&1); then \
-		echo "  Git SSH: OK"; \
-	else \
-		echo "  FAIL: Git SSH clone or push (check SSH key, push access to agile-learning-institute/testing)"; \
-		fail=1; \
-	fi; \
-	rm -rf "$$GIT_SSH_TEST"; \
 	echo ""; \
 	if [ $$fail -eq 1 ]; then \
 		echo "Some prerequisites are missing. See CONTRIBUTING.md for install instructions."; \
@@ -171,119 +137,5 @@ build-publish: container push
 
 build-package: container
 publish-package: push
-delete-package: gh api -X DELETE /orgs//packages/container/mentorhub'
-
-launch-all:
-	@START=$$(date +%s); \
-	$(MAKE) build-package publish-package && $(MAKE) launch-services SERVICES="$(ALL_SERVICES)"; \
-	END=$$(date +%s); \
-	echo "Launch Completed - Started at $$START To $$END Duration: $$((END - START)) Seconds"
-
-launch-services:
-	@if [ -z "$(SERVICES)" ]; then echo "Error: SERVICES required. e.g. make launch-services SERVICES=profile"; exit 1; fi; \
-	[ -z "$${GITHUB_TOKEN:-}" ] && { echo "Error: GITHUB_TOKEN env required"; exit 1; }; \
-	echo "Configuring git and docker for push..."; \
-	echo "$$GITHUB_TOKEN" | docker login ghcr.io -u $(ORG) --password-stdin && \
-	git config --global --unset-all url."https://@github.com/".insteadOf 2>/dev/null || true && \
-	git config --global url."https://x-access-token:$$GITHUB_TOKEN@github.com/".insteadOf "https://github.com/" && \
-	for svc in $(SERVICES); do \
-		[ -z "$$svc" ] && continue; \
-		REPO_LINES=$$(yq -r '.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + .template + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
-		[ -z "$$REPO_LINES" ] && continue; \
-		echo "--- Domain: $$svc ---"; \
-		echo "$$REPO_LINES" | while IFS='|' read -r repo_name template publish; do \
-			[ -z "$$repo_name" ] && continue; \
-			REPO_FULL="$(SLUG)_$$repo_name"; \
-			REPO="$(ORG)/$$REPO_FULL"; \
-			echo "  Creating $$REPO from template $$template"; \
-			rm -rf "$(SOURCE)/$$REPO_FULL"; \
-			cd "$(SOURCE)" && gh repo create "$$REPO" --template "$$template" --public || { echo "Failed: $$REPO"; exit 1; }; \
-			echo "  Waiting for repo to be ready..."; sleep 5; \
-			echo "  Cloning $$REPO"; \
-			cd "$(SOURCE)" && git clone "https://x-access-token:$$GITHUB_TOKEN@github.com/$$REPO.git" "$$REPO_FULL" || { echo "Failed clone: $$REPO"; exit 1; }; \
-			echo "  Merging $$REPO_FULL"; \
-			cd "$(SOURCE)/$$REPO_FULL" && SERVICE_NAME=$$svc make merge "$(SPECS_DIR)" || { echo "Failed merge: $$REPO_FULL"; exit 1; }; \
-			if [ -n "$$publish" ]; then \
-				echo "  Build-package & publish-package $$REPO_FULL ($$publish)"; \
-				case "$$publish" in \
-					make)   make build-package && make publish-package ;; \
-					npm)    npm run build-package && npm run publish-package ;; \
-					pipenv) pipenv run build-package && pipenv run publish-package ;; \
-					*)      echo "Unknown publish: $$publish"; exit 1 ;; \
-				esac || { echo "Failed build: $$REPO_FULL"; exit 1; }; \
-			fi; \
-			echo "  Commit & push $$REPO_FULL"; \
-			git add -A && git commit -m "Template Merge Processing Complete" && git push origin main || { echo "Failed push: $$REPO_FULL"; exit 1; }; \
-			cd "$(MAKEFILE_DIR)" || true; \
-		done; \
-	done
-	@echo "Launch complete."
-
-# --- Clean command (DESTRUCTIVE - do not run automated tests) ---
-clean-clone-build:
-	@if [ -z "$(SERVICES)" ]; then echo "Error: SERVICES required. e.g. make clean-clone-build SERVICES=profile"; exit 1; fi; \
-	for svc in $(SERVICES); do \
-		[ -z "$$svc" ] && continue; \
-		REPO_LINES=$$(yq -r '.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
-		[ -z "$$REPO_LINES" ] && continue; \
-		echo "--- Domain: $$svc ---"; \
-		echo "$$REPO_LINES" | while IFS='|' read -r repo_name publish; do \
-			[ -z "$$repo_name" ] && continue; \
-			REPO_FULL="$(SLUG)_$$repo_name"; \
-			REPO="$(ORG)/$$REPO_FULL"; \
-			echo "  Clean $$REPO_FULL"; \
-			rm -rf "$(SOURCE)/$$REPO_FULL"; \
-			echo "  Clone $$REPO"; \
-			cd "$(SOURCE)" && git clone "https://github.com/$$REPO.git" "$$REPO_FULL" || { echo "Failed clone: $$REPO"; exit 1; }; \
-			echo "  Build $$REPO_FULL ($$publish)"; \
-			cd "$(SOURCE)/$$REPO_FULL" && ( \
-				case "$$publish" in \
-					make)   make build-package ;; \
-					npm)    npm run build-package ;; \
-					pipenv) pipenv run build-package ;; \
-					*)      echo "Skipped (no publish): $$REPO_FULL" ;; \
-				esac \
-			) || true; \
-			cd "$(MAKEFILE_DIR)" || true; \
-		done; \
-	done
-	@echo "Clean-clone-build complete."
-
-# --- Delete commands (DESTRUCTIVE - do not run automated tests) ---
-delete-all:
-	@START=$$(date +%s); \
-	$(MAKE) delete-services SERVICES="$(ALL_SERVICES)"; \
-	END=$$(date +%s); \
-	echo "Delete Completed - Started at $$START To $$END Duration: $$((END - START)) Seconds"
-
-delete-services:
-	@echo "WARNING: This will DELETE repos and packages. This action is NOT reversible."; \
-	read -p "Proceed? (y/n) " confirm && [ "$$confirm" = "y" ] || { echo "Aborted."; exit 1; }; \
-	for svc in $(SERVICES); do \
-		[ -z "$$svc" ] && continue; \
-		REPO_LINES=$$(yq -r '.architecture.domains[] | select(.name == "'$$svc'") | .repos[] | select(.type == "api" or .type == "spa") | (.name + "|" + (.publish // ""))' $(ARCH_FILE) 2>/dev/null) || true; \
-		[ -z "$$REPO_LINES" ] && continue; \
-		echo "--- Domain: $$svc ---"; \
-		echo "$$REPO_LINES" | while IFS='|' read -r repo_name publish; do \
-			[ -z "$$repo_name" ] && continue; \
-			REPO_FULL="$(SLUG)_$$repo_name"; \
-			REPO="$(ORG)/$$REPO_FULL"; \
-			if [ -d "$(SOURCE)/$$REPO_FULL" ] && [ -n "$$publish" ]; then \
-				echo "  Delete-package $$REPO_FULL ($$publish)"; \
-				cd "$(SOURCE)/$$REPO_FULL" && ( \
-					case "$$publish" in \
-						make)   make delete-package ;; \
-						npm)    npm run delete-package ;; \
-						pipenv) pipenv run delete-package ;; \
-						*)      ;; \
-					esac \
-				) 2>/dev/null || true; \
-			fi; \
-			echo "  Delete repo $$REPO"; \
-			gh repo delete "$$REPO" --yes 2>/dev/null || echo "  (repo may not exist)"; \
-			echo "  Clean $$REPO_FULL"; \
-			rm -rf "$(SOURCE)/$$REPO_FULL"; \
-			cd "$(MAKEFILE_DIR)" || true; \
-		done; \
-	done; \
-	echo "Delete complete."
+delete-package:
+	@gh api -X DELETE /orgs/agile-learning-institute/packages/container/mentorhub

@@ -18,14 +18,12 @@ Run `make verify` to check that all prerequisites are installed. If any fail, in
 
 ### Container tools
 - **Docker Desktop** - https://www.docker.com/get-started/
-- **Docker Buildx** - Bundled with Docker Desktop. Standalone: https://docs.docker.com/buildx/working-with-buildx/
 
 ### GitHub & Git
-- **GITHUB_TOKEN** - See [Configuring AccessToken](#configure-access-tokens) 
-- **GitHub SSH** - See [Configuring GitHub SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
-- **gh** (GitHub CLI) - https://cli.github.com/
+- **GITHUB_TOKEN** - See [Configuring AccessToken](#configure-access-tokens)
 - **git** - https://git-scm.com/downloads
-- **git config --global** - 
+
+**Recommended:** [GitHub SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) for clone/push, and global git identity for commits:
 ```sh
 git config --global user.name "Your Name"
 git config --global user.email yourname@example.com
@@ -35,7 +33,6 @@ git config --global user.email yourname@example.com
 - **jq** - https://jqlang.github.io/jq/download/ (macOS: `brew install jq`)
 - **yq** - https://mikefarah.gitbook.io/yq (macOS: `brew install yq`)
 - **curl** - Usually pre-installed. https://curl.se/download.html
-- **ssh** - Usually pre-installed. https://www.openssh.com/
 
 ### Other
 - **zsh shell** - Default on macOS. Linux: https://github.com/ohmyzsh/ohmyzsh/wiki/Installing-ZSH
@@ -45,7 +42,7 @@ git config --global user.email yourname@example.com
 ## Step 2 of 4 - Install the CLI
 Use these commands to install the Developer Edition ``{{info.developer_cli}}`` command line utility. 
 ```sh
-git clone git@{{org.git_host | replace('https://','') | replace('http://','')}}:{{org.git_org}}/{{info.slug}}.git
+git clone git@{{org.git_host}}:{{org.git_org}}/{{info.slug}}.git
 cd {{info.slug}}
 make install
 ```
@@ -56,15 +53,7 @@ When local environment values are required (GitHub access tokens, etc.) they are
 ### GITHUB_TOKEN
 We are using GitHub to publish the api_utils pypi package, the spa_utils npm package, and GitHub Container Registry to publish containers. Create a GitHub classic access token with `repo` `workflow`, and `write:packages` privileges. Save it as `GITHUB_TOKEN` in the ``~/.{{info.slug}}/`` folder.
 
-To create a token, login to GitHub and click your Profile Pic -> Settings -> Developer Settings -> Personal access tokens -> Tokens(classic) -> Create New -> ✅ repo, ✅ workflow, ✅ write:packages. Users wanting to use Stage0 Delete commands will also need ✅ delete:packages and ✅ delete_repo permissions. For reference: [ghcr and github tokens](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
-
-### Git HTTPS auth (used by launch scripts)
-The launch scripts clone and push via HTTPS using your token. If you normally use SSH and run git steps manually, configure HTTPS auth once:
-```sh
-export GITHUB_TOKEN=ghp_your_token
-git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
-```
-Or clone with the token in the URL: `git clone https://x-access-token:${GITHUB_TOKEN}@github.com/org/repo.git`
+To create a token, login to GitHub and click your Profile Pic -> Settings -> Developer Settings -> Personal access tokens -> Tokens(classic) -> Create New -> ✅ repo, ✅ workflow, ✅ write:packages. For reference: [ghcr and github tokens](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
   
 ## Step 4 of 4 - Finally
 After you have everything installed and your token in place, run update to finish the install.
@@ -77,10 +66,10 @@ make update
 
 ## Development Standards
 - Understand a few simple [Architecture Principles](./DeveloperEdition/standards/ArchitecturePrinciples.md)
-- Review the [Data Standards](./DeveloperEdition/standards/data_standards.md) and install prerequisites.
-- Review the [SRE Standards](./DeveloperEdition/standards/sre_standards.md) and install prerequisites.
-- Review the [API Standards](./DeveloperEdition/standards/api_standards.md) and install prerequisites.
-- Review the [SPA Standards](./DeveloperEdition/standards/spa_standards.md) and install prerequisites.
+- Review the [Data Standards](./DeveloperEdition/standards/data_standards.md).
+- Review the [SRE Standards](./DeveloperEdition/standards/sre_standards.md).
+- Review the [API Standards](./DeveloperEdition/standards/api_standards.md).
+- Review the [SPA Standards](./DeveloperEdition/standards/spa_standards.md).
 
 ## Developer Workflow
 We utilize an Issue–Feature–Branch pattern for the developer workflow:
@@ -98,39 +87,15 @@ If you have questions about implementing a feature, create your feature branch a
 # Verify you have all the developer pre-req's installed
 make verify
 
-## Install the developer CLI in your search path
+# Install the developer CLI in your search path
 make install
 
-## Update the developer CLI with the latest compose file
-make update 
+# Update the developer CLI with the latest compose file
+make update
 
-## Generate data schemas for all collections in catalog.yaml
+# Generate data schemas for all collections in catalog.yaml
 make schemas
 
-## Build the welcome page container
+# Build the welcome page container
 make container
-
-```
-## Umbrella Repo Stage0 Automation
-The command impact multiple repositories
-```sh
-## Launch all or some services
-make launch-all
-### or ###
-make launch-services "SERVICES=profile sales operations"
-
-## Setup an environment when the Launch is completed
-## Will rm -rf any existing repo's (other than the umbrella)
-make clean-clone-build
-
-######################################################
-######### WARNING - REAL DELETE WITHOUT UNDO #########
-######################################################
-## Deletes all or some repo's and packages from GitHub and local disk
-## NOTE: Does not affect the umbrella repo itself
-make delete-all
-make delete-services "SERVICES=profile sales operations"
-######################################################
-######### WARNING - REAL DELETE WITHOUT UNDO #########
-######################################################
 ```
