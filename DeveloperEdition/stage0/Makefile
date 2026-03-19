@@ -99,6 +99,10 @@ launch-services:
 			[ -z "$$repo_name" ] && continue; \
 			REPO_FULL="$(SLUG)_$$repo_name"; \
 			REPO="$(ORG)/$$REPO_FULL"; \
+			echo ""; \
+			echo "##############################################################################"; \
+			echo "###   Starting Repo $$REPO_FULL"; \
+			echo "##############################################################################"; \
 			echo "  Creating $$REPO from template $$template"; \
 			rm -rf "$(SOURCE)/$$REPO_FULL"; \
 			cd "$(SOURCE)" && gh repo create "$$REPO" --template "$$template" --public || { echo "Failed: $$REPO"; exit 1; }; \
@@ -118,6 +122,10 @@ launch-services:
 			fi; \
 			echo "  Commit & push $$REPO_FULL"; \
 			git add -A && git commit -m "Template Merge Processing Complete" && git push origin main || { echo "Failed push: $$REPO_FULL"; exit 1; }; \
+			echo ""; \
+			echo "##############################################################################"; \
+			echo "###   Repo $$REPO_FULL Shipped"; \
+			echo "##############################################################################"; \
 			cd "$(ROOT)" || true; \
 		done; \
 	done
