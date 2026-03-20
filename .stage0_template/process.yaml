@@ -30,15 +30,7 @@ requires:
 templates:
   - path: "./Specifications/architecture.yaml"
     merge: true
-  - path: "./Specifications/catalog.yaml"
-    merge: true
-  - path: "./Specifications/journeys.yaml"
-    merge: true
   - path: "./Specifications/product.yaml"
-    merge: true
-  - path: "./Specifications/roadmap.yaml"
-    merge: true
-  - path: "./Specifications/stakeholders.yaml"
     merge: true
   - path: "./DeveloperEdition/docker-compose.yaml"
     merge: true
@@ -46,10 +38,6 @@ templates:
     merge: true
   - path: "./DeveloperEdition/de.template"
     output: "./DeveloperEdition/{{info.developer_cli}}"
-    merge: true
-  - path: "./DeveloperEdition/stage0/Makefile"
-    merge: true
-  - path: "./DeveloperEdition/stage0/README.md"
     merge: true
   - path: "./index.html"
     merge: true
