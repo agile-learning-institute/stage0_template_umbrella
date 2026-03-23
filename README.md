@@ -1,7 +1,8 @@
 # Umbrella Project Template
 
 ## Quick Start
-This is a Stage0 Merge template to create the Umbrella Repo for your system. You should use the [Stage0 Launch](https://github.com/agile-learning-institute/stage0_launch) project to launch your system using this Template. 
+
+This repository is a **Stage0 merge template** for an umbrella repo. Use **`make merge`** (see below) with your specifications context to produce a merged umbrella. Provisioning GitHub repos, Docker images, and service automation is **not** part of this template’s Makefile; use **[Stage0 Launch](https://github.com/agile-learning-institute/stage0_launch)** (web UI / API) from a launchpad when you need that workflow.
 
 ## Contributing
 See [Template Guide](https://github.com/agile-learning-institute/stage0_runbook_merge/blob/main/TEMPLATE_GUIDE.md) for information about stage0 merge templates. See the [Processing Instructions](./.stage0_template/process.yaml) for details about this template, and [Test Specifications](./.stage0_template/Specifications/) for sample context data required.

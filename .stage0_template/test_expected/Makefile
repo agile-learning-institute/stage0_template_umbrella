@@ -7,8 +7,12 @@ LOG_FILE ?= .make.log
 SPECS_DIR := $(CURDIR)/Specifications
 MERGE_IMAGE := ghcr.io/agile-learning-institute/stage0_runbook_merge:latest
 
-.PHONY: help install update verify schemas container push build-package publish-package \
-	launch-all launch-services clone-all delete-all delete-services stage0-automation-help
+# Stage0 Launch web UI — convenience wrapper only; GITHUB_TOKEN + GitHub permissions are the real gate.
+STAGE0_LAUNCH_IMAGE ?= ghcr.io/agile-learning-institute/stage0_launch:latest
+STAGE0_LAUNCH_PORT ?= 8080
+STAGE0_LAUNCHPAD_HOST_PATH ?= $(abspath $(CURDIR)/..)
+
+.PHONY: help install update verify schemas container push build-package publish-package stage0-launch-ui
 
 help:
 	@echo "Mentor Hub Developer CLI - Available commands:"
@@ -18,7 +22,7 @@ help:
 	@echo "  make update        - Update mentorhub CLI tools and configure Docker/Git"
 	@echo "  make schemas       - Fetch JSON schemas for all data dictionaries, assumes mongodb_api is running"
 	@echo "  make build-package - Build the Mentor Hub welcome page Docker container locally"
-	@echo "  make stage0-automation-help - Service repo launch/clone/delete via stage0_launch container"
+	@echo "  make stage0-launch-ui - Stage0 Launch web UI (launchpad = parent of this repo; export GITHUB_TOKEN first)"
 	@echo ""
 	@echo "For more information, see ./CONTRIBUTING.md"
 
@@ -139,67 +143,23 @@ build-publish: container push
 
 build-package: container
 publish-package: push
+
+stage0-launch-ui:
+	@[ -n "$$GITHUB_TOKEN" ] || (echo "Error: export GITHUB_TOKEN first (never commit tokens)."; exit 1)
+	@echo "Open http://localhost:$(STAGE0_LAUNCH_PORT) — host launchpad: $(STAGE0_LAUNCHPAD_HOST_PATH)"
+	@docker pull $(STAGE0_LAUNCH_IMAGE) 2>/dev/null || true
+	docker run --rm \
+		-p $(STAGE0_LAUNCH_PORT):8080 \
+		-v "$(STAGE0_LAUNCHPAD_HOST_PATH):/launchpad" \
+		-v "$(CURDIR)/Specifications:/specifications" \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-e LAUNCHPAD_DIR=/launchpad \
+		-e SPECIFICATIONS=/specifications \
+		-e GITHUB_TOKEN \
+		-e GH_TOKEN=$$GITHUB_TOKEN \
+		-e GH_USERNAME \
+		-e GITHUB_USERNAME \
+		$(STAGE0_LAUNCH_IMAGE)
+
 delete-package:
 	@gh api -X DELETE /orgs/agile-learning-institute/packages/container/mentorhub
-
-# --- Stage0 automation (image: ghcr.io/.../stage0_launch:latest; needs Docker + GITHUB_TOKEN) ---
-STAGE0_IMAGE := ghcr.io/agile-learning-institute/stage0_launch:latest
-STAGE0_UMBRELLA_HOST_PATH ?= $(CURDIR)
-STAGE0_LAUNCHPAD_HOST_PATH ?= $(shell dirname "$(CURDIR)")
-
-stage0-automation-help:
-	@echo "Stage0 automation via $(STAGE0_IMAGE):"
-	@echo "  make launch-all              - All service repos (create/merge/build/publish)"
-	@echo "  make launch-services SERVICES=\"domain ...\""
-	@echo "  make clone-all               - Clone all service repos beside umbrella + build (no publish)"
-	@echo "  make delete-services SERVICES=\"...\"  - Confirm in TTY, or set I_CONFIRM_DELETE_SERVICES=yes I_CONFIRM_SLUG=<slug>"
-	@echo "  make delete-all              - All services + umbrella repo/package; I_CONFIRM_DELETE_ALL=yes I_CONFIRM_SLUG=<slug>"
-	@echo "  Export GITHUB_TOKEN. Override paths: STAGE0_UMBRELLA_HOST_PATH STAGE0_LAUNCHPAD_HOST_PATH"
-
-launch-all:
-	@[ -n "$$GITHUB_TOKEN" ] || (echo "Error: export GITHUB_TOKEN"; exit 1)
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml pull automation 2>/dev/null || true
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml run --rm \
-		automation launch-all
-
-launch-services:
-	@[ -n "$$GITHUB_TOKEN" ] || (echo "Error: export GITHUB_TOKEN"; exit 1)
-	@[ -n "$(SERVICES)" ] || (echo "Error: SERVICES required (e.g. SERVICES=\"schema sample\")"; exit 1)
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml pull automation 2>/dev/null || true
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml run --rm \
-		-e SERVICES="$(SERVICES)" \
-		automation launch-services
-
-clone-all:
-	@[ -n "$$GITHUB_TOKEN" ] || (echo "Error: export GITHUB_TOKEN"; exit 1)
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml pull automation 2>/dev/null || true
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml run --rm \
-		automation clone-all
-
-delete-services:
-	@[ -n "$$GITHUB_TOKEN" ] || (echo "Error: export GITHUB_TOKEN"; exit 1)
-	@[ -n "$(SERVICES)" ] || (echo "Error: SERVICES required"; exit 1)
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml pull automation 2>/dev/null || true
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml run --rm -i \
-		-e SERVICES="$(SERVICES)" \
-		-e I_CONFIRM_DELETE_SERVICES="$$I_CONFIRM_DELETE_SERVICES" \
-		-e I_CONFIRM_SLUG="$$I_CONFIRM_SLUG" \
-		automation delete-services
-
-delete-all:
-	@[ -n "$$GITHUB_TOKEN" ] || (echo "Error: export GITHUB_TOKEN"; exit 1)
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml pull automation 2>/dev/null || true
-	@STAGE0_UMBRELLA_HOST_PATH="$(STAGE0_UMBRELLA_HOST_PATH)" STAGE0_LAUNCHPAD_HOST_PATH="$(STAGE0_LAUNCHPAD_HOST_PATH)" \
-		docker compose -f DeveloperEdition/launch-docker-compose.yaml run --rm -i \
-		-e I_CONFIRM_DELETE_ALL="$$I_CONFIRM_DELETE_ALL" \
-		-e I_CONFIRM_SLUG="$$I_CONFIRM_SLUG" \
-		automation delete-all
