@@ -11,6 +11,7 @@ MERGE_IMAGE := ghcr.io/agile-learning-institute/stage0_runbook_merge:latest
 STAGE0_LAUNCH_IMAGE ?= ghcr.io/agile-learning-institute/stage0_launch:latest
 STAGE0_LAUNCH_PORT ?= 8080
 STAGE0_LAUNCHPAD_HOST_PATH ?= $(abspath $(CURDIR)/..)
+STAGE0_LAUNCH_UI_CONTAINER_NAME ?= stage0_launch_ui
 
 .PHONY: help install update verify schemas container push build-package publish-package stage0-launch-ui
 
@@ -22,7 +23,7 @@ help:
 	@echo "  make update        - Update mentorhub CLI tools and configure Docker/Git"
 	@echo "  make schemas       - Fetch JSON schemas for all data dictionaries, assumes mongodb_api is running"
 	@echo "  make build-package - Build the Mentor Hub welcome page Docker container locally"
-	@echo "  make stage0-launch-ui - Stage0 Launch web UI (launchpad = parent of this repo; export GITHUB_TOKEN first)"
+	@echo "  make stage0-launch-ui - Stage0 Launch web UI, detached (launchpad = parent of this repo; export GITHUB_TOKEN first)"
 	@echo ""
 	@echo "For more information, see ./CONTRIBUTING.md"
 
@@ -146,15 +147,19 @@ publish-package: push
 
 stage0-launch-ui:
 	@[ -n "$$GITHUB_TOKEN" ] || (echo "Error: export GITHUB_TOKEN first (never commit tokens)."; exit 1)
-	@echo "Open http://localhost:$(STAGE0_LAUNCH_PORT) — host launchpad: $(STAGE0_LAUNCHPAD_HOST_PATH)"
+	@echo "Starting Stage0 Launch (detached). URL: http://localhost:$(STAGE0_LAUNCH_PORT)"
+	@echo "Host launchpad: $(STAGE0_LAUNCHPAD_HOST_PATH)"
+	@echo "Stop: docker stop $(STAGE0_LAUNCH_UI_CONTAINER_NAME)"
 	@docker pull $(STAGE0_LAUNCH_IMAGE) 2>/dev/null || true
-	docker run --rm \
+	@docker rm -f $(STAGE0_LAUNCH_UI_CONTAINER_NAME) 2>/dev/null || true
+	docker run -d --rm --name $(STAGE0_LAUNCH_UI_CONTAINER_NAME) \
 		-p $(STAGE0_LAUNCH_PORT):8080 \
 		-v "$(STAGE0_LAUNCHPAD_HOST_PATH):/launchpad" \
 		-v "$(CURDIR)/Specifications:/specifications" \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-e LAUNCHPAD_DIR=/launchpad \
 		-e SPECIFICATIONS=/specifications \
+		-e STAGE0_LAUNCH_CONTAINER_NAME=$(STAGE0_LAUNCH_UI_CONTAINER_NAME) \
 		-e GITHUB_TOKEN \
 		-e GH_TOKEN=$$GITHUB_TOKEN \
 		-e GH_USERNAME \
