@@ -2,9 +2,6 @@
 
 
 
-
-
-
 services:
   ##################################
   # Welcome Service
@@ -15,55 +12,11 @@ services:
       - "127.0.0.1:8080:80"
     profiles:
       - all
-      - runbook
       - mongodb
 
       - sample
       - sample-api
 
-
-  ##################################
-  # Custom Runbook API Service (Deployed Profile)
-  ##################################
-  runbook-api:
-    image: ghcr.io/agile-learning-institute/mentorhub_runbook_api:latest
-    container_name: runbook_api
-    working_dir: /opt/stage0/runner
-    restart: no
-    ports:
-      - "127.0.0.1:8383:8383"
-    environment:
-      API_PORT: 8383
-      ENABLE_LOGIN: "true"
-      LOGGING_LEVEL: "INFO"
-      JWT_SECRET: ${JWT_SECRET}
-      GITHUB_TOKEN: ${GITHUB_TOKEN}
-      SSH_KEY: ${SSH_KEY}
-      MOUNT_DIR: ${MOUNT_DIR}
-      UI_HEADER: "Mentor Hub Packaged Runbooks"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${MOUNT_DIR}:/execution
-    profiles:
-      - all
-      - runbook
-
-  runbook-spa:
-    image: ghcr.io/agile-learning-institute/stage0_runbook_spa:latest
-    container_name: runbook_spa
-    restart: no
-    ports:
-      - "127.0.0.1:8384:80"
-    environment:
-      API_HOST: runbook-api
-      API_PORT: 8383
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8384/login}
-    depends_on:
-      runbook-api:
-        condition: service_started
-    profiles:
-      - all
-      - runbook
 
   ##################################
   # Backing Services
@@ -95,15 +48,15 @@ services:
     image: ghcr.io/agile-learning-institute/mentorhub_mongodb_api:latest
     restart: no
     ports:
-      - "127.0.0.1:8385:8385"
+      - "127.0.0.1:8383:8383"
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
       MONGO_DB_NAME: mentor_hub
       AUTO_PROCESS: True
       LOAD_TEST_DATA: True
-      API_PORT: 8385
-      SPA_PORT: 8386
+      API_PORT: 8383
+      SPA_PORT: 8384
       UI_HEADER: "Mentor Hub Schemas"
     depends_on:
       mongodb:
@@ -119,11 +72,11 @@ services:
     image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
     restart: no
     ports:
-      - "127.0.0.1:8386:8386"
+      - "127.0.0.1:8384:8384"
     environment:
       API_HOST: mongodb_api
-      API_PORT: 8385
-      SPA_PORT: 8386
+      API_PORT: 8383
+      SPA_PORT: 8384
     depends_on:
       mongodb_api:
         condition: service_started
@@ -146,13 +99,11 @@ services:
 
 
 
-
-
   sample_api:
     image: ghcr.io/agile-learning-institute/mentorhub_sample_api:latest
     restart: no
     ports:
-      - "127.0.0.1:8389:8389"
+      - "127.0.0.1:8387:8387"
     environment:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
@@ -160,9 +111,9 @@ services:
       ENABLE_LOGIN: "true"
       LOGGING_LEVEL: "INFO"
       JWT_SECRET: ${JWT_SECRET}
-      API_PORT: 8389
-      SAMPLE_API_PORT: 8389
-      SAMPLE_SPA_PORT: 8390
+      API_PORT: 8387
+      SAMPLE_API_PORT: 8387
+      SAMPLE_SPA_PORT: 8388
     depends_on:
       mongodb_api:
         condition: service_started
@@ -175,11 +126,11 @@ services:
     image: ghcr.io/agile-learning-institute/mentorhub_sample_spa:latest
     restart: no
     ports:
-      - "127.0.0.1:8390:80"
+      - "127.0.0.1:8388:80"
     environment:
       API_HOST: sample_api
-      API_PORT: 8389
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8390/login}
+      API_PORT: 8387
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8388/login}
     depends_on:
       sample_api:
         condition: service_started

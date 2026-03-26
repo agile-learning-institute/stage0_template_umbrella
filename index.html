@@ -141,7 +141,7 @@
         <h1>{{info.name}}</h1>
         <p class="subtitle">Welcome to the Development Environment</p>
         <ul class="links">
-{# Order: new domains first, then schema, then runbook (reverse and skip common_code) #}
+{# Order: reverse(domains), skip common_code. Link ports are api_repo.port / spa_repo.port from architecture. Default umbrella: schema base_port+0/+1, common_code +2/+3, sample +4/+5. #}
 {% for domain in architecture.domains | reverse %}
 {% if domain.name != 'common_code' %}
 {% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
@@ -150,10 +150,10 @@
             <li>
                 <div class="service-row">
                     <div class="spa-cell">
-                        <a href="http://HOST_NAME:{{ spa_repo.port }}" id="{{ domain.name }}-spa-link" class="cell-link" target="_blank" rel="noopener">{% if domain.name == 'schema' %}Schema Configuration{% elif domain.name == 'runbook' %}Runbook Automation{% elif domain.name == 'sample' %}Sample SPA{% else %}{{ domain.name | replace('_', ' ') | title }} SPA{% endif %}</a>
+                        <a href="http://HOST_NAME:{{ spa_repo.port }}" id="{{ domain.name }}-spa-link" class="cell-link" target="_blank" rel="noopener">{% if domain.name == 'schema' %}Schema Configuration{% elif domain.name == 'sample' %}Sample SPA{% else %}{{ domain.name | replace('_', ' ') | title }} SPA{% endif %}</a>
                         <div class="source-under">
 {% if spa_repo.type == 'spa_ref' %}
-                            <span class="utility-ref" title="Utility container, not a separate repo">{% if domain.name == 'schema' %}mongodb_configurator_spa{% else %}stage0_runbook_spa{% endif %} (utility)</span>
+                            <span class="utility-ref" title="Utility container, not a separate repo">mongodb_configurator_spa (utility)</span>
 {% else %}
                             <a href="{{ org.git_host }}/{{ org.git_org }}/{{ info.slug }}_{{ spa_repo.name }}" target="_blank" rel="noopener" title="{{ spa_repo.name }} source">{{ info.slug }}_{{ spa_repo.name }}</a>
 {% endif %}

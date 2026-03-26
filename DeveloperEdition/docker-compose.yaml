@@ -1,7 +1,4 @@
 # docker-compose.yaml for {{info.name}} developers edition
-{% set runbook_domain = architecture.domains | selectattr('name', 'equalto', 'runbook') | first %}
-{% set runbook_api = runbook_domain.repos | selectattr('type', 'equalto', 'api') | first %}
-{% set runbook_spa = runbook_domain.repos | selectattr('type', 'equalto', 'spa_ref') | first %}
 {% set schema_domain = architecture.domains | selectattr('name', 'equalto', 'schema') | first %}
 {% set schema_api = schema_domain.repos | selectattr('type', 'equalto', 'api') | first %}
 {% set schema_spa = schema_domain.repos | selectattr('type', 'equalto', 'spa_ref') | first %}
@@ -15,55 +12,11 @@ services:
       - "127.0.0.1:8080:80"
     profiles:
       - all
-      - runbook
       - mongodb
-{% for domain in architecture.domains %}{% if domain.name not in ['runbook', 'schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}{% if api_repo and spa_repo %}
+{% for domain in architecture.domains %}{% if domain.name not in ['schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}{% if api_repo and spa_repo %}
       - {{ domain.name }}
       - {{ domain.name }}-api
 {% endif %}{% endif %}{% endfor %}
-
-  ##################################
-  # Custom Runbook API Service (Deployed Profile)
-  ##################################
-  runbook-api:
-    image: {{org.docker_host}}/{{org.docker_org}}/{{info.slug}}_runbook_api:latest
-    container_name: runbook_api
-    working_dir: /opt/stage0/runner
-    restart: no
-    ports:
-      - "127.0.0.1:{{ runbook_api.port }}:{{ runbook_api.port }}"
-    environment:
-      API_PORT: {{ runbook_api.port }}
-      ENABLE_LOGIN: "true"
-      LOGGING_LEVEL: "INFO"
-      JWT_SECRET: ${JWT_SECRET}
-      GITHUB_TOKEN: ${GITHUB_TOKEN}
-      SSH_KEY: ${SSH_KEY}
-      MOUNT_DIR: ${MOUNT_DIR}
-      UI_HEADER: "{{info.name}} Packaged Runbooks"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${MOUNT_DIR}:/execution
-    profiles:
-      - all
-      - runbook
-
-  runbook-spa:
-    image: ghcr.io/agile-learning-institute/stage0_runbook_spa:latest
-    container_name: runbook_spa
-    restart: no
-    ports:
-      - "127.0.0.1:{{ runbook_spa.port }}:80"
-    environment:
-      API_HOST: runbook-api
-      API_PORT: {{ runbook_api.port }}
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:{{ runbook_spa.port }}/login}
-    depends_on:
-      runbook-api:
-        condition: service_started
-    profiles:
-      - all
-      - runbook
 
   ##################################
   # Backing Services
@@ -84,7 +37,7 @@ services:
     profiles:
       - all
       - mongodb
-{% for domain in architecture.domains %}{% if domain.name not in ['runbook', 'schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% if api_repo %}
+{% for domain in architecture.domains %}{% if domain.name not in ['schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% if api_repo %}
       - {{ domain.name }}_api
 {% endif %}{% endif %}{% endfor %}
 
@@ -111,7 +64,7 @@ services:
     profiles:
       - all
       - mongodb
-{% for domain in architecture.domains %}{% if domain.name not in ['runbook', 'schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% if api_repo %}
+{% for domain in architecture.domains %}{% if domain.name not in ['schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% if api_repo %}
       - {{ domain.name }}_api
 {% endif %}{% endif %}{% endfor %}
 
@@ -130,7 +83,7 @@ services:
     profiles:
       - all
       - mongodb
-{% for domain in architecture.domains %}{% if domain.name not in ['runbook', 'schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% if api_repo %}
+{% for domain in architecture.domains %}{% if domain.name not in ['schema', 'common_code'] %}{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}{% if api_repo %}
       - {{ domain.name }}_api
 {% endif %}{% endif %}{% endfor %}
 
@@ -138,7 +91,7 @@ services:
   # Microservice domains (from architecture)
   ##################################
 {% for domain in architecture.domains %}
-{% if domain.name not in ['runbook', 'schema', 'common_code'] %}
+{% if domain.name not in ['schema', 'common_code'] %}
 {% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
 {% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
 {% if api_repo and spa_repo %}

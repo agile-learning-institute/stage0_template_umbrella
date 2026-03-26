@@ -7,20 +7,6 @@ architecture:
     - name: staging
     - name: production
   domains:
-    - name: runbook
-      description: SRE Automation using Stage0 Runbook System for operational automation
-      repos:
-        - name: runbook_api
-          description: Runbook Automation API Server
-          template: agile-learning-institute/stage0_template_runbook_api
-          publish: make
-          type: api
-          port: {{info.base_port + 0}}
-        - name: runbook_spa
-          description: Runbook Automation Single Page Web Application (utility container, not a real repository)
-          template: N/A
-          type: spa_ref
-          port: {{info.base_port + 1}}
     - name: schema
       description: MongoDB Database Configuration and Management.
       repos:
@@ -29,12 +15,12 @@ architecture:
           template: agile-learning-institute/stage0_template_configurator_api
           publish: make
           type: api
-          port: {{info.base_port + 2}}
+          port: {{info.base_port + 0}}
         - name: configurator_spa
           description: MongoDB Configurator SPA (utility container, not a real repository)
           template: N/A
           type: spa_ref 
-          port: {{info.base_port + 3}}
+          port: {{info.base_port + 1}}
     - name: common_code
       description: Shared code used across multiple API or SPA code bases are published to private dependency management libraries (NPM /PYPI).
       repos:
@@ -43,13 +29,13 @@ architecture:
           template: agile-learning-institute/stage0_template_py_utils
           publish: pipenv
           type: api
-          port: {{info.base_port + 4}}
+          port: {{info.base_port + 2}}
         - name: spa_utils
           description: Vue NPM SPA Utility Library
           template: agile-learning-institute/stage0_template_vue_utils
           publish: npm
           type: spa
-          port: {{info.base_port + 5}}
+          port: {{info.base_port + 3}}
     - name: sample
       description: Sample Service Domain - use for each User Journey domain.
       data_domains:
@@ -65,10 +51,10 @@ architecture:
           template: agile-learning-institute/stage0_template_flask_mongo
           publish: pipenv
           type: api
-          port: {{info.base_port + 6}}
+          port: {{info.base_port + 4}}
         - name: sample_spa
           description: Vue Vuetify SPA
           template: agile-learning-institute/stage0_template_vue_vuetify
           publish: npm
           type: spa
-          port: {{info.base_port + 7}}
+          port: {{info.base_port + 5}}
