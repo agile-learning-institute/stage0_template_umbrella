@@ -5,7 +5,7 @@
 - CI Automation: Github Actions
 - Private Container Registry: GitHub Container Registry till AWS refactor
 - Private PyPi Registry: GitHub via https+token till JFrog refactor
-- Private NPM Registry: GitHub Packages till JFrog refactor
+- Private NPM Registry: GitHub Packages till JFrog refactor (SPA shared libraries also install cleanly from **Git** without publishing a package artifact; see [SPA Standards](./spa_standards.md))
 - Infrastructure Automation: Docker Compose till Terraform refactor
 - Container Hosting: AWS EKS?
 - Container Configuration: Helm? 

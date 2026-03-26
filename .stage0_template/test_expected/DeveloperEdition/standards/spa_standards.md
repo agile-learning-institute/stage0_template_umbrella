@@ -28,12 +28,15 @@
 - Container uses NGINX template substitution for API proxy configuration
 
 ## Dependency Management
-- Always verify peer dependency compatibility when adding or updating packages
-- Use `npm view <package> peerDependencies` to check version requirements
-- Key compatibility requirements:
-  - `@vitejs/plugin-vue` v6.x required for Vite v7.x (v5.x only supports Vite v5-v6)
-  - `@mdi/font` latest stable is v7.x (v8.x does not exist)
-- Run `npm install` after dependency changes to catch peer dependency conflicts early
+- Application dependencies are declared in `package.json`; run `npm install` after changes.
+- Shared **`spa_utils`** is consumed from **Git** by default: in the SPA `package.json`, depend on `github:{{org.git_org}}/{{info.slug}}_spa_utils#main` (or a tag or commit SHA instead of `main`). `npm install` clones that repository and runs its `prepare` script to build `dist/`. For local development with both repos checked out, use `file:../{{info.slug}}_spa_utils`.
+- **Docker / CI:** pass **`GITHUB_TOKEN`** into the image build so `git` can clone a **private** `{{info.slug}}_spa_utils` repo; public library repos need no token. This path avoids GitHub Packages “Manage Actions access” for npm, which cannot be automated with supported APIs.
+- Third-party packages: verify peer dependency compatibility when adding or updating:
+  - `npm view <package> peerDependencies`
+  - `@vitejs/plugin-vue` v6.x required for Vite v7.x (v5.x only supports Vite v5–v6); `@mdi/font` latest stable is v7.x (v8.x does not exist)
+- Run `npm audit` regularly; use `overrides` in `package.json` for transitive fixes when needed.
+
+**Upgrade paths:** Use git dependencies with branch/tag/commit pins while iterating. When you need semver ranges (`^`), a single registry artifact, or promotion separate from the library repo’s branch, publish `spa_utils` to GitHub Packages or npmjs and switch consumers to registry versions plus `.npmrc` (accepting GPR or npmjs auth and ACL trade-offs).
 
 ## Testing Standards
 - **Unit Testing**: Vitest v3 for unit testing with 90% coverage target
@@ -186,33 +189,29 @@ Treat automation ID changes as **breaking changes to the UI API**:
 
 ## spa_utils Package
 
-The `@{{org.git_org}}/spa_utils` npm package provides reusable Vue 3 + Vuetify components, composables, and utilities for all SPAs.
+The `@{{org.git_org}}/{{info.slug}}_spa_utils` package provides reusable Vue 3 + Vuetify components, composables, and utilities for all SPAs. The npm **package name** matches the GitHub repository name `{{info.slug}}_spa_utils`.
 
 ### Installation
 
-**Development (Editable Mode):**
+**Development (editable, sibling clone):**
 ```json
 {
   "dependencies": {
-    "@{{org.git_org}}/spa_utils": "file:../spa_utils"
+    "@{{org.git_org}}/{{info.slug}}_spa_utils": "file:../{{info.slug}}_spa_utils"
   }
 }
 ```
 
-**Production (GitHub npm):**
+**Default for merged SPA templates (git, pin branch or tag):**
 ```json
 {
   "dependencies": {
-    "@{{org.git_org}}/spa_utils": "github:{{org.git_org}}/spa_utils#v0.1.0"
+    "@{{org.git_org}}/{{info.slug}}_spa_utils": "github:{{org.git_org}}/{{info.slug}}_spa_utils#main"
   }
 }
 ```
 
-**Configure .npmrc:**
-```
-@{{org.git_org}}:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
+**Optional — GitHub Packages (semver, requires registry auth):** add a scoped `.npmrc` mapping `@{{org.git_org}}` to `https://npm.pkg.github.com/` and a token for `npm install`; publishing uses `npm publish` from the `spa_utils` repo.
 
 ### Available Exports
 
@@ -240,7 +239,7 @@ See spa_utils for examples of how to implement these patterns.
 
 1. **Always enable search for list pages** - Use `searchable: true` and provide `searchQueryFn` for all list pages
 2. **Use dependency injection for useRoles** - Create app-specific wrapper that provides auth/config providers
-3. **Import from main package** - Use `import { ... } from '@{{org.git_org}}/spa_utils'` for all utilities
+3. **Import from main package** - Use `import { ... } from '@{{org.git_org}}/{{info.slug}}_spa_utils'` for all utilities
 4. **Follow automation ID patterns** - Use `{domain}-{page}-{element}` pattern for all interactive elements
 5. **Reuse validation rules** - Use `validationRules` from spa_utils instead of creating custom rules
 6. **Consistent date formatting** - Always use `formatDate` from spa_utils for date display

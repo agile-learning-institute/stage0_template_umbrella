@@ -12,10 +12,12 @@
 - requests for E2E testing
 
 ## Dependency Management
-- All dependencies are managed via `Pipfile` and `Pipfile.lock`
+- All dependencies are managed by `pipenv` via `Pipfile` and `Pipfile.lock`
 - The `api_utils` shared library is installed via HTTPS from GitHub using Personal Access Tokens (PATs)
 - Docker builds use `GITHUB_TOKEN` build argument for authentication
 - Local development requires git credential configuration (see Developer Edition [README](../README.md))
+
+**Upgrade paths:** Keep installing `api_utils` from Git when that matches your workflow. Move to a published package (PyPI or a private index) when you need stricter version pinning, reproducible lockfiles separate from branch heads, or artifact promotion that does not track the library repo’s default branch.
 
 ## Standard Developer Commands
 - pipenv run build (package code for deployment)
