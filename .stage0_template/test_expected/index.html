@@ -150,15 +150,15 @@
 
 
 
+
+
+
+
+
+
+
+
                 <a class="persona" id="sample-genny" href="#">Sample</a>
-
-
-
-
-
-
-
-
 
 
 
@@ -170,15 +170,15 @@
 
 
 
+
+
+
+
+
+
+
+
                 <a class="persona" id="sample-adam" href="#">Sample</a>
-
-
-
-
-
-
-
-
 
 
 
@@ -186,24 +186,6 @@
         </div>
 
         <ul class="links">
-
-
-
-
-
-
-            <li class="service-block">
-                <div class="service-title">Sample</div>
-
-                <a href="http://HOST_NAME:8387/docs/explorer.html" id="sample-explorer-link" class="cell-link" target="_blank" rel="noopener" title="Open API docs">API Explorer</a>
-
-                <a href="https://github.com/agile-learning-institute/mentorhub_sample_spa" class="cell-link" target="_blank" rel="noopener" title="sample_spa source">mentorhub_sample_spa</a>
-
-                <a href="https://github.com/agile-learning-institute/mentorhub_sample_api" class="cell-link" target="_blank" rel="noopener" title="sample_api source">mentorhub_sample_api</a>
-            </li>
-
-
-
 
 
 
@@ -223,13 +205,31 @@
 
 
 
+
+
+
+
+
+
+            <li class="service-block">
+                <div class="service-title">Sample</div>
+
+                <a href="http://HOST_NAME:8387/docs/explorer.html" id="sample-explorer-link" class="cell-link" target="_blank" rel="noopener" title="Open API docs">API Explorer</a>
+
+                <a href="https://github.com/agile-learning-institute/mentorhub_sample_spa" class="cell-link" target="_blank" rel="noopener" title="sample_spa source">mentorhub_sample_spa</a>
+
+                <a href="https://github.com/agile-learning-institute/mentorhub_sample_api" class="cell-link" target="_blank" rel="noopener" title="sample_api source">mentorhub_sample_api</a>
+            </li>
+
+
+
         </ul>
     </div>
     <script>
         const hostname = window.location.hostname || 'localhost';
 
         /** HS256 persona tokens: iss dev-idp, aud dev-api; secret must match JWT_SECRET used by APIs (see e2e_auth / Developer Edition compose). */
-        const DEV_AUTH_EXPIRES = '2036-03-23T19:24:11+00:00';
+        const DEV_AUTH_EXPIRES = '2036-03-23T19:24:11.000Z';
         const TOKEN_GENNY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6Imdlbm55IiwiaWF0IjoxNzc0NTUzMDUxLCJleHAiOjIwODk5MTMwNTEsInJvbGVzIjpbImRldmVsb3BlciJdfQ.-yXO6ubjeHywUDnm3Yr8eM_nqbmrgXG5QSrsa7azPGY';
         const TOKEN_ADAM = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6ImFkYW0iLCJpYXQiOjE3NzQ1NTMwNTEsImV4cCI6MjA4OTkxMzA1MSwicm9sZXMiOlsiYWRtaW4iXX0.JqJywkxLUoOvbE5SAzEdV3Ia87vDZCuDZXTGFYfmY7c';
 
@@ -252,17 +252,6 @@
 
 
 
-        document.getElementById('sample-explorer-link').href = `http://${hostname}:8387/docs/explorer.html`;
-
-
-
-
-
-
-
-
-
-
         document.getElementById('schema-spa-link').href = `http://${hostname}:8384`;
 
         document.getElementById('schema-explorer-link').href = `http://${hostname}:8383/docs/index.html`;
@@ -275,16 +264,27 @@
 
 
 
+
+        document.getElementById('sample-explorer-link').href = `http://${hostname}:8387/docs/explorer.html`;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         setPersonaLink('sample-genny', 8388, TOKEN_GENNY, 'developer');
         setPersonaLink('sample-adam', 8388, TOKEN_ADAM, 'admin');
-
-
-
-
-
-
-
-
 
 
 
