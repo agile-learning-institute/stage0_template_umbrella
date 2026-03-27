@@ -130,7 +130,7 @@ services:
     environment:
       API_HOST: sample_api
       API_PORT: 8387
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8388/login}
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8080/}
     depends_on:
       sample_api:
         condition: service_started

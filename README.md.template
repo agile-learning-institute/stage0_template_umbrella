@@ -1,4 +1,4 @@
-# {{org.name}} {{info.name}}
+# {{ org.name }} {{ info.name }}
 
 ## Stage0 Quickstart
 

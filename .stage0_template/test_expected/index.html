@@ -24,7 +24,7 @@
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 40px;
-            max-width: 600px;
+            max-width: 560px;
             width: 100%;
         }
         h1 {
@@ -134,12 +134,118 @@
             color: #666;
             font-size: 11px;
         }
+        .dev-auth {
+            margin-bottom: 28px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #eee;
+        }
+        .dev-auth h2 {
+            font-size: 1.15em;
+            color: #444;
+            margin-bottom: 8px;
+        }
+        .dev-auth .hint {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+        .persona-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+        .persona-row span.label {
+            font-weight: 600;
+            color: #555;
+            min-width: 140px;
+        }
+        .persona-row a.persona {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #eef2ff;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #3949ab;
+            font-size: 14px;
+            border: 1px solid #c5cae9;
+        }
+        .persona-row a.persona:hover {
+            background: #3949ab;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <div class="container">
         <h1>Mentor Hub</h1>
         <p class="subtitle">Welcome to the Development Environment</p>
+
+        <div class="dev-auth">
+            <h2>Developer sign-in</h2>
+            <p class="hint">Persona links open each SPA with a signed dev JWT (set <code>JWT_SECRET</code> in Developer Edition compose to match the embedded tokens—same value as API E2E fixtures such as <code>test/e2e/e2e_auth.py</code>). Sign out from each app in its own UI when you need a clean session.</p>
+            <div class="persona-row">
+                <span class="label">Genny (generic user)</span>
+
+
+
+
+
+                <a class="persona" id="sample-genny" href="#">Sample</a>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+            <div class="persona-row">
+                <span class="label">Adam (admin)</span>
+
+
+
+
+
+                <a class="persona" id="sample-adam" href="#">Sample</a>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+
         <ul class="links">
 
 
@@ -198,8 +304,26 @@
         </ul>
     </div>
     <script>
-        // Replace HOST_NAME with actual hostname or use window.location.hostname
         const hostname = window.location.hostname || 'localhost';
+
+        /** HS256 persona tokens: iss dev-idp, aud dev-api; secret must match JWT_SECRET used by APIs (see e2e_auth / Developer Edition compose). */
+        const DEV_AUTH_EXPIRES = '2036-03-23T19:24:11+00:00';
+        const TOKEN_GENNY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6Imdlbm55IiwiaWF0IjoxNzc0NTUzMDUxLCJleHAiOjIwODk5MTMwNTEsInJvbGVzIjpbImRldmVsb3BlciJdfQ.-yXO6ubjeHywUDnm3Yr8eM_nqbmrgXG5QSrsa7azPGY';
+        const TOKEN_ADAM = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6ImFkYW0iLCJpYXQiOjE3NzQ1NTMwNTEsImV4cCI6MjA4OTkxMzA1MSwicm9sZXMiOlsiYWRtaW4iXX0.JqJywkxLUoOvbE5SAzEdV3Ia87vDZCuDZXTGFYfmY7c';
+
+        function spaAuthHash(token, rolesComma) {
+            const p = new URLSearchParams();
+            p.set('access_token', token);
+            p.set('expires_at', DEV_AUTH_EXPIRES);
+            p.set('roles', rolesComma);
+            return '#' + p.toString();
+        }
+
+        function setPersonaLink(elId, port, token, roles) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            el.href = 'http://' + hostname + ':' + port + '/' + spaAuthHash(token, roles);
+        }
 
 
 
@@ -218,6 +342,26 @@
 
         document.getElementById('schema-spa-link').href = `http://${hostname}:8384`;
         document.getElementById('schema-explorer-link').href = `http://${hostname}:8383/docs/index.html`;
+
+
+
+
+
+
+
+
+
+        setPersonaLink('sample-genny', 8388, TOKEN_GENNY, 'developer');
+        setPersonaLink('sample-adam', 8388, TOKEN_ADAM, 'admin');
+
+
+
+
+
+
+
+
+
 
 
 

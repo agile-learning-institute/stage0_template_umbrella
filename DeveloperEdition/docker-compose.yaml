@@ -126,7 +126,7 @@ services:
     environment:
       API_HOST: {{ api_repo.name }}
       API_PORT: {{ api_repo.port }}
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:{{ spa_repo.port }}/login}
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8080/}
     depends_on:
       {{ api_repo.name }}:
         condition: service_started
