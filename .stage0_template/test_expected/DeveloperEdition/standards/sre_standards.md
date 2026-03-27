@@ -14,13 +14,24 @@
 - Runbook Automation: [stage0 runbooks](https://github.com/agile-learning-institute/stage0_runbooks)
 
 ## Developer Experience
-The ``mh`` Developer Edition script is how the SRE's provide a strong developer experience. 
-This script manages developer environment values (keys, secrets, etc.) and wraps the services configured in this [docker-compose](../docker-compose.yaml) file. Developers are always able to run services in isolation on local hardware, and the ``de`` command makes it easy.
+The ``mh`` Developer Edition CLI is how SRE provides a strong developer experience. It manages developer environment values (keys, secrets, JWT material for local tooling, etc.) and wraps the services configured in this [docker-compose](../docker-compose.yaml) file. Developers can run the full stack on local hardware without using `docker compose` directly for normal workflows.
 
-**Authentication Security**: The `de` script automatically generates a timestamp-based `JWT_SECRET` on each execution, ensuring authentication tokens are invalidated after server restarts. This security pattern is implemented for runbook services and will be extended to other services as they are refactored. 
+**Local authentication (Developer Edition):** APIs do **not** register per-service `/dev-login`. Developer Edition compose uses a **stable `JWT_SECRET`** and keeps **`ENABLE_LOGIN` off** for APIs so SPAs and backends agree across restarts. The umbrella **welcome page** (`index.html`) drives dev sign-in: it navigates to each SPA with URL-hash bootstrap parameters (`access_token`, `expires_at`, `roles`). SPAs call **`bootstrapDevAuthFromUrl`** from shared SPA utilities before boot so `localStorage` matches production-style bearer usage. **`IDP_LOGIN_URI`** / **`VITE_IDP_LOGIN_URI`** default to the welcome page origin (for example `http://127.0.0.1:8080/`) so unauthenticated guards, `401` handling, and logout send users back to that page—not to a per-SPA `/login` route.
+
+**Verifying the stack after compose or image changes** (from the product checkout root, for example the repo that contains `DeveloperEdition/`):
+
+```sh
+cd mentorhub
+make update
+mh up all
+```
+
+## Production alignment
+
+**API gateway and commercial IdP:** In production, traffic is intended to sit behind an **API gateway** (or edge proxy) with **TLS**, routing to SPA static assets and API services. **Authentication** uses a **commercial IdP** (OAuth2/OIDC). Access tokens are issued by the IdP (or a BFF); applications do not mint tokens via `/dev-login`. APIs validate JWTs (shared secret or JWKS) with the same claim expectations as in developer edition. SPAs redirect to the real IdP login/authorize entry via the configured login base URL—preserving a single auth story from local welcome page through to production IdP.
 
 ## SRE Automation 
-SRE Automation is done using the [stage0 runbooks](https://github.com/agile-learning-institute/stage0_runbooks) system. Our custom runbook is [runbook_api](https://github.com/agile-learning-institute/mentorhub_runbook_api) which is available for use with ``de up runbook`` and accessing http://localhost and following the runbooks link. 
+SRE Automation is done using the [stage0 runbooks](https://github.com/agile-learning-institute/stage0_runbooks) system. Our custom runbook is [runbook_api](https://github.com/agile-learning-institute/mentorhub_runbook_api) which is available for use with ``mh up runbook`` and accessing http://localhost and following the runbooks link. 
 
 ## Continuous Integration
 The developer workflow follows the feature branch pattern. A developer creates a branch to work on a feature, and submit a pull request (PR) when the feature is ready to be deployed. When a PR is approved by a reviewer and merged to the main branch, the CI automation will build and push a new container with a :latest tag to the system's container registry. These containers are deployed to a cloud DEV environment, and available for developers to use for local development.
@@ -38,24 +49,24 @@ SPA containers use an NGINX configuration template (`nginx.conf.template`) that 
 
 - **`API_HOST`**: Hostname of the API server (default: `localhost`)
 - **`API_PORT`**: Port of the API server (default: `8083`)
-- **`IDP_LOGIN_URI`**: Full URI for IdP login redirect (default: `http://localhost:8084/login`)
+- **`IDP_LOGIN_URI`**: Full base URL for login redirect after logout, on `401`, or when the SPA is not authenticated (Developer Edition default: umbrella welcome page, e.g. `http://127.0.0.1:8080/`; production: IdP or gateway login entry)
+
+Build-time SPA env (**`VITE_IDP_LOGIN_URI`**) should match the same logical URL so the client can redirect without relying on NGINX-only rewrites.
 
 ### Reverse Proxy Routes
 The NGINX configuration proxies the following routes to the API server:
 
 - **`/api/*`**: All API endpoints are proxied to `http://${API_HOST}:${API_PORT}/api/`
-- **`/dev-login`**: Development login endpoint is proxied to `http://${API_HOST}:${API_PORT}/dev-login`
-  - The API controls access via `ENABLE_LOGIN` configuration (returns 404 if disabled)
-  - This allows the SPA to use a consistent `/dev-login` path regardless of deployment environment
+
+Do not proxy `/dev-login`; that endpoint is not part of the product API surface.
 
 ### Authentication Redirect Pattern
-Protected routes in the SPA redirect unauthenticated users to `/auth/login`, which NGINX then redirects to the configured `IDP_LOGIN_URI`:
+Protected routes and the API client redirect the browser to the configured **login base URL** (`getIdpLoginBaseUrl()` / `VITE_IDP_LOGIN_URI`) when the user is unauthenticated or tokens are cleared:
 
-- **Local Development**: Defaults to `http://localhost:8084/login` (same-origin)
-- **Remote Deployment**: Can be configured to external IdP (e.g., `http://spark-478a.tailb0d293.ts.net:8084/login`)
-- The redirect preserves query parameters (e.g., `return_url`) for post-login navigation
+- **Developer Edition:** Points at the umbrella welcome page so developers pick a persona and land in the SPA with hash bootstrap.
+- **Production:** Points at the commercial IdP (or gateway-hosted login) with TLS.
 
-This pattern ensures consistent authentication flow across all deployment environments while maintaining security boundaries. 
+This keeps one redirect contract from local through production without per-SPA `/login` pages. 
 
 ## Service Configurability
 All API's are configured using a shared [Config singleton](https://github.com/agile-learning-institute/api_utils/blob/main/py_utils/config/config.py). The Config object manages all configuration items for all API and SPA code. Configuration values are read from the first of: Config File, Environment Var, Default Value. The configuration items and non-secret values are exposed through the Config API endpoint, which is used by the SPA to get runtime configuration values.
@@ -85,12 +96,14 @@ Before deploying any API to production, ensure:
 
 ### Development vs Production
 
-| Feature | Development | Production |
-|---------|-------------|------------|
-| `ENABLE_LOGIN` | `true` (set by de script) | `false` (never enable) |
-| `JWT_SECRET` | Timestamp-based | Strong random value |
-| Token Validation | Full signature verification | Full signature verification |
-| `/dev-login` | Available at localhost | 404 (disabled) |
+| Feature | Developer Edition | Production |
+|---------|-------------------|------------|
+| `ENABLE_LOGIN` on APIs | `false` (no dev-login blueprint) | `false` (never enable) |
+| `JWT_SECRET` | Stable value in compose (aligns CLI/local JWT tooling) | Strong random / secrets manager |
+| Token issuance | Welcome page / dev tokens; hash bootstrap into SPAs | Commercial IdP (or BFF) |
+| Token validation | Full signature verification | Full signature verification |
+| `/dev-login` | Not exposed | Not present |
+| SPAs | No `/login` route; redirect to login base URL | Same; IdP URL |
 | Logging | INFO or DEBUG | WARNING or ERROR |
 
 ## API Container Configuration

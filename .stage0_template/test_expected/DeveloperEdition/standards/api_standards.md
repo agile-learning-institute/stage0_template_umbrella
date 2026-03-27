@@ -49,9 +49,10 @@ All APIs must implement the following standard endpoints:
 - **`/metrics`** - Prometheus metrics endpoint (use api_utils metric_routes`)
   - **Note**: `create_metric_routes()` is middleware that wraps the Flask app directly, not a blueprint.
 - **`/api/config`** - Configuration endpoint (use api_utils config routes`)
-- **`/dev-login`** - Development JWT token issuance (use ap_utils dev_login routes`)
 - **`/docs/*`** - API explorer/OpenAPI documentation (use api_utils explorer routes`)
   - **OpenAPI Spec**: All API's must maintain `docs/openapi.yaml` specification
+
+**Local authentication:** Developer Edition uses the umbrella **welcome** page and IdP to issue JWTs. Individual APIs must **not** expose a per-service `/dev-login` route. For automated tests, use a static bearer token signed with the same `JWT_SECRET` and expected claims (see each repo's `test/e2e/e2e_auth.py` pattern).
 
 ## Server.py Organization Pattern
 All API servers should follow the organizational pattern established in api_utils/server.py:
