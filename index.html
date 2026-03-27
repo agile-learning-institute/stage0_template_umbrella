@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{info.name}} - Welcome</title>
+    <title>{{ info.name }} - Welcome</title>
     <style>
         * {
             margin: 0;
@@ -40,99 +40,38 @@
         .links {
             list-style: none;
         }
-        .links li {
-            margin-bottom: 16px;
+        .service-block {
+            margin-bottom: 22px;
             display: flex;
             flex-direction: column;
-            align-items: stretch;
-            gap: 4px;
-        }
-        .links li .service-row {
-            display: flex;
-            align-items: stretch;
             gap: 8px;
         }
-        .links li .spa-cell {
-            flex: 1 1 50%;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .service-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 2px;
         }
-        .links li .api-cell {
-            flex: 1 1 50%;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .service-meta {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 4px;
         }
-        .service-row .cell-link {
+        .cell-link {
             display: block;
             padding: 12px 20px;
             background: #f5f5f5;
             border-radius: 6px;
             text-decoration: none;
             color: #333;
-            transition: all 0.2s;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
             border-left: 4px solid #667eea;
+            font-size: 14px;
         }
-        .spa-cell .cell-link {
-            flex: 1;
-        }
-        .service-row .cell-link:hover {
+        .cell-link:hover {
             background: #667eea;
             color: white;
             transform: translateX(4px);
-        }
-        .service-row .cell-link.coming-soon {
-            opacity: 0.6;
-            cursor: not-allowed;
-            border-left-color: #ccc;
-        }
-        .service-row .cell-link.coming-soon:hover {
-            background: #f5f5f5;
-            color: #333;
-            transform: none;
-        }
-        .coming-soon-text {
-            color: #999;
-            font-size: 0.9em;
-            margin-left: 8px;
-        }
-        .api-cell .cell-link.explorer-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 12px 16px;
-            background: #f5f5f5;
-            border: 2px solid #667eea;
-            border-left: 4px solid #667eea;
-            color: #667eea;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-        .api-cell .cell-link.explorer-link:hover {
-            background: #667eea;
-            color: white;
-            transform: scale(1.02);
-        }
-        .source-under {
-            font-size: 12px;
-            padding-left: 4px;
-        }
-        .source-under a {
-            color: #3949ab;
-            text-decoration: none;
-            border-bottom: 1px solid #3949ab;
-        }
-        .source-under a:hover {
-            color: #1a237e;
-            border-bottom-color: #1a237e;
-        }
-        .source-under .utility-ref {
-            color: #666;
-            font-size: 11px;
         }
         .dev-auth {
             margin-bottom: 28px;
@@ -190,7 +129,7 @@
 {% endif %}
 {% endfor %}
     <div class="container">
-        <h1>{{info.name}}</h1>
+        <h1>{{ info.name }}</h1>
         <p class="subtitle">Welcome to the Development Environment</p>
 {% if ns.has_persona %}
         <div class="dev-auth">
@@ -223,31 +162,23 @@
         </div>
 {% endif %}
         <ul class="links">
-{# Order: reverse(domains), skip common_code. Link ports are api_repo.port / spa_repo.port from architecture. Default umbrella: schema base_port+0/+1, common_code +2/+3, sample +4/+5. #}
+{# Domains with api+spa: utility/schema gets configurator + explorer + api repo; app SPAs use persona links only—list API explorer and GitHub repos. #}
 {% for domain in architecture.domains | reverse %}
 {% if domain.name != 'common_code' %}
 {% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
 {% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
 {% if api_repo and spa_repo %}
-            <li>
-                <div class="service-row">
-                    <div class="spa-cell">
-                        <a href="http://HOST_NAME:{{ spa_repo.port }}" id="{{ domain.name }}-spa-link" class="cell-link" target="_blank" rel="noopener">{% if domain.name == 'schema' %}Schema Configuration{% elif domain.name == 'sample' %}Sample SPA{% else %}{{ domain.name | replace('_', ' ') | title }} SPA{% endif %}</a>
-                        <div class="source-under">
+            <li class="service-block">
+                <div class="service-title">{% if domain.name == 'schema' %}Schema{% elif domain.name == 'sample' %}Sample{% else %}{{ domain.name | replace('_', ' ') | title }}{% endif %}</div>
 {% if spa_repo.type == 'spa_ref' %}
-                            <span class="utility-ref" title="Utility container, not a separate repo">mongodb_configurator_spa (utility)</span>
-{% else %}
-                            <a href="{{ org.git_host }}/{{ org.git_org }}/{{ info.slug }}_{{ spa_repo.name }}" target="_blank" rel="noopener" title="{{ spa_repo.name }} source">{{ info.slug }}_{{ spa_repo.name }}</a>
+                <p class="service-meta">mongodb_configurator_spa (utility)</p>
+                <a href="http://HOST_NAME:{{ spa_repo.port }}" id="{{ domain.name }}-spa-link" class="cell-link" target="_blank" rel="noopener">{% if domain.name == 'schema' %}Schema configurator{% else %}Configuration{% endif %}</a>
 {% endif %}
-                        </div>
-                    </div>
-                    <div class="api-cell">
-                        <a href="http://HOST_NAME:{{ api_repo.port }}/docs/{% if domain.name == 'schema' %}index.html{% else %}explorer.html{% endif %}" id="{{ domain.name }}-explorer-link" class="cell-link explorer-link" target="_blank" rel="noopener" title="Open API Explorer">🔍 API Explorer</a>
-                        <div class="source-under">
-                            <a href="{{ org.git_host }}/{{ org.git_org }}/{{ info.slug }}_{{ api_repo.name }}" target="_blank" rel="noopener" title="{{ api_repo.name }} source">{{ info.slug }}_{{ api_repo.name }}</a>
-                        </div>
-                    </div>
-                </div>
+                <a href="http://HOST_NAME:{{ api_repo.port }}/docs/{% if domain.name == 'schema' %}index.html{% else %}explorer.html{% endif %}" id="{{ domain.name }}-explorer-link" class="cell-link" target="_blank" rel="noopener" title="Open API docs">API Explorer</a>
+{% if spa_repo.type != 'spa_ref' %}
+                <a href="{{ org.git_host }}/{{ org.git_org }}/{{ info.slug }}_{{ spa_repo.name }}" class="cell-link" target="_blank" rel="noopener" title="{{ spa_repo.name }} source">{{ info.slug }}_{{ spa_repo.name }}</a>
+{% endif %}
+                <a href="{{ org.git_host }}/{{ org.git_org }}/{{ info.slug }}_{{ api_repo.name }}" class="cell-link" target="_blank" rel="noopener" title="{{ api_repo.name }} source">{{ info.slug }}_{{ api_repo.name }}</a>
             </li>
 {% endif %}
 {% endif %}
@@ -280,7 +211,9 @@
 {% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
 {% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
 {% if api_repo and spa_repo %}
+{% if spa_repo.type == 'spa_ref' %}
         document.getElementById('{{ domain.name }}-spa-link').href = `http://${hostname}:{{ spa_repo.port }}`;
+{% endif %}
         document.getElementById('{{ domain.name }}-explorer-link').href = `http://${hostname}:{{ api_repo.port }}/docs/{% if domain.name == 'schema' %}index.html{% else %}explorer.html{% endif %}`;
 {% endif %}
 {% endif %}

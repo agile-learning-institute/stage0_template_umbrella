@@ -40,99 +40,38 @@
         .links {
             list-style: none;
         }
-        .links li {
-            margin-bottom: 16px;
+        .service-block {
+            margin-bottom: 22px;
             display: flex;
             flex-direction: column;
-            align-items: stretch;
-            gap: 4px;
-        }
-        .links li .service-row {
-            display: flex;
-            align-items: stretch;
             gap: 8px;
         }
-        .links li .spa-cell {
-            flex: 1 1 50%;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .service-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 2px;
         }
-        .links li .api-cell {
-            flex: 1 1 50%;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+        .service-meta {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 4px;
         }
-        .service-row .cell-link {
+        .cell-link {
             display: block;
             padding: 12px 20px;
             background: #f5f5f5;
             border-radius: 6px;
             text-decoration: none;
             color: #333;
-            transition: all 0.2s;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
             border-left: 4px solid #667eea;
+            font-size: 14px;
         }
-        .spa-cell .cell-link {
-            flex: 1;
-        }
-        .service-row .cell-link:hover {
+        .cell-link:hover {
             background: #667eea;
             color: white;
             transform: translateX(4px);
-        }
-        .service-row .cell-link.coming-soon {
-            opacity: 0.6;
-            cursor: not-allowed;
-            border-left-color: #ccc;
-        }
-        .service-row .cell-link.coming-soon:hover {
-            background: #f5f5f5;
-            color: #333;
-            transform: none;
-        }
-        .coming-soon-text {
-            color: #999;
-            font-size: 0.9em;
-            margin-left: 8px;
-        }
-        .api-cell .cell-link.explorer-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 12px 16px;
-            background: #f5f5f5;
-            border: 2px solid #667eea;
-            border-left: 4px solid #667eea;
-            color: #667eea;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-        .api-cell .cell-link.explorer-link:hover {
-            background: #667eea;
-            color: white;
-            transform: scale(1.02);
-        }
-        .source-under {
-            font-size: 12px;
-            padding-left: 4px;
-        }
-        .source-under a {
-            color: #3949ab;
-            text-decoration: none;
-            border-bottom: 1px solid #3949ab;
-        }
-        .source-under a:hover {
-            color: #1a237e;
-            border-bottom-color: #1a237e;
-        }
-        .source-under .utility-ref {
-            color: #666;
-            font-size: 11px;
         }
         .dev-auth {
             margin-bottom: 28px;
@@ -253,23 +192,14 @@
 
 
 
-            <li>
-                <div class="service-row">
-                    <div class="spa-cell">
-                        <a href="http://HOST_NAME:8388" id="sample-spa-link" class="cell-link" target="_blank" rel="noopener">Sample SPA</a>
-                        <div class="source-under">
+            <li class="service-block">
+                <div class="service-title">Sample</div>
 
-                            <a href="https://github.com/agile-learning-institute/mentorhub_sample_spa" target="_blank" rel="noopener" title="sample_spa source">mentorhub_sample_spa</a>
+                <a href="http://HOST_NAME:8387/docs/explorer.html" id="sample-explorer-link" class="cell-link" target="_blank" rel="noopener" title="Open API docs">API Explorer</a>
 
-                        </div>
-                    </div>
-                    <div class="api-cell">
-                        <a href="http://HOST_NAME:8387/docs/explorer.html" id="sample-explorer-link" class="cell-link explorer-link" target="_blank" rel="noopener" title="Open API Explorer">🔍 API Explorer</a>
-                        <div class="source-under">
-                            <a href="https://github.com/agile-learning-institute/mentorhub_sample_api" target="_blank" rel="noopener" title="sample_api source">mentorhub_sample_api</a>
-                        </div>
-                    </div>
-                </div>
+                <a href="https://github.com/agile-learning-institute/mentorhub_sample_spa" class="cell-link" target="_blank" rel="noopener" title="sample_spa source">mentorhub_sample_spa</a>
+
+                <a href="https://github.com/agile-learning-institute/mentorhub_sample_api" class="cell-link" target="_blank" rel="noopener" title="sample_api source">mentorhub_sample_api</a>
             </li>
 
 
@@ -280,23 +210,15 @@
 
 
 
-            <li>
-                <div class="service-row">
-                    <div class="spa-cell">
-                        <a href="http://HOST_NAME:8384" id="schema-spa-link" class="cell-link" target="_blank" rel="noopener">Schema Configuration</a>
-                        <div class="source-under">
+            <li class="service-block">
+                <div class="service-title">Schema</div>
 
-                            <span class="utility-ref" title="Utility container, not a separate repo">mongodb_configurator_spa (utility)</span>
+                <p class="service-meta">mongodb_configurator_spa (utility)</p>
+                <a href="http://HOST_NAME:8384" id="schema-spa-link" class="cell-link" target="_blank" rel="noopener">Schema configurator</a>
 
-                        </div>
-                    </div>
-                    <div class="api-cell">
-                        <a href="http://HOST_NAME:8383/docs/index.html" id="schema-explorer-link" class="cell-link explorer-link" target="_blank" rel="noopener" title="Open API Explorer">🔍 API Explorer</a>
-                        <div class="source-under">
-                            <a href="https://github.com/agile-learning-institute/mentorhub_mongodb_api" target="_blank" rel="noopener" title="mongodb_api source">mentorhub_mongodb_api</a>
-                        </div>
-                    </div>
-                </div>
+                <a href="http://HOST_NAME:8383/docs/index.html" id="schema-explorer-link" class="cell-link" target="_blank" rel="noopener" title="Open API docs">API Explorer</a>
+
+                <a href="https://github.com/agile-learning-institute/mentorhub_mongodb_api" class="cell-link" target="_blank" rel="noopener" title="mongodb_api source">mentorhub_mongodb_api</a>
             </li>
 
 
@@ -329,7 +251,7 @@
 
 
 
-        document.getElementById('sample-spa-link').href = `http://${hostname}:8388`;
+
         document.getElementById('sample-explorer-link').href = `http://${hostname}:8387/docs/explorer.html`;
 
 
@@ -340,7 +262,9 @@
 
 
 
+
         document.getElementById('schema-spa-link').href = `http://${hostname}:8384`;
+
         document.getElementById('schema-explorer-link').href = `http://${hostname}:8383/docs/index.html`;
 
 
