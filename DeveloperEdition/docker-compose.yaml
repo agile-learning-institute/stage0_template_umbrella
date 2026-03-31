@@ -81,7 +81,8 @@ services:
 {%- endfor %}
 
   mongodb_spa:
-    image: {{ org.docker_host }}/{{ org.docker_org }}/mongodb_configurator_spa:latest
+    # spa_ref (configurator_spa): fixed utility image, not {{ info.slug }}_…
+    image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
     restart: no
     ports:
       - "127.0.0.1:{{ configurator_repo.port }}:{{ configurator_repo.port }}"
