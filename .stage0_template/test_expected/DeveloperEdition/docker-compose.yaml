@@ -7,16 +7,18 @@ services:
   # Welcome Service
   ##################################
   welcome:
-    image: ghcr.io/agile-learning-institute/mentorhub:latest
+    image: ghcr.io/mentor-hub-system/mentorhub:latest
     ports:
       - "127.0.0.1:8080:80"
     profiles:
       - all
       - mongodb
-
-      - sample
-      - sample-api
-
+      - profile
+      - profile-api
+      - mentor
+      - mentor-api
+      - member
+      - member-api
 
   ##################################
   # Backing Services
@@ -37,15 +39,18 @@ services:
     profiles:
       - all
       - mongodb
-
-      - sample_api
-
+      - profile
+      - profile-api
+      - mentor
+      - mentor-api
+      - member
+      - member-api
 
   ##################################
   # Mongo Database Configuration Utilities
   ##################################
   mongodb_api:
-    image: ghcr.io/agile-learning-institute/mentorhub_mongodb_api:latest
+    image: ghcr.io/mentor-hub-system/mentorhub_mongodb_api:latest
     restart: no
     ports:
       - "127.0.0.1:8383:8383"
@@ -64,9 +69,12 @@ services:
     profiles:
       - all
       - mongodb
-
-      - sample_api
-
+      - profile
+      - profile-api
+      - mentor
+      - mentor-api
+      - member
+      - member-api
 
   mongodb_spa:
     image: ghcr.io/agile-learning-institute/mongodb_configurator_spa:latest
@@ -83,24 +91,18 @@ services:
     profiles:
       - all
       - mongodb
-
-      - sample_api
-
+      - profile
+      - profile-api
+      - mentor
+      - mentor-api
+      - member
+      - member-api
 
   ##################################
   # Microservice domains (from architecture)
   ##################################
-
-
-
-
-
-
-
-
-
-  sample_api:
-    image: ghcr.io/agile-learning-institute/mentorhub_sample_api:latest
+  profile_api:
+    image: ghcr.io/mentor-hub-system/mentorhub_profile_api:latest
     restart: no
     ports:
       - "127.0.0.1:8387:8387"
@@ -108,7 +110,6 @@ services:
       MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
       MONGODB_REQUIRE_TLS: False
       MONGO_DB_NAME: mentor_hub
-      ENABLE_LOGIN: "true"
       LOGGING_LEVEL: "INFO"
       JWT_SECRET: ${JWT_SECRET}
       API_PORT: 8387
@@ -119,24 +120,97 @@ services:
         condition: service_started
     profiles:
       - all
-      - sample
-      - sample-api
+      - profile
+      - profile-api
 
-  sample_spa:
-    image: ghcr.io/agile-learning-institute/mentorhub_sample_spa:latest
+  profile_spa:
+    image: ghcr.io/mentor-hub-system/mentorhub_profile_spa:latest
     restart: no
     ports:
       - "127.0.0.1:8388:80"
     environment:
-      API_HOST: sample_api
+      API_HOST: profile_api
       API_PORT: 8387
       IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8080/}
     depends_on:
-      sample_api:
+      profile_api:
         condition: service_started
     profiles:
       - all
-      - sample
+      - profile
 
+  mentor_api:
+    image: ghcr.io/mentor-hub-system/mentorhub_mentor_api:latest
+    restart: no
+    ports:
+      - "127.0.0.1:8389:8389"
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
+      MONGODB_REQUIRE_TLS: False
+      MONGO_DB_NAME: mentor_hub
+      LOGGING_LEVEL: "INFO"
+      JWT_SECRET: ${JWT_SECRET}
+      API_PORT: 8389
+      SAMPLE_API_PORT: 8389
+      SAMPLE_SPA_PORT: 8390
+    depends_on:
+      mongodb_api:
+        condition: service_started
+    profiles:
+      - all
+      - mentor
+      - mentor-api
 
+  mentor_spa:
+    image: ghcr.io/mentor-hub-system/mentorhub_mentor_spa:latest
+    restart: no
+    ports:
+      - "127.0.0.1:8390:80"
+    environment:
+      API_HOST: mentor_api
+      API_PORT: 8389
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8080/}
+    depends_on:
+      mentor_api:
+        condition: service_started
+    profiles:
+      - all
+      - mentor
 
+  member_api:
+    image: ghcr.io/mentor-hub-system/mentorhub_member_api:latest
+    restart: no
+    ports:
+      - "127.0.0.1:8391:8391"
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://mongodb:27017/
+      MONGODB_REQUIRE_TLS: False
+      MONGO_DB_NAME: mentor_hub
+      LOGGING_LEVEL: "INFO"
+      JWT_SECRET: ${JWT_SECRET}
+      API_PORT: 8391
+      SAMPLE_API_PORT: 8391
+      SAMPLE_SPA_PORT: 8392
+    depends_on:
+      mongodb_api:
+        condition: service_started
+    profiles:
+      - all
+      - member
+      - member-api
+
+  member_spa:
+    image: ghcr.io/mentor-hub-system/mentorhub_member_spa:latest
+    restart: no
+    ports:
+      - "127.0.0.1:8392:80"
+    environment:
+      API_HOST: member_api
+      API_PORT: 8391
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8080/}
+    depends_on:
+      member_api:
+        condition: service_started
+    profiles:
+      - all
+      - member

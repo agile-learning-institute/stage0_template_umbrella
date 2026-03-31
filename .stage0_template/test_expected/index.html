@@ -73,17 +73,17 @@
             color: white;
             transform: translateX(4px);
         }
-        .dev-auth {
+        .welcome-auth {
             margin-bottom: 28px;
             padding-bottom: 24px;
             border-bottom: 1px solid #eee;
         }
-        .dev-auth h2 {
+        .welcome-auth h2 {
             font-size: 1.15em;
             color: #444;
             margin-bottom: 8px;
         }
-        .dev-auth .hint {
+        .welcome-auth .hint {
             color: #666;
             font-size: 0.95em;
             margin-bottom: 16px;
@@ -118,125 +118,51 @@
     </style>
 </head>
 <body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <div class="container">
         <h1>Mentor Hub</h1>
         <p class="subtitle">Welcome to the Development Environment</p>
 
-        <div class="dev-auth">
-            <h2>Developer sign-in</h2>
-            <p class="hint">Persona links open each SPA with a signed dev JWT (set <code>JWT_SECRET</code> in Developer Edition compose to match the embedded tokens—same value as API E2E fixtures such as <code>test/e2e/e2e_auth.py</code>). Sign out from each app in its own UI when you need a clean session.</p>
+        <div class="welcome-auth">
+            <h2>Local environment sign-in</h2>
+            <p class="hint">Persona links open each SPA with URL-hash parameters (signed local JWTs)</p>
             <div class="persona-row">
                 <span class="label">Genny (generic user)</span>
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <a class="persona" id="sample-genny" href="#">Sample</a>
-
-
-
+                <a class="persona" id="sample-genny" href="#" target="_blank" rel="noopener noreferrer">Sample</a>
             </div>
             <div class="persona-row">
                 <span class="label">Adam (admin)</span>
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <a class="persona" id="sample-adam" href="#">Sample</a>
-
-
-
+                <a class="persona" id="sample-adam" href="#" target="_blank" rel="noopener noreferrer">Sample</a>
             </div>
         </div>
 
         <ul class="links">
-
-
-
-
-
-
             <li class="service-block">
                 <div class="service-title">Schema</div>
-
-                <p class="service-meta">mongodb_configurator_spa (utility)</p>
-                <a href="http://HOST_NAME:8384" id="schema-spa-link" class="cell-link" target="_blank" rel="noopener">Schema configurator</a>
-
-                <a href="http://HOST_NAME:8383/docs/index.html" id="schema-explorer-link" class="cell-link" target="_blank" rel="noopener" title="Open API docs">API Explorer</a>
-
-                <a href="https://github.com/agile-learning-institute/mentorhub_mongodb_api" class="cell-link" target="_blank" rel="noopener" title="mongodb_api source">mentorhub_mongodb_api</a>
+                <p class="service-meta">mentorhub_configurator_spa (utility)</p>
+                <a href="#" id="schema-spa-link" class="cell-link" target="_blank" rel="noopener noreferrer">Schema configurator</a>
+                <a href="#" id="schema-api-docs-link" class="cell-link" target="_blank" rel="noopener noreferrer" title="Open API docs">API Explorer</a>
+                <a href="https://github.com/agile-learning-institute/mentorhub_mongodb_api" class="cell-link" target="_blank" rel="noopener noreferrer" title="mongodb_api source">mentorhub_mongodb_api</a>
             </li>
-
-
-
-
-
-
-
-
-
             <li class="service-block">
                 <div class="service-title">Sample</div>
-
-                <a href="http://HOST_NAME:8387/docs/explorer.html" id="sample-explorer-link" class="cell-link" target="_blank" rel="noopener" title="Open API docs">API Explorer</a>
-
-                <a href="https://github.com/agile-learning-institute/mentorhub_sample_spa" class="cell-link" target="_blank" rel="noopener" title="sample_spa source">mentorhub_sample_spa</a>
-
-                <a href="https://github.com/agile-learning-institute/mentorhub_sample_api" class="cell-link" target="_blank" rel="noopener" title="sample_api source">mentorhub_sample_api</a>
+                <a href="#" id="sample-api-docs-link" class="cell-link" target="_blank" rel="noopener noreferrer" title="Open API docs">API Explorer</a>
+                <a href="https://github.com/agile-learning-institute/mentorhub_sample_api" class="cell-link" target="_blank" rel="noopener noreferrer" title="sample_api source">mentorhub_sample_api</a>
+                <a href="https://github.com/agile-learning-institute/mentorhub_sample_spa" class="cell-link" target="_blank" rel="noopener noreferrer" title="sample_spa source">mentorhub_sample_spa</a>
             </li>
-
-
-
         </ul>
     </div>
     <script>
         const hostname = window.location.hostname || 'localhost';
 
         /** HS256 persona tokens: iss dev-idp, aud dev-api; secret must match JWT_SECRET used by APIs (see e2e_auth / Developer Edition compose). */
-        const DEV_AUTH_EXPIRES = '2036-03-23T19:24:11.000Z';
+        const PERSONA_TOKEN_EXPIRES_AT = '2036-03-23T19:24:11+00:00';
         const TOKEN_GENNY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6Imdlbm55IiwiaWF0IjoxNzc0NTUzMDUxLCJleHAiOjIwODk5MTMwNTEsInJvbGVzIjpbImRldmVsb3BlciJdfQ.-yXO6ubjeHywUDnm3Yr8eM_nqbmrgXG5QSrsa7azPGY';
         const TOKEN_ADAM = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6ImFkYW0iLCJpYXQiOjE3NzQ1NTMwNTEsImV4cCI6MjA4OTkxMzA1MSwicm9sZXMiOlsiYWRtaW4iXX0.JqJywkxLUoOvbE5SAzEdV3Ia87vDZCuDZXTGFYfmY7c';
 
         function spaAuthHash(token, rolesComma) {
             const p = new URLSearchParams();
             p.set('access_token', token);
-            p.set('expires_at', DEV_AUTH_EXPIRES);
+            p.set('expires_at', PERSONA_TOKEN_EXPIRES_AT);
             p.set('roles', rolesComma);
             return '#' + p.toString();
         }
@@ -245,50 +171,14 @@
             const el = document.getElementById(elId);
             if (!el) return;
             el.href = 'http://' + hostname + ':' + port + '/' + spaAuthHash(token, roles);
+            el.target = '_blank';
+            el.rel = 'noopener noreferrer';
         }
-
-
-
-
-
-
+        document.getElementById('schema-api-docs-link').href = `http://${hostname}:8383/docs/index.html`;
         document.getElementById('schema-spa-link').href = `http://${hostname}:8384`;
-
-        document.getElementById('schema-explorer-link').href = `http://${hostname}:8383/docs/index.html`;
-
-
-
-
-
-
-
-
-
-
-        document.getElementById('sample-explorer-link').href = `http://${hostname}:8387/docs/explorer.html`;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        document.getElementById('sample-api-docs-link').href = `http://${hostname}:8387/docs/explorer.html`;
         setPersonaLink('sample-genny', 8388, TOKEN_GENNY, 'developer');
         setPersonaLink('sample-adam', 8388, TOKEN_ADAM, 'admin');
-
-
-
-
     </script>
 </body>
 </html>

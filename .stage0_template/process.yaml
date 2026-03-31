@@ -34,12 +34,16 @@ templates:
     merge: true
   - path: "./DeveloperEdition/docker-compose.yaml"
     merge: true
+  - path: "./DeveloperEdition/standards/api_standards.md"
+    merge: true
   - path: "./DeveloperEdition/standards/sre_standards.md"
     merge: true
   - path: "./DeveloperEdition/de.template"
     output: "./DeveloperEdition/{{info.developer_cli}}"
     merge: true
   - path: "./index.html"
+    merge: true
+  - path: "./Tasks/AS_NEEDED.R100.after_specs_update.md"
     merge: true
   - path: "./Dockerfile"
     merge: true

@@ -73,17 +73,17 @@
             color: white;
             transform: translateX(4px);
         }
-        .dev-auth {
+        .welcome-auth {
             margin-bottom: 28px;
             padding-bottom: 24px;
             border-bottom: 1px solid #eee;
         }
-        .dev-auth h2 {
+        .welcome-auth h2 {
             font-size: 1.15em;
             color: #444;
             margin-bottom: 8px;
         }
-        .dev-auth .hint {
+        .welcome-auth .hint {
             color: #666;
             font-size: 0.95em;
             margin-bottom: 16px;
@@ -118,85 +118,80 @@
     </style>
 </head>
 <body>
-{% set ns = namespace(has_persona=false) %}
-{% for domain in architecture.domains %}
-{% if domain.name != 'common_code' %}
-{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
-{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
-{% if api_repo and spa_repo and spa_repo.type != 'spa_ref' %}
-{% set ns.has_persona = true %}
-{% endif %}
-{% endif %}
-{% endfor %}
     <div class="container">
-        <h1>{{ info.name }}</h1>
+        <h1>{{info.name}}</h1>
         <p class="subtitle">Welcome to the Development Environment</p>
-{% if ns.has_persona %}
-        <div class="dev-auth">
-            <h2>Developer sign-in</h2>
-            <p class="hint">Persona links open each SPA with a signed dev JWT (set <code>JWT_SECRET</code> in Developer Edition compose to match the embedded tokens—same value as API E2E fixtures such as <code>test/e2e/e2e_auth.py</code>). Sign out from each app in its own UI when you need a clean session.</p>
+
+        <div class="welcome-auth">
+            <h2>Local environment sign-in</h2>
+            <p class="hint">Persona links open each SPA with URL-hash parameters (signed local JWTs)</p>
             <div class="persona-row">
                 <span class="label">Genny (generic user)</span>
-{% for domain in architecture.domains %}
-{% if domain.name != 'common_code' %}
-{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
-{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
-{% if api_repo and spa_repo and spa_repo.type != 'spa_ref' %}
-                <a class="persona" id="{{ domain.name }}-genny" href="#">{{ domain.name | replace('_', ' ') | title }}</a>
-{% endif %}
-{% endif %}
-{% endfor %}
+                {%- for domain in architecture.domains %}
+                {%- if domain.name not in ['schema', 'common_code'] %}
+                {%- for repo in domain.repos %}
+                {%- if repo.type == 'spa' %}
+                <a class="persona" id="{{ domain.name }}-genny" href="#" target="_blank" rel="noopener noreferrer">{{ domain.name | replace('_', ' ') | title }}</a>
+                {%- endif %}
+                {%- endfor %}
+                {%- endif %}
+                {%- endfor %}
             </div>
             <div class="persona-row">
                 <span class="label">Adam (admin)</span>
-{% for domain in architecture.domains %}
-{% if domain.name != 'common_code' %}
-{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
-{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
-{% if api_repo and spa_repo and spa_repo.type != 'spa_ref' %}
-                <a class="persona" id="{{ domain.name }}-adam" href="#">{{ domain.name | replace('_', ' ') | title }}</a>
-{% endif %}
-{% endif %}
-{% endfor %}
+                {%- for domain in architecture.domains %}
+                {%- if domain.name not in ['schema', 'common_code'] %}
+                {%- for repo in domain.repos %}
+                {%- if repo.type == 'spa' %}
+                <a class="persona" id="{{ domain.name }}-adam" href="#" target="_blank" rel="noopener noreferrer">{{ domain.name | replace('_', ' ') | title }}</a>
+                {%- endif %}
+                {%- endfor %}
+                {%- endif %}
+                {%- endfor %}
             </div>
         </div>
-{% endif %}
+
         <ul class="links">
-{# Domains in architecture.yaml order (skip common_code). Schema first when listed first. #}
-{% for domain in architecture.domains %}
-{% if domain.name != 'common_code' %}
-{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
-{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
-{% if api_repo and spa_repo %}
+            {%- for domain in architecture.domains %}
+            {%- if domain.name != 'common_code' %}
             <li class="service-block">
-                <div class="service-title">{% if domain.name == 'schema' %}Schema{% elif domain.name == 'sample' %}Sample{% else %}{{ domain.name | replace('_', ' ') | title }}{% endif %}</div>
-{% if spa_repo.type == 'spa_ref' %}
-                <p class="service-meta">mongodb_configurator_spa (utility)</p>
-                <a href="http://HOST_NAME:{{ spa_repo.port }}" id="{{ domain.name }}-spa-link" class="cell-link" target="_blank" rel="noopener">{% if domain.name == 'schema' %}Schema configurator{% else %}Configuration{% endif %}</a>
-{% endif %}
-                <a href="http://HOST_NAME:{{ api_repo.port }}/docs/{% if domain.name == 'schema' %}index.html{% else %}explorer.html{% endif %}" id="{{ domain.name }}-explorer-link" class="cell-link" target="_blank" rel="noopener" title="Open API docs">API Explorer</a>
-{% if spa_repo.type != 'spa_ref' %}
-                <a href="{{ org.git_host }}/{{ org.git_org }}/{{ info.slug }}_{{ spa_repo.name }}" class="cell-link" target="_blank" rel="noopener" title="{{ spa_repo.name }} source">{{ info.slug }}_{{ spa_repo.name }}</a>
-{% endif %}
-                <a href="{{ org.git_host }}/{{ org.git_org }}/{{ info.slug }}_{{ api_repo.name }}" class="cell-link" target="_blank" rel="noopener" title="{{ api_repo.name }} source">{{ info.slug }}_{{ api_repo.name }}</a>
+                <div class="service-title">{{ domain.name | replace('_', ' ') | title }}</div>
+                {%- if domain.name == 'schema' %}
+                {%- set spa_ref = (domain.repos | selectattr('type', 'equalto', 'spa_ref') | list | first) %}
+                {%- set api_repo = (domain.repos | selectattr('type', 'equalto', 'api') | list | first) %}
+                <p class="service-meta">{{ info.slug }}_{{ spa_ref.name }} (utility)</p>
+                <a href="#" id="{{ domain.name }}-spa-link" class="cell-link" target="_blank" rel="noopener noreferrer">{{ domain.name | replace('_', ' ') | title }} configurator</a>
+                <a href="#" id="{{ domain.name }}-api-docs-link" class="cell-link" target="_blank" rel="noopener noreferrer" title="Open API docs">API Explorer</a>
+                <a href="{{ org.git_host }}/{{ org.git_org }}/{{ info.slug }}_{{ api_repo.name }}" class="cell-link" target="_blank" rel="noopener noreferrer" title="{{ api_repo.name }} source">{{ info.slug }}_{{ api_repo.name }}</a>
+                {%- else %}
+                {%- for repo in domain.repos %}
+                {%- if repo.type == 'api' %}
+                <a href="#" id="{{ domain.name }}-api-docs-link" class="cell-link" target="_blank" rel="noopener noreferrer" title="Open API docs">API Explorer</a>
+                {%- endif %}
+                {%- endfor %}
+                {%- for repo in domain.repos %}
+                {%- if repo.type in ['spa', 'api'] %}
+                <a href="{{ org.git_host }}/{{ org.git_org }}/{{ info.slug }}_{{ repo.name }}" class="cell-link" target="_blank" rel="noopener noreferrer" title="{{ repo.name }} source">{{ info.slug }}_{{ repo.name }}</a>
+                {%- endif %}
+                {%- endfor %}
+                {%- endif %}
             </li>
-{% endif %}
-{% endif %}
-{% endfor %}
+            {%- endif %}
+            {%- endfor %}
         </ul>
     </div>
     <script>
         const hostname = window.location.hostname || 'localhost';
 
         /** HS256 persona tokens: iss dev-idp, aud dev-api; secret must match JWT_SECRET used by APIs (see e2e_auth / Developer Edition compose). */
-        const DEV_AUTH_EXPIRES = '2036-03-23T19:24:11.000Z';
+        const PERSONA_TOKEN_EXPIRES_AT = '2036-03-23T19:24:11+00:00';
         const TOKEN_GENNY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6Imdlbm55IiwiaWF0IjoxNzc0NTUzMDUxLCJleHAiOjIwODk5MTMwNTEsInJvbGVzIjpbImRldmVsb3BlciJdfQ.-yXO6ubjeHywUDnm3Yr8eM_nqbmrgXG5QSrsa7azPGY';
         const TOKEN_ADAM = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6ImFkYW0iLCJpYXQiOjE3NzQ1NTMwNTEsImV4cCI6MjA4OTkxMzA1MSwicm9sZXMiOlsiYWRtaW4iXX0.JqJywkxLUoOvbE5SAzEdV3Ia87vDZCuDZXTGFYfmY7c';
 
         function spaAuthHash(token, rolesComma) {
             const p = new URLSearchParams();
             p.set('access_token', token);
-            p.set('expires_at', DEV_AUTH_EXPIRES);
+            p.set('expires_at', PERSONA_TOKEN_EXPIRES_AT);
             p.set('roles', rolesComma);
             return '#' + p.toString();
         }
@@ -205,31 +200,32 @@
             const el = document.getElementById(elId);
             if (!el) return;
             el.href = 'http://' + hostname + ':' + port + '/' + spaAuthHash(token, roles);
+            el.target = '_blank';
+            el.rel = 'noopener noreferrer';
         }
-{% for domain in architecture.domains %}
-{% if domain.name != 'common_code' %}
-{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
-{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
-{% if api_repo and spa_repo %}
-{% if spa_repo.type == 'spa_ref' %}
-        document.getElementById('{{ domain.name }}-spa-link').href = `http://${hostname}:{{ spa_repo.port }}`;
-{% endif %}
-        document.getElementById('{{ domain.name }}-explorer-link').href = `http://${hostname}:{{ api_repo.port }}/docs/{% if domain.name == 'schema' %}index.html{% else %}explorer.html{% endif %}`;
-{% endif %}
-{% endif %}
-{% endfor %}
-{% if ns.has_persona %}
-{% for domain in architecture.domains %}
-{% if domain.name != 'common_code' %}
-{% set api_repo = domain.repos | selectattr('type', 'equalto', 'api') | first %}
-{% set spa_repo = (domain.repos | selectattr('type', 'equalto', 'spa') | first) or (domain.repos | selectattr('type', 'equalto', 'spa_ref') | first) %}
-{% if api_repo and spa_repo and spa_repo.type != 'spa_ref' %}
-        setPersonaLink('{{ domain.name }}-genny', {{ spa_repo.port }}, TOKEN_GENNY, 'developer');
-        setPersonaLink('{{ domain.name }}-adam', {{ spa_repo.port }}, TOKEN_ADAM, 'admin');
-{% endif %}
-{% endif %}
-{% endfor %}
-{% endif %}
+
+        {%- for domain in architecture.domains %}
+        {%- if domain.name != 'common_code' %}
+        {%- for repo in domain.repos %}
+        {%- if repo.type == 'api' %}
+        document.getElementById('{{ domain.name }}-api-docs-link').href = `http://${hostname}:{{ repo.port }}{% if repo.template is defined and 'configurator_api' in repo.template %}/docs/index.html{% else %}/docs/explorer.html{% endif %}`;
+        {%- elif repo.type == 'spa_ref' %}
+        document.getElementById('{{ domain.name }}-spa-link').href = `http://${hostname}:{{ repo.port }}`;
+        {%- endif %}
+        {%- endfor %}
+        {%- endif %}
+        {%- endfor %}
+
+        {%- for domain in architecture.domains %}
+        {%- if domain.name not in ['schema', 'common_code'] %}
+        {%- for repo in domain.repos %}
+        {%- if repo.type == 'spa' %}
+        setPersonaLink('{{ domain.name }}-genny', {{ repo.port }}, TOKEN_GENNY, 'developer');
+        setPersonaLink('{{ domain.name }}-adam', {{ repo.port }}, TOKEN_ADAM, 'admin');
+        {%- endif %}
+        {%- endfor %}
+        {%- endif %}
+        {%- endfor %}
     </script>
 </body>
 </html>

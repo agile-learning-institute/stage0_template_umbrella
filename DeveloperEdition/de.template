@@ -4,7 +4,14 @@ export COMMAND="$1"
 export NEW_PROFILE="$2"
 export INSTALL_PATH=$(dirname "$0")
 export GITHUB_TOKEN=$(cat ~/.{{info.slug}}/GITHUB_TOKEN)
-export JWT_SECRET=$(date +%s)
+# Stable default so welcome-page persona JWTs match API containers (override with JWT_SECRET).
+if [[ -z "${JWT_SECRET:-}" ]]; then
+  if [[ -f "$HOME/.{{info.slug}}/JWT_DEV_SECRET" ]]; then
+    export JWT_SECRET=$(<"$HOME/.{{info.slug}}/JWT_DEV_SECRET")
+  else
+    export JWT_SECRET="{{ info.slug }}-local-dev-jwt-secret-fixed"
+  fi
+fi
 
 ################################################################################
 # Print Manual Page
@@ -12,13 +19,13 @@ export JWT_SECRET=$(date +%s)
 function manual {
 cat <<END
 NAME
-       {{info.developer_cli}} - {{info.name}} Developers Edition
+       {{info.developer_cli}} - {{ info.name }} Developers Edition
 
 SYNOPSIS
        {{info.developer_cli}} COMMAND
 
 DESCRIPTION
-       {{info.developer_cli}} is a simple utility to run the {{info.name}} system, or portions 
+       {{info.developer_cli}} is a simple utility to run the {{ info.name }} system, or portions 
        of it, in local docker containers. You must have docker desktop 
        installed
 
@@ -47,16 +54,16 @@ COMMANDS
         Pull latest images for the specified profile(s).
 
     clean
-        Delete all {{info.name}} specific containers, volumes, and images
+        Delete all {{ info.name }} specific containers, volumes, and images
 
     version
-        print the {{info.name}} Developers Edition version
+        print the {{ info.name }} Developers Edition version
     
     list-profiles
-        List all available profiles related to {{info.name}} Developers Edition
+        List all available profiles related to {{ info.name }} Developers Edition
 
     list-services
-        List all available services related to {{info.name}} Developers Edition
+        List all available services related to {{ info.name }} Developers Edition
 
 END
 }
@@ -77,8 +84,8 @@ Commands:
   tail           Tail a service log
   prune          Prune all orphaned images and volumes
   pull           Pull latest images for a profile
-  clean          Delete all {{info.name}} specific containers, volumes, and images
-  version        Print the {{info.name}} Developers Edition version
+  clean          Delete all {{ info.name }} specific containers, volumes, and images
+  version        Print the {{ info.name }} Developers Edition version
   list-profiles  List all available profiles
   list-services  List all available services
   manual         Show the manual

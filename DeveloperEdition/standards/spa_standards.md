@@ -31,12 +31,13 @@
 - Application dependencies are declared in `package.json`; run `npm install` after changes.
 - Shared **`spa_utils`** is consumed from **Git** by default: in the SPA `package.json`, depend on `github:{{org.git_org}}/{{info.slug}}_spa_utils#main` (or a tag or commit SHA instead of `main`). `npm install` clones that repository and runs its `prepare` script to build `dist/`. For local development with both repos checked out, use `file:../{{info.slug}}_spa_utils`.
 - **Docker / CI:** pass **`GITHUB_TOKEN`** into the image build so `git` can clone a **private** `{{info.slug}}_spa_utils` repo; public library repos need no token. This path avoids GitHub Packages “Manage Actions access” for npm, which cannot be automated with supported APIs.
-- Third-party packages: verify peer dependency compatibility when adding or updating:
+- **Managed registries (future):** The target for internal and curated third-party artifacts is a unified setup such as **JFrog Artifactory** (npm + PyPI repos/proxies). Document consumption via `.npmrc` / `pip` index URLs once that platform is live; until then, git + GitHub Packages remain the documented paths.
+- Third-party packages: verify declared peer versions align when adding or updating:
   - `npm view <package> peerDependencies`
   - `@vitejs/plugin-vue` v6.x required for Vite v7.x (v5.x only supports Vite v5–v6); `@mdi/font` latest stable is v7.x (v8.x does not exist)
 - Run `npm audit` regularly; use `overrides` in `package.json` for transitive fixes when needed.
 
-**Upgrade paths:** Use git dependencies with branch/tag/commit pins while iterating. When you need semver ranges (`^`), a single registry artifact, or promotion separate from the library repo’s branch, publish `spa_utils` to GitHub Packages or npmjs and switch consumers to registry versions plus `.npmrc` (accepting GPR or npmjs auth and ACL trade-offs).
+**Upgrade paths:** Use git dependencies with branch/tag/commit pins while iterating. When you need semver ranges (`^`), a single registry artifact, or promotion separate from the library repo’s branch, publish `spa_utils` to GitHub Packages, **JFrog**, or npmjs and switch consumers to registry versions plus `.npmrc` (accepting registry auth and ACL trade-offs). The `spa_utils` repo keeps **`build-package`** / **`publish-package`** scripts for that workflow; many day-to-day library edits never need to run them.
 
 ## Testing Standards
 - **Unit Testing**: Vitest v3 for unit testing with 90% coverage target
@@ -57,11 +58,11 @@
   - Custom Cypress commands for common operations (e.g., login)
 
 ## Authentication Pattern
-- JWT tokens stored in localStorage (`access_token`, `token_expires_at`)
+- JWT tokens stored in localStorage (`access_token`, `token_expires_at`, `user_roles` when present)
 - `useAuth()` composable manages authentication state
-- `/dev-login` endpoint for development (not proxied, direct to API)
-- Router guards protect authenticated routes
-- Config loaded after successful login
+- **URL bootstrap:** Call **`bootstrapAuthFromUrl()`** from `spa_utils` once before the router mounts. Hash `#access_token=...&expires_at=...&roles=...` seeds localStorage (Developer Edition welcome page / IdP-style callback). Query `?clear_stored_auth=1` clears stored tokens when needed.
+- Router guards protect authenticated routes; unauthenticated users redirect using **`VITE_IDP_LOGIN_URI`** / runtime login base URL (welcome page in Developer Edition, real IdP in production)
+- Config is loaded when the app runs; it does not depend on a backend-issued “login” exchange in the SPA product flow
 
 ## Component Patterns
 - **AutoSave Components**: Field-level save-on-blur for edit pages
@@ -226,6 +227,7 @@ The `@{{org.git_org}}/{{info.slug}}_spa_utils` package provides reusable Vue 3 +
 - `ListPageSearch` - Reusable search field for list pages
 
 **Utilities:**
+- `bootstrapAuthFromUrl()` / `clearUrlSeededAuthLocalStorage()` - Apply or clear auth from URL hash / query before the app mounts
 - `formatDate(dateString)` - Format ISO date strings to localized strings
 - `validationRules` - Common validation rules (required, namePattern, descriptionPattern)
 
