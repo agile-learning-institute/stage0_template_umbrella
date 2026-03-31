@@ -38,6 +38,8 @@ templates:
     merge: true
   - path: "./DeveloperEdition/standards/sre_standards.md"
     merge: true
+  - path: "./DeveloperEdition/standards/system_tour.md"
+    merge: true
   - path: "./DeveloperEdition/de.template"
     output: "./DeveloperEdition/{{info.developer_cli}}"
     merge: true

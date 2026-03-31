@@ -70,6 +70,7 @@ make update
 - Review the [SRE Standards](./DeveloperEdition/standards/sre_standards.md).
 - Review the [API Standards](./DeveloperEdition/standards/api_standards.md).
 - Review the [SPA Standards](./DeveloperEdition/standards/spa_standards.md).
+- Take the [Onboarding Tour](./DeveloperEdition/standards/system_tour.md).
 
 ## Developer Workflow
 We utilize an Issue–Feature–Branch pattern for the developer workflow:

@@ -1,24 +1,11 @@
 # Agile Learning Institute Mentor Hub
 
-## Stage0 Quickstart
-
-### Familiarize yourself with standards. 
-- Review [Architecture Principles](./DeveloperEdition/standards/ArchitecturePrinciples.md) to understand the architecture supported by the current templates.
-- Review the various [Coding Standards](./DeveloperEdition/standards/) implemented in the API, UI, DB, and SRE domains.
-- Review the [Specifications](./Specifications/) to understand the starting point.
-
-### Update your Dictionaries
-Use the Schema Manager repo's ``make dev`` command to launch the schema editor
-Download JSON Schema files and use them with AI Code Assistants to refine services.
-
----
-
 ## Big Idea
 A platform to connect mentors with engineers engaged in a life long learning journey.
 
 ## Development Team 
-- 
-- 
+- TBD
+- TBD
 
 ## Design Specifications
 - [Product Description](./Specifications/product.yaml) 
@@ -35,3 +22,15 @@ A platform to connect mentors with engineers engaged in a life long learning jou
 - [API Standards](./DeveloperEdition/standards/api_standards.md)
 - [UI Standards](./DeveloperEdition/standards/spa_standards.md)
 - [SRE Standards](./DeveloperEdition/standards/sre_standards.md)
+- [Onboarding Tour](./DeveloperEdition/standards/system_tour.md)
+
+## Post-Launch TODOs
+- Refine data structures using the Schema Configurator
+- Propagate those data structure changes through API and SPA Code
+- Customize SPA's to provide a more desirable user journey
+
+- Implement a better npm and pypi dependency management approach.
+    - Identify a service such as jFrog
+    - Update the utils projects CI to publish to that service
+    - Update the API and SPA repo's to use that service
+    
