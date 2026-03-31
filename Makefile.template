@@ -7,12 +7,6 @@ LOG_FILE ?= .make.log
 SPECS_DIR := $(CURDIR)/Specifications
 MERGE_IMAGE := ghcr.io/agile-learning-institute/stage0_runbook_merge:latest
 
-# Stage0 Launch web UI — convenience wrapper only; GITHUB_TOKEN + GitHub permissions are the real gate.
-STAGE0_LAUNCH_IMAGE ?= ghcr.io/agile-learning-institute/stage0_launch:latest
-STAGE0_LAUNCH_PORT ?= 8080
-STAGE0_LAUNCHPAD_HOST_PATH ?= $(abspath $(CURDIR)/..)
-STAGE0_LAUNCH_UI_CONTAINER_NAME ?= stage0_launch_ui
-
 .PHONY: help install update verify schemas container push build-package publish-package stage0-launch-ui
 
 help:
@@ -23,7 +17,7 @@ help:
 	@echo "  make update        - Update {{info.slug}} CLI tools and configure Docker/Git"
 	@echo "  make schemas       - Fetch JSON schemas for all data dictionaries, assumes mongodb_api is running"
 	@echo "  make build-package - Build the {{info.name}} welcome page Docker container locally"
-	@echo "  make stage0-launch-ui - Stage0 Launch web UI, detached (launchpad = parent of this repo; export GITHUB_TOKEN first)"
+	@echo "  make stage0-launch-ui - Stage0 Launch web UI, detached (export GITHUB_TOKEN; optional DELETE_ENABLED=True)"
 	@echo ""
 	@echo "For more information, see ./CONTRIBUTING.md"
 
@@ -147,24 +141,21 @@ publish-package: push
 
 stage0-launch-ui:
 	@[ -n "$$GITHUB_TOKEN" ] || (echo "Error: export GITHUB_TOKEN first (never commit tokens)."; exit 1)
-	@echo "Starting Stage0 Launch (detached). URL: http://localhost:$(STAGE0_LAUNCH_PORT)"
-	@echo "Host launchpad: $(STAGE0_LAUNCHPAD_HOST_PATH)"
-	@echo "Stop: docker stop $(STAGE0_LAUNCH_UI_CONTAINER_NAME)"
-	@docker pull $(STAGE0_LAUNCH_IMAGE) 2>/dev/null || true
-	@docker rm -f $(STAGE0_LAUNCH_UI_CONTAINER_NAME) 2>/dev/null || true
-	docker run -d --rm --name $(STAGE0_LAUNCH_UI_CONTAINER_NAME) \
-		-p $(STAGE0_LAUNCH_PORT):8080 \
-		-v "$(STAGE0_LAUNCHPAD_HOST_PATH):/launchpad" \
+	@echo "Starting Stage0 Launch: http://localhost:8080"
+	docker run -d --rm --name stage0_launch_ui \
+		-p 8080:8080 \
+		-v "$(abspath $(CURDIR)/..):/launchpad" \
 		-v "$(CURDIR)/Specifications:/specifications" \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-e LAUNCHPAD_DIR=/launchpad \
 		-e SPECIFICATIONS=/specifications \
-		-e STAGE0_LAUNCH_CONTAINER_NAME=$(STAGE0_LAUNCH_UI_CONTAINER_NAME) \
+		-e STAGE0_LAUNCH_CONTAINER_NAME=stage0_launch_ui \
 		-e GITHUB_TOKEN \
 		-e GH_TOKEN=$$GITHUB_TOKEN \
 		-e GH_USERNAME \
 		-e GITHUB_USERNAME \
-		$(STAGE0_LAUNCH_IMAGE)
+		-e DELETE_ENABLED \
+		ghcr.io/agile-learning-institute/stage0_launch:latest
 
 delete-package:
 	@gh api -X DELETE /orgs/{{org.git_org}}/packages/container/{{info.slug}}
