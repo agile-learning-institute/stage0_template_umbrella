@@ -149,7 +149,6 @@ stage0-launch-ui:
 		-e GH_TOKEN=$$GITHUB_TOKEN \
 		-e GH_USERNAME \
 		-e GITHUB_USERNAME \
-		-e DELETE_ENABLED \
 		ghcr.io/agile-learning-institute/stage0_launch:latest
 
 delete-package:
