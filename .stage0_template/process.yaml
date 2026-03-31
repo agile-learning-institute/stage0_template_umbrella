@@ -28,10 +28,6 @@ requires:
   - architecture.domains
 
 templates:
-  - path: "./Specifications/architecture.yaml"
-    merge: true
-  - path: "./Specifications/product.yaml"
-    merge: true
   - path: "./DeveloperEdition/docker-compose.yaml"
     merge: true
   - path: "./DeveloperEdition/standards/api_standards.md"
@@ -46,6 +42,8 @@ templates:
   - path: "./index.html"
     merge: true
   - path: "./Tasks/AS_NEEDED.R100.after_specs_update.md"
+    merge: true
+  - path: "./Tasks/AS_NEEDED.R101.welcome_personas_from_architecture.md"
     merge: true
   - path: "./Dockerfile"
     merge: true

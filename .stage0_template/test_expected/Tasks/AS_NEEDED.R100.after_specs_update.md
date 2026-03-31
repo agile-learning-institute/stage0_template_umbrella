@@ -41,6 +41,9 @@ Update `DeveloperEdition/docker-compose.yaml` and the welcome page `index.html` 
 
 ### index.html
 
+**Personas (default merge)**  
+The template merge ships **Genny** / **Adam** with static dev JWTs (`developer` / `admin`) and one link per journey SPA per persona—no per-domain token minting at merge time. To align personas, roles, and JWT claims with `Specifications/architecture.yaml` (e.g. journey-named roles), run **Tasks/AS_NEEDED.R101** after merge.
+
 **Layout**
 
 - Each service is one row with **two equal-width columns (50/50)**:

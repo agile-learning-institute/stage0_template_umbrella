@@ -118,45 +118,34 @@
     </style>
 </head>
 <body>
+{%- set journey_domains = architecture.domains | selectattr('is_journey', 'equalto', true) | list %}
+{%- set schema_domain = architecture.domains | selectattr('name', 'equalto', 'schema') | first %}
     <div class="container">
-        <h1>{{info.name}}</h1>
+        <h1>{{ info.name }}</h1>
         <p class="subtitle">Welcome to the Development Environment</p>
 
         <div class="welcome-auth">
             <h2>Local environment sign-in</h2>
-            <p class="hint">Persona links open each SPA with URL-hash parameters (signed local JWTs)</p>
+            <p class="hint">Genny and Adam use fixed dev JWTs (developer / admin roles). Links are generated for each journey SPA from <code>architecture.yaml</code>. To customize personas or roles per journey, follow Tasks/AS_NEEDED.R101.</p>
+            {%- for label, suffix in [('Genny (generic user)', 'genny'), ('Adam (admin)', 'adam')] %}
             <div class="persona-row">
-                <span class="label">Genny (generic user)</span>
-                {%- for domain in architecture.domains %}
-                {%- if domain.name not in ['schema', 'common_code'] %}
+                <span class="label">{{ label }}</span>
+                {%- for domain in journey_domains %}
                 {%- for repo in domain.repos %}
                 {%- if repo.type == 'spa' %}
-                <a class="persona" id="{{ domain.name }}-genny" href="#" target="_blank" rel="noopener noreferrer">{{ domain.name | replace('_', ' ') | title }}</a>
+                <a class="persona" id="{{ domain.name }}-{{ suffix }}" href="#" target="_blank" rel="noopener noreferrer">{{ domain.name | replace('_', ' ') | title }}</a>
                 {%- endif %}
                 {%- endfor %}
-                {%- endif %}
-                {%- endfor %}
-            </div>
-            <div class="persona-row">
-                <span class="label">Adam (admin)</span>
-                {%- for domain in architecture.domains %}
-                {%- if domain.name not in ['schema', 'common_code'] %}
-                {%- for repo in domain.repos %}
-                {%- if repo.type == 'spa' %}
-                <a class="persona" id="{{ domain.name }}-adam" href="#" target="_blank" rel="noopener noreferrer">{{ domain.name | replace('_', ' ') | title }}</a>
-                {%- endif %}
-                {%- endfor %}
-                {%- endif %}
                 {%- endfor %}
             </div>
+            {%- endfor %}
         </div>
 
         <ul class="links">
-            {%- for domain in architecture.domains %}
-            {%- if domain.name != 'common_code' %}
+            {%- for domain in architecture.domains if domain.name != 'common_code' and (domain == schema_domain or domain.is_journey) %}
             <li class="service-block">
                 <div class="service-title">{{ domain.name | replace('_', ' ') | title }}</div>
-                {%- if domain.name == 'schema' %}
+                {%- if domain == schema_domain %}
                 {%- set spa_ref = (domain.repos | selectattr('type', 'equalto', 'spa_ref') | list | first) %}
                 {%- set api_repo = (domain.repos | selectattr('type', 'equalto', 'api') | list | first) %}
                 <p class="service-meta">{{ info.slug }}_{{ spa_ref.name }} (utility)</p>
@@ -176,14 +165,13 @@
                 {%- endfor %}
                 {%- endif %}
             </li>
-            {%- endif %}
             {%- endfor %}
         </ul>
     </div>
     <script>
         const hostname = window.location.hostname || 'localhost';
 
-        /** HS256 persona tokens: iss dev-idp, aud dev-api; secret must match JWT_SECRET used by APIs (see e2e_auth / Developer Edition compose). */
+        /** HS256 persona tokens: iss dev-idp, aud dev-api; secret must match JWT_SECRET used by APIs (e2e_auth / Developer Edition compose). */
         const PERSONA_TOKEN_EXPIRES_AT = '2036-03-23T19:24:11+00:00';
         const TOKEN_GENNY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6Imdlbm55IiwiaWF0IjoxNzc0NTUzMDUxLCJleHAiOjIwODk5MTMwNTEsInJvbGVzIjpbImRldmVsb3BlciJdfQ.-yXO6ubjeHywUDnm3Yr8eM_nqbmrgXG5QSrsa7azPGY';
         const TOKEN_ADAM = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkZXYtaWRwIiwiYXVkIjoiZGV2LWFwaSIsInN1YiI6ImFkYW0iLCJpYXQiOjE3NzQ1NTMwNTEsImV4cCI6MjA4OTkxMzA1MSwicm9sZXMiOlsiYWRtaW4iXX0.JqJywkxLUoOvbE5SAzEdV3Ia87vDZCuDZXTGFYfmY7c';
@@ -204,8 +192,7 @@
             el.rel = 'noopener noreferrer';
         }
 
-        {%- for domain in architecture.domains %}
-        {%- if domain.name != 'common_code' %}
+        {%- for domain in architecture.domains if domain.name != 'common_code' and (domain == schema_domain or domain.is_journey) %}
         {%- for repo in domain.repos %}
         {%- if repo.type == 'api' %}
         document.getElementById('{{ domain.name }}-api-docs-link').href = `http://${hostname}:{{ repo.port }}{% if repo.template is defined and 'configurator_api' in repo.template %}/docs/index.html{% else %}/docs/explorer.html{% endif %}`;
@@ -213,18 +200,16 @@
         document.getElementById('{{ domain.name }}-spa-link').href = `http://${hostname}:{{ repo.port }}`;
         {%- endif %}
         {%- endfor %}
-        {%- endif %}
         {%- endfor %}
 
-        {%- for domain in architecture.domains %}
-        {%- if domain.name not in ['schema', 'common_code'] %}
+        {%- for domain in journey_domains %}
         {%- for repo in domain.repos %}
         {%- if repo.type == 'spa' %}
-        setPersonaLink('{{ domain.name }}-genny', {{ repo.port }}, TOKEN_GENNY, 'developer');
-        setPersonaLink('{{ domain.name }}-adam', {{ repo.port }}, TOKEN_ADAM, 'admin');
-        {%- endif %}
+        {%- for suffix, token_const, roles in [('genny', 'TOKEN_GENNY', 'developer'), ('adam', 'TOKEN_ADAM', 'admin')] %}
+        setPersonaLink('{{ domain.name }}-{{ suffix }}', {{ repo.port }}, {{ token_const }}, '{{ roles }}');
         {%- endfor %}
         {%- endif %}
+        {%- endfor %}
         {%- endfor %}
     </script>
 </body>
