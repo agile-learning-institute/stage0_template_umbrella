@@ -9,7 +9,7 @@ If you haven't already installed the Developer Edition cli ``{{info.developer_cl
 
 Now - let's use ``{{info.developer_cli}}`` to pull the latest containers from our GitHub Container Registry. Use ``{{info.developer_cli}} pull all`` - this command will pull all of the latest containers from GitHub for use with ``{{info.developer_cli}} up`` commands. When you are working on a repo - you will re-build that container and test it locally. Multi-architecture (ARM & AMD) containers are built by CI (Continuous Integration) that is implemented as GitHub Action's that run when ever a feature branch is merged back to the main branch. 
 
-Now - let's use ``{{info.developer_cli}}`` to start the whole system. Use ``{{info.developer_cli}} up all`` and then visit [localhost:8080](http://localhost:8080/) and explore the system. When you are done exploring use ``{{info.developer_cli}} down`` to stop all the containers. 
+Now - let's use ``{{info.developer_cli}}`` to start the whole system. Use ``{{info.developer_cli}} up all`` and then visit [localhost:8080](http://localhost:8080/) and explore the system. Note that the database is currently empty, so a lot of screens will be empty as well. After you run black-box and cypress tests as described below there will be data in the database that is left behind by the testing. All data is lost when you down/up services. When you are done exploring use ``{{info.developer_cli}} down`` to stop all the containers. 
 
 ## Clone Everything
 Ok - now to look at all of the different repo's. You will first need to clone them down to your computer - you can do so using the stage0 launch UI. Use these commands:
