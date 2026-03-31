@@ -1,11 +1,6 @@
-# --- Configuration (SLUG/ORG from product.yaml) ---
-MAKEFILE_DIR := .
-PRODUCT_FILE ?= $(MAKEFILE_DIR)/Specifications/product.yaml
-SLUG := $(shell yq -r '.info.slug' $(PRODUCT_FILE))
+# `make update` reads GitHub org for docker login from product.yaml.
+PRODUCT_FILE ?= Specifications/product.yaml
 ORG := $(shell yq -r '.organization.git_org' $(PRODUCT_FILE))
-LOG_FILE ?= .make.log
-SPECS_DIR := $(CURDIR)/Specifications
-MERGE_IMAGE := ghcr.io/agile-learning-institute/stage0_runbook_merge:latest
 
 .PHONY: help install update verify schemas container push build-package publish-package stage0-launch-ui
 
