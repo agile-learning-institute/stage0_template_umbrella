@@ -112,7 +112,7 @@ services:
       MONGODB_REQUIRE_TLS: False
       MONGO_DB_NAME: mentor_hub
       LOGGING_LEVEL: "INFO"
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:-local-dev-jwt-secret-fixed}
       API_PORT: 8387
       SAMPLE_API_PORT: 8387
       SAMPLE_SPA_PORT: 8388
@@ -150,7 +150,7 @@ services:
       MONGODB_REQUIRE_TLS: False
       MONGO_DB_NAME: mentor_hub
       LOGGING_LEVEL: "INFO"
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:-local-dev-jwt-secret-fixed}
       API_PORT: 8389
       SAMPLE_API_PORT: 8389
       SAMPLE_SPA_PORT: 8390
@@ -188,7 +188,7 @@ services:
       MONGODB_REQUIRE_TLS: False
       MONGO_DB_NAME: mentor_hub
       LOGGING_LEVEL: "INFO"
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:-local-dev-jwt-secret-fixed}
       API_PORT: 8391
       SAMPLE_API_PORT: 8391
       SAMPLE_SPA_PORT: 8392

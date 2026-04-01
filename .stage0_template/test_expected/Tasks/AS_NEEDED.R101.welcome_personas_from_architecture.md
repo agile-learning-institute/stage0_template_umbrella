@@ -35,7 +35,7 @@ The merged umbrella template intentionally ships **Genny** and **Adam** with **s
    For each link, the `access_token` payload (claims, especially `roles`) should match what SPAs/APIs expect, and the hash query `roles` should be consistent with those claims (comma-separated as today).
 
 4. **Mint tokens with the real dev secret**  
-   Use the same secret as running APIs (e.g. PyJWT, `HS256`). After changing `JWT_SECRET` or claims, re-run this task and update inlined tokens in `index.html`.
+   Use the same secret as running APIs (e.g. PyJWT, `HS256`). Default Developer Edition and compose use `local-dev-jwt-secret-fixed` (no product slug in the string). After changing `JWT_SECRET` or claims, re-run this task and update inlined tokens in `index.html`.
 
 5. **Document in-repo**  
    Add a short comment in `index.html` above persona constants describing iss/aud/sub/roles and that tokens are **dev-only**.

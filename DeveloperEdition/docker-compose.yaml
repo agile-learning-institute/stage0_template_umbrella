@@ -121,7 +121,7 @@ services:
       MONGODB_REQUIRE_TLS: False
       MONGO_DB_NAME: {{ info.db_name }}
       LOGGING_LEVEL: "INFO"
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET:-local-dev-jwt-secret-fixed}
       API_PORT: {{ repo.port }}
       SAMPLE_API_PORT: {{ repo.port }}
       SAMPLE_SPA_PORT: {{ spa_match.port }}

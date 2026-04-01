@@ -9,7 +9,7 @@ if [[ -z "${JWT_SECRET:-}" ]]; then
   if [[ -f "$HOME/.{{info.slug}}/JWT_DEV_SECRET" ]]; then
     export JWT_SECRET=$(<"$HOME/.{{info.slug}}/JWT_DEV_SECRET")
   else
-    export JWT_SECRET="{{ info.slug }}-local-dev-jwt-secret-fixed"
+    export JWT_SECRET="local-dev-jwt-secret-fixed"
   fi
 fi
 
