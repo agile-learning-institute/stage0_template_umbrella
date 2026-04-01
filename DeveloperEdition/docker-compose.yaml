@@ -11,7 +11,7 @@ services:
   # Welcome Service
   ##################################
   welcome:
-    image: {{ org.docker_host }}/mentor-hub-system/{{ info.slug }}:latest
+    image: {{ org.docker_host }}/{{ org.docker_org }}/{{ info.slug }}:latest
     ports:
       - "127.0.0.1:8080:80"
     profiles:
@@ -54,7 +54,7 @@ services:
   # Mongo Database Configuration Utilities
   ##################################
   mongodb_api:
-    image: {{ org.docker_host }}/mentor-hub-system/{{ info.slug }}_mongodb_api:latest
+    image: {{ org.docker_host }}/{{ org.docker_org }}/{{ info.slug }}_mongodb_api:latest
     restart: no
     ports:
       - "127.0.0.1:{{ mongodb_api_repo.port }}:{{ mongodb_api_repo.port }}"
@@ -112,7 +112,7 @@ services:
 {%- if repo.type == 'api' %}
 {%- set spa_match = domain.repos | selectattr('type', 'equalto', 'spa') | first %}
   {{ repo.name }}:
-    image: {{ org.docker_host }}/mentor-hub-system/{{ info.slug }}_{{ repo.name }}:latest
+    image: {{ org.docker_host }}/{{ org.docker_org }}/{{ info.slug }}_{{ repo.name }}:latest
     restart: no
     ports:
       - "127.0.0.1:{{ repo.port }}:{{ repo.port }}"
@@ -134,7 +134,7 @@ services:
       - {{ domain.name }}-api{{ '\n' }}{% elif repo.type == 'spa' -%}
 {%- set api_match = domain.repos | selectattr('type', 'equalto', 'api') | first %}
   {{ repo.name }}:
-    image: {{ org.docker_host }}/mentor-hub-system/{{ info.slug }}_{{ repo.name }}:latest
+    image: {{ org.docker_host }}/{{ org.docker_org }}/{{ info.slug }}_{{ repo.name }}:latest
     restart: no
     ports:
       - "127.0.0.1:{{ repo.port }}:80"

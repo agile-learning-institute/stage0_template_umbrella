@@ -7,7 +7,7 @@ services:
   # Welcome Service
   ##################################
   welcome:
-    image: ghcr.io/mentor-hub-system/mentorhub:latest
+    image: ghcr.io/agile-learning-institute/mentorhub:latest
     ports:
       - "127.0.0.1:8080:80"
     profiles:
@@ -50,7 +50,7 @@ services:
   # Mongo Database Configuration Utilities
   ##################################
   mongodb_api:
-    image: ghcr.io/mentor-hub-system/mentorhub_mongodb_api:latest
+    image: ghcr.io/agile-learning-institute/mentorhub_mongodb_api:latest
     restart: no
     ports:
       - "127.0.0.1:8383:8383"
@@ -103,7 +103,7 @@ services:
   # Microservice domains (from architecture)
   ##################################
   profile_api:
-    image: ghcr.io/mentor-hub-system/mentorhub_profile_api:latest
+    image: ghcr.io/agile-learning-institute/mentorhub_profile_api:latest
     restart: no
     ports:
       - "127.0.0.1:8387:8387"
@@ -125,7 +125,7 @@ services:
       - profile-api
 
   profile_spa:
-    image: ghcr.io/mentor-hub-system/mentorhub_profile_spa:latest
+    image: ghcr.io/agile-learning-institute/mentorhub_profile_spa:latest
     restart: no
     ports:
       - "127.0.0.1:8388:80"
@@ -141,7 +141,7 @@ services:
       - profile
 
   mentor_api:
-    image: ghcr.io/mentor-hub-system/mentorhub_mentor_api:latest
+    image: ghcr.io/agile-learning-institute/mentorhub_mentor_api:latest
     restart: no
     ports:
       - "127.0.0.1:8389:8389"
@@ -163,7 +163,7 @@ services:
       - mentor-api
 
   mentor_spa:
-    image: ghcr.io/mentor-hub-system/mentorhub_mentor_spa:latest
+    image: ghcr.io/agile-learning-institute/mentorhub_mentor_spa:latest
     restart: no
     ports:
       - "127.0.0.1:8390:80"
@@ -179,7 +179,7 @@ services:
       - mentor
 
   member_api:
-    image: ghcr.io/mentor-hub-system/mentorhub_member_api:latest
+    image: ghcr.io/agile-learning-institute/mentorhub_member_api:latest
     restart: no
     ports:
       - "127.0.0.1:8391:8391"
@@ -201,7 +201,7 @@ services:
       - member-api
 
   member_spa:
-    image: ghcr.io/mentor-hub-system/mentorhub_member_spa:latest
+    image: ghcr.io/agile-learning-institute/mentorhub_member_spa:latest
     restart: no
     ports:
       - "127.0.0.1:8392:80"
