@@ -1,14 +1,14 @@
 # {{info.name}} Developer Edition
 
-The {{info.name}} Developer Edition ``{{info.developer_cli}}`` is a Command Line Interface that provides key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
+The {{info.name}} Developer Edition system provides a ``{{info.developer_cli}}`` Command Line Interface that supports key components of the developer experience. This CLI wraps docker compose commands, and secret management for local development environments. All developers should install this tooling, create and configure tokens, and review the linked standards before contributing to any repo.
 
 ## Step 1 of 4 - Install Prerequisites
 
 Run `make verify` to check that all prerequisites are installed. If any fail, install them using the links below.
 
 ### Build tools
-- **make** - Usually pre-installed. macOS: Xcode Command Line Tools (`xcode-select --install`). Linux: `apt install build-essential` or equivalent. https://www.gnu.org/software/make/
-- **Node.js** (v18+) - https://nodejs.org/en/download
+- **make** - usually pre-installed - https://www.gnu.org/software/make/
+- **Node.js** (v24+) - https://nodejs.org/en/download
 - **npm** (v11.5+) - Bundled with Node.js
 - **Vite** - `npm install -g vite` or use via `npx vite`. https://vitejs.dev/guide/
 
@@ -42,10 +42,10 @@ git config --global user.email yourname@example.com
 ## Step 2 of 4 - Install the CLI
 Use these commands to install the Developer Edition ``{{info.developer_cli}}`` command line utility. 
 ```sh
-git clone git@{{org.git_host}}:{{org.git_org}}/{{info.slug}}.git
-cd {{info.slug}}
+## Install Developer Edition 
 make install
 ```
+Remember to  ``source ~/.zshrc`` before proceeding.
 
 ## Step 3 of 4 - Configure access tokens
 When local environment values are required (GitHub access tokens, etc.) they are stored in the hidden folder ``~/.{{info.slug}}`` instead of a being replicated across multiple repo level .env files. 
@@ -99,4 +99,7 @@ make schemas
 
 # Build the welcome page container
 make container
+
+# Open the Stage0 Launch Utility
+make stage0-launch-ui
 ```

@@ -13,4 +13,4 @@
     - name: This is a document name, should be human readable, typically of type Word, indexed for search.
     - description: This is a text description typically of type Sentence
     - created: A tracking breadcrumb of when the document was first created.
-    - saved: A tracking breadcrumb of when the document was last saved. Note the collections that are write once read many will not have this property.
+    - saved: A tracking breadcrumb of when the document was last saved. Note the collections that are write once read many may not have this property.
