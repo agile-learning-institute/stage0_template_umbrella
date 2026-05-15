@@ -66,6 +66,10 @@ verify:
 install:
 	@echo "Installing mentorhub CLI..."
 	@mkdir -p ~/.mentorhub
+	@if [ ! -f ../.stage0-launch.yaml ]; then \
+		printf 'umbrella: mentorhub\n' > ../.stage0-launch.yaml && \
+		echo "Created ../.stage0-launch.yaml (launchpad stub for interactive mode)"; \
+	fi
 	@if ! grep -q "Added by mentorhub CLI install" ~/.zshrc 2>/dev/null; then \
 		echo "\n# Added by mentorhub CLI install" >> ~/.zshrc; \
 		echo "export PATH=\$$PATH:~/.mentorhub" >> ~/.zshrc; \

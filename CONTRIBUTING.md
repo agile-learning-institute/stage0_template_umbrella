@@ -10,6 +10,7 @@ Run `make verify` to check that all prerequisites are installed. If any fail, in
 - **make** - usually pre-installed - https://www.gnu.org/software/make/
 - **Node.js** (v24+) - https://nodejs.org/en/download
 - **npm** (v11.5+) - Bundled with Node.js
+- **cypress** (v)
 - **Vite** - `npm install -g vite` or use via `npx vite`. https://vitejs.dev/guide/
 
 ### Python tools

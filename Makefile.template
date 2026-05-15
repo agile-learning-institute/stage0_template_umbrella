@@ -66,6 +66,10 @@ verify:
 install:
 	@echo "Installing {{info.slug}} CLI..."
 	@mkdir -p ~/.{{info.slug}}
+	@if [ ! -f ../.stage0-launch.yaml ]; then \
+		printf 'umbrella: {{info.slug}}\n' > ../.stage0-launch.yaml && \
+		echo "Created ../.stage0-launch.yaml (launchpad stub for interactive mode)"; \
+	fi
 	@if ! grep -q "Added by {{info.slug}} CLI install" ~/.zshrc 2>/dev/null; then \
 		echo "\n# Added by {{info.slug}} CLI install" >> ~/.zshrc; \
 		echo "export PATH=\$$PATH:~/.{{info.slug}}" >> ~/.zshrc; \
