@@ -35,14 +35,14 @@ Update `DeveloperEdition/docker-compose.yaml` and the welcome page `index.html` 
   - `{domain}-api` – API service only (e.g. `profile-api` → profile_api)
   - `{domain}` – API + SPA (e.g. `profile` → profile_api + profile_spa)
 - **Add API_PORT** to each API service environment so the app binds correctly.
-- **Add IDP_LOGIN_URI** to each SPA (typically the umbrella welcome page base URL, or your IdP) so unauthenticated users have a single redirect target—not a per-SPA login route.
+- **Add IDP_LOGIN_URI** to each SPA (Developer Edition default: `http://127.0.0.1:8080/login.html`, or your IdP) so unauthenticated users have a single redirect target—not a per-SPA login route.
 - Ensure backing services (e.g. mongodb) are included in the profiles of any new services.
 - Ensure all new services are included in the all profile.
 
 ### index.html
 
-**Personas (default merge)**  
-The template merge ships **Genny** / **Adam** with static dev JWTs (`developer` / `admin`) and one link per journey SPA per persona—no per-domain token minting at merge time. To align personas, roles, and JWT claims with `Specifications/architecture.yaml` (e.g. journey-named roles), run **Tasks/AS_NEEDED.R101** after merge.
+**Developer sign-in (default merge)**  
+The template merge ships **`login.html`** with default personas (Carol, Maria, Cat, Mark, Stan) and client-side JWT minting. **`index.html`** is catalog-only (SPA links without embedded tokens). To customize personas, roles, or `return_to` allowlists for your architecture, run **Tasks/AS_NEEDED.R101** after merge.
 
 **Layout**
 

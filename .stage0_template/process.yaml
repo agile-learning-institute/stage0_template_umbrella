@@ -41,6 +41,10 @@ templates:
     merge: true
   - path: "./index.html"
     merge: true
+  - path: "./login.html"
+    merge: true
+  - path: "./welcome-auth.js"
+    merge: true
   - path: "./Tasks/AS_NEEDED.R100.after_specs_update.md"
     merge: true
   - path: "./Tasks/AS_NEEDED.R101.welcome_personas_from_architecture.md"
