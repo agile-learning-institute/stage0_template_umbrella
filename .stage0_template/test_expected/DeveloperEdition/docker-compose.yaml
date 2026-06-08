@@ -132,7 +132,7 @@ services:
     environment:
       API_HOST: profile_api
       API_PORT: 8387
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8080/}
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://127.0.0.1:8080/login.html}
     depends_on:
       profile_api:
         condition: service_started
@@ -170,7 +170,7 @@ services:
     environment:
       API_HOST: mentor_api
       API_PORT: 8389
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8080/}
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://127.0.0.1:8080/login.html}
     depends_on:
       mentor_api:
         condition: service_started
@@ -208,7 +208,7 @@ services:
     environment:
       API_HOST: member_api
       API_PORT: 8391
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8080/}
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://127.0.0.1:8080/login.html}
     depends_on:
       member_api:
         condition: service_started

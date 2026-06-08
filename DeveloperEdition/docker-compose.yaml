@@ -141,7 +141,7 @@ services:
     environment:
       API_HOST: {{ api_match.name }}
       API_PORT: {{ api_match.port }}
-      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://localhost:8080/}
+      IDP_LOGIN_URI: ${IDP_LOGIN_URI:-http://127.0.0.1:8080/login.html}
     depends_on:
       {{ api_match.name }}:
         condition: service_started

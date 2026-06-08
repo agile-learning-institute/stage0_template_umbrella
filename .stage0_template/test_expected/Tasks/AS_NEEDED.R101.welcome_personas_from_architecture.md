@@ -6,16 +6,16 @@
 
 ## Goal
 
-Refactor `index.html` (welcome page **persona** section and related script) so personas, role strings, and JWT payloads align with **your** journey domains and RBAC model, using `Specifications/architecture.yaml` as the source of truth.
+Align developer sign-in **persona** data with `Specifications/architecture.yaml`. JWT minting lives in **`login.html`** and **`welcome-auth.js`**; `index.html` is catalog-only (no persona matrix).
 
-The merged umbrella template intentionally ships **Genny** and **Adam** with **static** HS256 tokens (`developer` / `admin` roles) so the welcome page works immediately after merge without minting per-domain JWTs. Run this task when you want journey-specific subjects, roles, or extra personas instead.
+Default personas: **Carol** (`coordinator`), **Maria** (`mentor`), **Cat** (`customer`), **Mark** (`mentee`), **Stan** (`admin` / SRE)—five personas, five roles. Run this task when architecture or persona definitions change.
 
 ## Context / Input files
 
 **Inputs** (read first):
 
 - `Specifications/architecture.yaml` — domains where `is_journey: true`, repo `type: spa` (ports), and any fields you add for personas (see below).
-- `index.html` — persona markup, `spaAuthHash` / link wiring, JWT constants in the script block.
+- `login.html` and `welcome-auth.js` — persona dropdown, role checkboxes, `return_to` allowlist, HS256 minting.
 - API **e2e / dev defaults**: `JWT_SECRET`, `JWT_ISSUER`, `JWT_AUDIENCE`, `JWT_ALGORITHM` must match token claims (see flask mongo template `test/e2e/e2e_auth.py` and Pipfile `dev` / `e2e` scripts).
 
 **Optional** (only if you extend the spec):
@@ -24,35 +24,34 @@ The merged umbrella template intentionally ships **Genny** and **Adam** with **s
 
 ## Requirements
 
-1. **Drive SPA links from architecture**  
-   Keep (or reapply) loops over journey domains and SPA repos so every journey SPA gets persona anchor(s) with stable `id`s (e.g. `{domain}-{personaKey}`).
+1. **Drive SPA `return_to` allowlist from architecture**  
+   Keep journey SPA origins in `welcome-auth.js` aligned with `architecture.yaml` ports so Login redirects only to known local SPAs.
 
-2. **Replace or supplement Genny/Adam**  
-   - Either keep two generic personas and change **labels** only, or  
-   - Introduce one row/link per journey domain (or per domain × role), per your product.
+2. **Replace or customize default personas**  
+   Carol, Maria, Cat, Mark, Stan ship in the template; change labels, `sub`, or default roles when your product differs.
 
 3. **JWT and URL `roles` must agree**  
-   For each link, the `access_token` payload (claims, especially `roles`) should match what SPAs/APIs expect, and the hash query `roles` should be consistent with those claims (comma-separated as today).
+   `login.html` mints JWTs at Login from the user dropdown + role checkboxes. Payload `roles` array must match hash `roles` (comma-separated). Users may override checkboxes before Login.
 
 4. **Mint tokens with the real dev secret**  
-   Use the same secret as running APIs (e.g. PyJWT, `HS256`). Default Developer Edition and compose use `local-dev-jwt-secret-fixed` (no product slug in the string). After changing `JWT_SECRET` or claims, re-run this task and update inlined tokens in `index.html`.
+   Use the same secret as running APIs (e.g. PyJWT, `HS256`). Default Developer Edition and compose use `local-dev-jwt-secret-fixed` (no product slug in the string). After changing `JWT_SECRET` or claims, re-run this task and update persona data in `welcome-auth.js`.
 
 5. **Document in-repo**  
-   Add a short comment in `index.html` above persona constants describing iss/aud/sub/roles and that tokens are **dev-only**.
+   Add a short comment in `welcome-auth.js` describing iss/aud/sub/roles and that tokens are **dev-only**.
 
 6. **Do not break non-persona sections**  
-   Service list, API Explorer, and `spa_ref` URL wiring should stay correct for `schema` and journey domains.
+   `index.html` service list, API Explorer, and `spa_ref` URL wiring should stay correct for `schema` and journey domains.
 
 ## Suggested approaches
 
-- **Minimal static map in HTML**: Jinja `welcome_persona_jwt` dict keyed by `domain.name`, plus optional admin variants; mint offline when domains change.  
-- **Spec-driven (future)**: Add explicit optional fields under each journey domain for persona labels or token placeholders, then map in Jinja — only if your team wants YAML to own that data.
+- **Minimal static map in `welcome-auth.js`**: Persona list keyed by journey hints; mint client-side when users click Login.  
+- **Spec-driven (future)**: Add explicit optional fields under each journey domain for persona labels, then generate `welcome-auth.js` from Jinja — only if your team wants YAML to own that data.
 
 ## Testing expectations
 
-- Open the welcome page locally (`welcome` service / port from Developer Edition).  
-- For each journey SPA, open Genny (or refactored) link: app loads with hash auth; APIs accept token if `JWT_SECRET` matches.  
-- Toggle or exercise admin persona if you keep a second role.  
+- Open `login.html` locally (`welcome` service / port from Developer Edition).  
+- For each journey SPA, sign in as the matching persona (Cat → customer, Carol → coordinator, Maria → mentor, Mark → mentee, Stan → admin routes).  
+- APIs accept tokens when `JWT_SECRET` matches; use Stan for admin-gated endpoints.  
 - After changes, run umbrella `make test` if you are working in the template repo.
 
 ## Dependencies / Ordering
@@ -63,8 +62,8 @@ The merged umbrella template intentionally ships **Genny** and **Adam** with **s
 ## Change control checklist
 
 - [ ] Read current `architecture.yaml` journey domains and SPA ports.  
-- [ ] Decide persona matrix (who × which SPA links).  
-- [ ] Mint JWTs; update `index.html` script and markup.  
+- [ ] Confirm personas and roles match your product.  
+- [ ] Update `welcome-auth.js` (and `login.html` if UI changes).  
 - [ ] Manually verify one SPA per journey.  
 - [ ] Note completion and date in implementation notes below.
 
